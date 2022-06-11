@@ -1,5 +1,5 @@
 {
-    "version": "0.17.1",
+    "version": "0.17.2",
     "license": "BSD-3",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
@@ -73,9 +73,9 @@
         "@ledgerhq/hw-app-eth": "6.12.2",
         "@ledgerhq/hw-transport": "6.19.0",
         "@metamask/eth-sig-util": "4.0.0",
-        "@zee-ava/hd-wallet-axia": "0.2.2",
         "@openzeppelin/contracts": "4.5.0",
         "@zee-ava/avajs": "3.14.3",
+        "@zee-ava/hd-wallet-axia": "0.2.2",
         "big.js": "^6.1.1",
         "bip32": "2.0.6",
         "bip32-path": "0.4.2",
