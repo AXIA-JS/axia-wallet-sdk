@@ -1,5 +1,5 @@
 {
-    "version": "0.17.3",
+    "version": "0.17.4",
     "license": "BSD-3",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
@@ -22,7 +22,7 @@
         "docs:watch": "typedoc --watch src/index.ts"
     },
     "peerDependencies": {
-        "axia": "3.10.*"
+        "@zee-ava/avajs": "3.14.3"
     },
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"
@@ -50,8 +50,8 @@
         "@types/jest": "^26.0.23",
         "@typescript-eslint/eslint-plugin": "^4.22.1",
         "@typescript-eslint/parser": "^4.22.1",
-        "@zerollup/ts-transform-paths": "^1.7.18",
         "@zee-ava/avajs": "3.14.3",
+        "@zerollup/ts-transform-paths": "^1.7.18",
         "babel-jest": "^26.6.3",
         "babel-plugin-module-resolver": "^4.1.0",
         "eslint": "^7.25.0",
@@ -74,8 +74,8 @@
         "@ethereumjs/common": "2.6.0",
         "@ethereumjs/tx": "3.4.0",
         "@ledgerhq/hw-app-eth": "6.12.2",
-        "@zee-ava/hd-wallet-axia": "0.2.3",
         "@openzeppelin/contracts": "4.4.1",
+        "@zee-ava/hd-wallet-axia": "0.2.3",
         "big.js": "^6.1.1",
         "bip32": "^2.0.6",
         "bip32-path": "^0.4.2",
