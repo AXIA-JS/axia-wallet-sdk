@@ -9019,4 +9019,3 @@ exports.waitTxP = waitTxP;
 exports.waitTxX = waitTxX;
 exports.web3 = web3;
 exports.xChain = xChain;
-//# sourceMappingURL=index.js.map
