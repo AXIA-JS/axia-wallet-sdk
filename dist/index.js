@@ -97,12 +97,12 @@ function getRpcP(conf) {
 }
 
 const MainnetConfig = {
-    rawUrl: 'https://api.axc.network',
+    rawUrl: 'https://api.avax.network',
     apiProtocol: 'https',
     apiIp: 'api.axc.network',
     apiPort: 443,
-    explorerURL: 'https://explorerapi.axc.network',
-    explorerSiteURL: 'https://explorer.axc.network',
+    explorerURL: 'https://explorerapi.avax.network',
+    explorerSiteURL: 'https://explorer.avax.network',
     networkID: 1,
     // @ts-ignore
     xChainID: utils.Defaults.network[1]['X']['blockchainID'],
@@ -123,12 +123,12 @@ const MainnetConfig = {
     },
 };
 const TestnetConfig = {
-    rawUrl: 'https://api.axc-test.network',
+    rawUrl: 'https://api.avax-test.network',
     apiProtocol: 'https',
     apiIp: 'api.axc-test.network',
     apiPort: 443,
-    explorerURL: 'https://explorerapi.axc-test.network',
-    explorerSiteURL: 'https://explorer.axc-test.network',
+    explorerURL: 'https://explorerapi.avax-test.network',
+    explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5,
     // @ts-ignore
     xChainID: utils.Defaults.network[5]['X']['blockchainID'],
@@ -8245,3 +8245,4 @@ exports.createGraphForX = createGraphForX;
 exports.getStepsForBalanceC = getStepsForBalanceC;
 exports.getStepsForBalanceP = getStepsForBalanceP;
 exports.getStepsForBalanceX = getStepsForBalanceX;
+//# sourceMappingURL=index.js.map

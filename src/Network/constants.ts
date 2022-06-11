@@ -3,12 +3,12 @@ import { Defaults } from '@zee-ava/avajs/dist/utils';
 import { getRpcC, getRpcP, getRpcX } from './helpers/rpcFromConfig';
 
 export const MainnetConfig: NetworkConfig = {
-    rawUrl: 'https://api.axc.network',
+    rawUrl: 'https://api.avax.network',
     apiProtocol: 'https',
     apiIp: 'api.axc.network',
     apiPort: 443,
-    explorerURL: 'https://explorerapi.axc.network',
-    explorerSiteURL: 'https://explorer.axc.network',
+    explorerURL: 'https://explorerapi.avax.network',
+    explorerSiteURL: 'https://explorer.avax.network',
     networkID: 1,
     // @ts-ignore
     xChainID: Defaults.network[1]['X']['blockchainID'],
@@ -30,12 +30,12 @@ export const MainnetConfig: NetworkConfig = {
 };
 
 export const TestnetConfig: NetworkConfig = {
-    rawUrl: 'https://api.axc-test.network',
+    rawUrl: 'https://api.avax-test.network',
     apiProtocol: 'https',
-    apiIp: 'api.axc-test.network',
+    apiIp: 'api.avax-test.network',
     apiPort: 443,
-    explorerURL: 'https://explorerapi.axc-test.network',
-    explorerSiteURL: 'https://explorer.axc-test.network',
+    explorerURL: 'https://explorerapi.avax-test.network',
+    explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5,
     // @ts-ignore
     xChainID: Defaults.network[5]['X']['blockchainID'],

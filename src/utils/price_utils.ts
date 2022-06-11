@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const COINGECKO_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=axia-2&vs_currencies=usd';
+const COINGECKO_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=avalanche-2&vs_currencies=usd';
 
 /**
  * Fetches the current AXC price using Coin Gecko.
