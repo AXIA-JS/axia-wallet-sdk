@@ -30,7 +30,7 @@ type KeyCacheP = {
 };
 
 // Each HD wallet has 2 HdScaners, one for internal chain, one for external
-export class HdScanner {
+export default class HdScanner {
     protected index = 0;
     protected addressCache: AddressCache = {};
     protected keyCacheX: KeyCacheX = {};
@@ -189,8 +189,8 @@ export class HdScanner {
         let publicKeyBuff = Buffer.from(publicKey, 'hex');
 
         let hrp = getPreferredHRP(axia.getNetworkID());
-
-        let addrBuf = AVMKeyPair.addressFromPublicKey(publicKeyBuff);
+        //@ts-ignore
+        let addrBuf = this.avmAddrFactory.addressFromPublicKey(publicKeyBuff);
         let addr = bintools.addressToString(hrp, chainId, addrBuf);
 
         return addr;

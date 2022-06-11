@@ -1,5 +1,5 @@
 import { WalletProvider } from "./Wallet";
-import { HdScanner } from "./HdScanner";
+import HdScanner from "./HdScanner";
 import { UTXOSet as AVMUTXOSet } from '@zee-ava/avajs/dist/apis/avm/utxos';
 import { UTXOSet as PlatformUTXOSet } from '@zee-ava/avajs/dist/apis/platformvm';
 import { iHDWalletIndex } from "./types";
@@ -10,11 +10,6 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
     protected externalScan: HdScanner;
     protected accountKey: bip32.BIP32Interface;
     isHdReady: boolean;
-    /**
-     *
-     * @param accountKey The bip32 HD node for path `m/44'/9000'/n'` where n is the desired account index.
-     * @protected
-     */
     protected constructor(accountKey: bip32.BIP32Interface);
     protected onNetworkChange(config: NetworkConfig): void;
     /**

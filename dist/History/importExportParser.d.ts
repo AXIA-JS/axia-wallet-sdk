@@ -1,4 +1,4 @@
-import { iHistoryImportExport } from "./types";
-import { OrteliusAxiaTx } from "../Explorer";
-export declare function getImportSummary(tx: OrteliusAxiaTx, addresses: string[]): iHistoryImportExport;
-export declare function getExportSummary(tx: OrteliusAxiaTx, addresses: string[]): iHistoryImportExport;
+import { ITransactionData } from "./raw_types";
+import { iHistoryImportExport } from "./parsed_types";
+export declare function getImportSummary(tx: ITransactionData, addresses: string[]): iHistoryImportExport;
+export declare function getExportSummary(tx: ITransactionData, addresses: string[]): iHistoryImportExport;

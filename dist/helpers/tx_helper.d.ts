@@ -29,16 +29,8 @@ gasPrice: BN, gasLimit: number): Promise<Transaction>;
 export declare function buildCustomEvmTx(from: string, gasPrice: BN, gasLimit: number, data?: string, to?: string, value?: string, nonce?: number): Promise<Transaction>;
 export declare function buildEvmTransferErc20Tx(from: string, to: string, amount: BN, // in wei
 gasPrice: BN, gasLimit: number, contractAddress: string): Promise<Transaction>;
-export declare function buildEvmTransferErc721Tx(from: string, to: string, gasPrice: BN, gasLimit: number, tokenContract: string, tokenId: number): Promise<Transaction>;
+export declare function buildEvmTransferErc721Tx(from: string, to: string, gasPrice: BN, gasLimit: number, tokenContract: string, tokenId: string): Promise<Transaction>;
 export declare function estimateErc20Gas(tokenContract: string, from: string, to: string, value: BN): Promise<any>;
-/**
- * Estimate the gas limit for the ERC721 `safeTransferFrom(address,address,uint256)` method.
- * @param contract
- * @param from
- * @param to
- * @param tokenID
- */
-export declare function estimateErc721TransferGas(contract: string, from: string, to: string, tokenID: number): Promise<number>;
 /**
  * Estimates the gas needed to send AXC
  * @param to Destination address

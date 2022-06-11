@@ -1,9 +1,9 @@
-import { iHistoryEVMTx } from '@/History/types';
+import { ITransactionDataEVM } from '@/History/raw_types';
+import { iHistoryEVMTx } from '@/History/parsed_types';
 import { bnToAxcC } from '@/utils';
 import { BN } from '@zee-ava/avajs';
-import { OrteliusEvmTx } from '@/Explorer';
 
-export function getTransactionSummaryEVM(tx: OrteliusEvmTx, walletAddress: string): iHistoryEVMTx {
+export function getTransactionSummaryEVM(tx: ITransactionDataEVM, walletAddress: string): iHistoryEVMTx {
     let isSender = tx.fromAddr.toUpperCase() === walletAddress.toUpperCase();
 
     let amt = new BN(tx.value);

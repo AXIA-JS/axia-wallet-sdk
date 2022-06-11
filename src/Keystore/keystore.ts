@@ -26,17 +26,23 @@ import {
 } from './types';
 import { xChain } from '@/Network/network';
 import { Buffer } from 'buffer/';
-import { MnemonicWallet } from '@/Wallet/MnemonicWallet';
+import MnemonicWallet from '@/Wallet/MnemonicWallet';
 import Crypto from './Crypto';
-import { SingletonWallet } from '@/Wallet/SingletonWallet';
+import SingletonWallet from '@/Wallet/SingletonWallet';
 import { AccessWalletMultipleInput } from './types';
 // import { keyToKeypair } from '@/helpers/helper'
 import * as bip39 from 'bip39';
 import { bintools } from '@/common';
 import { Buffer as AjsBuffer } from '@zee-ava/avajs';
-import { ITERATIONS_V2, ITERATIONS_V3, KEYSTORE_VERSION } from '@/Keystore/constants';
 
 const cryptoHelpers = new Crypto();
+
+const KEYSTORE_VERSION = '6.0';
+
+const ITERATIONS_V2 = 100000;
+const ITERATIONS_V3 = 200000; // and any version above
+
+const SUPPORTED_VERSION = ['2.0', '3.0', '4.0', '5.0', '6.0'];
 
 interface IHash {
     salt: Buffer;
@@ -49,7 +55,7 @@ interface PKCrypt {
     ciphertext: Buffer;
 }
 
-export async function readV2(data: KeyFileV2, pass: string) {
+async function readV2(data: KeyFileV2, pass: string) {
     const version: string = data.version;
     cryptoHelpers.keygenIterations = ITERATIONS_V2;
 
@@ -87,7 +93,7 @@ export async function readV2(data: KeyFileV2, pass: string) {
         keys: keysDecrypt,
     };
 }
-export async function readV3(data: KeyFileV3, pass: string) {
+async function readV3(data: KeyFileV3, pass: string) {
     const version: string = data.version;
     cryptoHelpers.keygenIterations = ITERATIONS_V3;
 
@@ -125,7 +131,7 @@ export async function readV3(data: KeyFileV3, pass: string) {
         keys: keysDecrypt,
     };
 }
-export async function readV4(data: KeyFileV4, pass: string): Promise<KeyFileDecryptedV5> {
+async function readV4(data: KeyFileV4, pass: string): Promise<KeyFileDecryptedV5> {
     const version = data.version;
     cryptoHelpers.keygenIterations = ITERATIONS_V3;
 
@@ -164,7 +170,7 @@ export async function readV4(data: KeyFileV4, pass: string): Promise<KeyFileDecr
     };
 }
 
-export async function readV5(data: KeyFileV5, pass: string): Promise<KeyFileDecryptedV5> {
+async function readV5(data: KeyFileV5, pass: string): Promise<KeyFileDecryptedV5> {
     const version: string = data.version;
     cryptoHelpers.keygenIterations = ITERATIONS_V3;
 
@@ -203,7 +209,7 @@ export async function readV5(data: KeyFileV5, pass: string): Promise<KeyFileDecr
     };
 }
 
-export async function readV6(data: KeyFileV6, pass: string): Promise<KeyFileDecryptedV6> {
+async function readV6(data: KeyFileV6, pass: string): Promise<KeyFileDecryptedV6> {
     const version: string = data.version;
     const activeIndex = data.activeIndex;
     cryptoHelpers.keygenIterations = ITERATIONS_V3;
@@ -247,7 +253,7 @@ export async function readV6(data: KeyFileV6, pass: string): Promise<KeyFileDecr
  * @param data A JSON file of encrypted wallet keys
  * @param pass The password to decrypt the keys
  */
-export async function readKeyFile(data: AllKeyFileTypes, pass: string): Promise<AllKeyFileDecryptedTypes> {
+async function readKeyFile(data: AllKeyFileTypes, pass: string): Promise<AllKeyFileDecryptedTypes> {
     switch (data.version) {
         case '6.0':
             return await readV6(data as KeyFileV6, pass);
@@ -264,7 +270,7 @@ export async function readKeyFile(data: AllKeyFileTypes, pass: string): Promise<
     }
 }
 
-export function extractKeysV2(
+function extractKeysV2(
     file: KeyFileDecryptedV2 | KeyFileDecryptedV3 | KeyFileDecryptedV4
 ): AccessWalletMultipleInput[] {
     let chainID = xChain.getBlockchainAlias();
@@ -288,21 +294,21 @@ export function extractKeysV2(
     });
 }
 
-export function extractKeysV5(file: KeyFileDecryptedV5): AccessWalletMultipleInput[] {
+function extractKeysV5(file: KeyFileDecryptedV5): AccessWalletMultipleInput[] {
     return file.keys.map((key) => ({
         key: key.key,
         type: 'mnemonic',
     }));
 }
 
-export function extractKeysV6(file: KeyFileDecryptedV6): AccessWalletMultipleInput[] {
+function extractKeysV6(file: KeyFileDecryptedV6): AccessWalletMultipleInput[] {
     return file.keys.map((key) => ({
         type: key.type,
         key: key.key,
     }));
 }
 
-export function extractKeysFromDecryptedFile(file: AllKeyFileDecryptedTypes): AccessWalletMultipleInput[] {
+function extractKeysFromDecryptedFile(file: AllKeyFileDecryptedTypes): AccessWalletMultipleInput[] {
     switch (file.version) {
         case '6.0':
             return extractKeysV6(file as KeyFileDecryptedV6);
@@ -326,7 +332,7 @@ export function extractKeysFromDecryptedFile(file: AllKeyFileDecryptedTypes): Ac
  * @param activeIndex Index of the active wallet in the `wallets` array
  * @return Returns a JSON object that can later be decrypted with `readKeyfile` and the given password
  */
-export async function makeKeyfile(
+async function makeKeyfile(
     wallets: (MnemonicWallet | SingletonWallet)[],
     pass: string,
     activeIndex: number
@@ -346,7 +352,7 @@ export async function makeKeyfile(
             key = (wallet as SingletonWallet).key;
             type = 'singleton';
         } else {
-            key = (wallet as MnemonicWallet).getMnemonic();
+            key = (wallet as MnemonicWallet).mnemonic;
             type = 'mnemonic';
         }
         let pk_crypt: PKCrypt = await cryptoHelpers.encrypt(pass, key, salt);
@@ -367,3 +373,5 @@ export async function makeKeyfile(
     };
     return file_data;
 }
+
+export default { readKeyFile, makeKeyfile, KEYSTORE_VERSION, extractKeysFromDecryptedFile };

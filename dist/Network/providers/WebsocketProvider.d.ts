@@ -1,8 +1,8 @@
-import { AVMWebSocketProvider } from "./AVMWebSocketProvider";
-import { EVMWebSocketProvider } from "./EVMWebSocketProvider";
+import AVMWebSocketProvider from "./AVMWebSocketProvider";
+import EVMWebSocketProvider from "./EVMWebSocketProvider";
 import { WalletType } from "../../Wallet/types";
 import { NetworkConfig } from "../types";
-export declare class WebsocketProvider {
+export default class WebsocketProvider {
     avmProvider: AVMWebSocketProvider;
     evmProvider: EVMWebSocketProvider;
     constructor(avmEndpoint: string, evmEndpoint: string);

@@ -1,26 +1,27 @@
-import { EvmWallet } from './EVM/EvmWallet';
+import EvmWallet from './EvmWallet';
 import { UnsafeWallet, WalletNameType } from './types';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { Tx as AVMTx, UnsignedTx as AVMUnsignedTx } from '@zee-ava/avajs/dist/apis/avm';
 import { Tx as PlatformTx, UnsignedTx as PlatformUnsignedTx } from '@zee-ava/avajs/dist/apis/platformvm';
 import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx } from '@zee-ava/avajs/dist/apis/evm';
 import { HDWalletAbstract } from "./HDWalletAbstract";
-import { TypedDataV1, TypedMessage } from '@metamask/eth-sig-util';
-export declare class MnemonicWallet extends HDWalletAbstract implements UnsafeWallet {
+export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWallet {
     evmWallet: EvmWallet;
     type: WalletNameType;
-    private mnemonicCypher;
+    mnemonic: string;
     accountIndex: number;
     private ethAccountKey;
     constructor(mnemonic: string, account?: number);
     /**
+     * Gets the active address on the C chain in Bech32 encoding
+     * @return
+     * Bech32 representation of the EVM address.
+     */
+    getEvmAddressBech(): string;
+    /**
      * Returns the derived private key used by the EVM wallet.
      */
     getEvmPrivateKeyHex(): string;
-    /**
-     * Return the mnemonic phrase for this wallet.
-     */
-    getMnemonic(): string;
     /**
      * Generates a 24 word mnemonic phrase and initializes a wallet instance with it.
      * @return Returns the initialized wallet.
@@ -35,11 +36,6 @@ export declare class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
      * @param mnemonic The 24 word mnemonic phrase of the wallet
      */
     static fromMnemonic(mnemonic: string): MnemonicWallet;
-    /**
-     * Validates the given string is a valid mnemonic.
-     * @param mnemonic
-     */
-    static validateMnemonic(mnemonic: string): boolean;
     /**
      * Signs an EVM transaction on the C chain.
      * @param tx The unsigned transaction
@@ -72,27 +68,11 @@ export declare class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
      * @private
      */
     private getKeyChainP;
+    /**
+     * Gets the active address on the C chain
+     * @return
+     * Hex representation of the EVM address.
+     */
+    getAddressC(): string;
     signMessage(msgStr: string, index: number): string;
-    /**
-     * This function is equivalent to the eth_sign Ethereum JSON-RPC method as specified in EIP-1417,
-     * as well as the MetaMask's personal_sign method.
-     * @remarks Signs using the C chain address.
-     * @param data The hex data to sign
-     */
-    personalSign(data: string): Promise<string>;
-    /**
-     * V1 is based upon an early version of EIP-712 that lacked some later security improvements, and should generally be neglected in favor of later versions.
-     * @param data The typed data to sign.
-     * */
-    signTypedData_V1(data: TypedDataV1): Promise<string>;
-    /**
-     * V3 is based on EIP-712, except that arrays and recursive data structures are not supported.
-     * @param data The typed data to sign.
-     */
-    signTypedData_V3(data: TypedMessage<any>): Promise<string>;
-    /**
-     * V4 is based on EIP-712, and includes full support of arrays and recursive data structures.
-     * @param data The typed data to sign.
-     */
-    signTypedData_V4(data: TypedMessage<any>): Promise<string>;
 }

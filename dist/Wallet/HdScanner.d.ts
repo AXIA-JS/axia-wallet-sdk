@@ -11,7 +11,7 @@ declare type KeyCacheX = {
 declare type KeyCacheP = {
     [index: string]: PlatformKeyPair;
 };
-export declare class HdScanner {
+export default class HdScanner {
     protected index: number;
     protected addressCache: AddressCache;
     protected keyCacheX: KeyCacheX;

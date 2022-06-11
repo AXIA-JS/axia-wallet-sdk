@@ -1,22 +1,20 @@
 /// <reference types="node" />
 /// <reference types="bn.js" />
-import { AssetBalanceP, AssetBalanceRawX, BTCNetworkType, ERC20Balance, ExportChainsC, ExportChainsP, ExportChainsX, iAxcBalance, WalletBalanceX, WalletEventArgsType, WalletEventType, WalletNameType } from './types';
+import { AssetBalanceP, AssetBalanceRawX, ERC20Balance, ExportChainsC, ExportChainsP, ExportChainsX, iAxcBalance, WalletBalanceX, WalletEventArgsType, WalletEventType, WalletNameType } from './types';
 import { BN } from '@zee-ava/avajs';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
-import { EvmWallet } from "./EVM/EvmWallet";
+import EvmWallet from "./EvmWallet";
 import { UTXOSet as AVMUTXOSet, UnsignedTx as AVMUnsignedTx, UTXO as AVMUTXO, Tx as AvmTx } from '@zee-ava/avajs/dist/apis/avm';
 import { UTXOSet as PlatformUTXOSet, UTXO as PlatformUTXO, UnsignedTx as PlatformUnsignedTx, Tx as PlatformTx } from '@zee-ava/avajs/dist/apis/platformvm';
 import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx, UTXOSet as EVMUTXOSet } from '@zee-ava/avajs/dist/apis/evm';
 import { PayloadBase } from '@zee-ava/avajs/dist/utils';
-import { EvmWalletReadonly } from "./EVM/EvmWalletReadonly";
+import EvmWalletReadonly from "./EvmWalletReadonly";
 import EventEmitter from 'events';
-import { HistoryItemType } from "../History";
-import { ChainIdType } from "../common";
+import { HistoryItemType, ITransactionData } from "../History";
+import { ChainIdType } from "../types";
 import { UniversalTx } from "../UniversalTx";
 import { GetStakeResponse } from '@zee-ava/avajs/dist/apis/platformvm/interfaces';
 import { NetworkConfig } from "../Network";
-import { OrteliusAxiaTx } from "../Explorer";
-import { TypedDataV1, TypedMessage } from '@metamask/eth-sig-util';
 export declare abstract class WalletProvider {
     abstract type: WalletNameType;
     abstract evmWallet: EvmWallet | EvmWalletReadonly;
@@ -36,6 +34,8 @@ export declare abstract class WalletProvider {
     abstract getAddressX(): string;
     abstract getChangeAddressX(): string;
     abstract getAddressP(): string;
+    abstract getAddressC(): string;
+    abstract getEvmAddressBech(): string;
     abstract getExternalAddressesX(): Promise<string[]>;
     abstract getExternalAddressesXSync(): string[];
     abstract getInternalAddressesX(): Promise<string[]>;
@@ -46,10 +46,6 @@ export declare abstract class WalletProvider {
     abstract getAllAddressesXSync(): string[];
     abstract getAllAddressesP(): Promise<string[]>;
     abstract getAllAddressesPSync(): string[];
-    abstract personalSign(data: string): Promise<string>;
-    abstract signTypedData_V1(data: TypedDataV1): Promise<string>;
-    abstract signTypedData_V3(data: TypedMessage<any>): Promise<string>;
-    abstract signTypedData_V4(data: TypedMessage<any>): Promise<string>;
     protected constructor();
     /**
      * Call after getting done with the wallet to avoi memory leaks and remove event listeners
@@ -74,16 +70,6 @@ export declare abstract class WalletProvider {
     protected emitBalanceChangeX(): void;
     protected emitBalanceChangeP(): void;
     protected emitBalanceChangeC(): void;
-    /**
-     * Gets the active address on the C chain
-     * @return Hex representation of the EVM address.
-     */
-    getAddressC(): string;
-    getEvmAddressBech(): string;
-    /**
-     * Returns the BTC address of the C-Chain public key.
-     */
-    getAddressBTC(type: BTCNetworkType): string;
     /**
      *
      * @param to - the address funds are being send to.
@@ -118,28 +104,12 @@ export declare abstract class WalletProvider {
      */
     sendErc20(to: string, amount: BN, gasPrice: BN, gasLimit: number, contractAddress: string): Promise<string>;
     /**
-     * Makes a `safeTransferFrom` call on a ERC721 contract.
-     * @param to Hex address to transfer the NFT to.
-     * @param tokenID ID of the token to transfer inside the ERC71 family.
-     * @param gasPrice Gas price in WEI format
-     * @param gasLimit Gas limit
-     * @param contractAddress Contract address of the ERC721 token
-     */
-    sendErc721(contractAddress: string, to: string, tokenID: number, gasPrice: BN, gasLimit: number): Promise<string>;
-    /**
      * Estimate the gas needed for an ERC20 Transfer transaction
      * @param contractAddress The ERC20 contract address
      * @param to Address receiving the tokens
      * @param amount Amount to send. Given in the smallest divisible unit.
      */
     estimateErc20Gas(contractAddress: string, to: string, amount: BN): Promise<number>;
-    /**
-     * Estimate the gas needed for an ERC721 `safeTransferFrom` transaction
-     * @param contractAddress The ERC20 contract address
-     * @param to Address receiving the tokens
-     * @param tokenID ID of the token to transfer inside the ERC71 family.
-     */
-    estimateErc721TransferGasLimit(contractAddress: string, to: string, tokenID: number): Promise<number>;
     /**
      * Estimate gas limit for the given inputs.
      * @param to
@@ -296,18 +266,6 @@ export declare abstract class WalletProvider {
     getAtomicUTXOsP(sourceChain: ExportChainsP): Promise<PlatformUTXOSet>;
     getAtomicUTXOsC(sourceChain: ExportChainsC): Promise<EVMUTXOSet>;
     /**
-     * Fetches X-Chain atomic utxos from all source networks and returns them as one set.
-     */
-    getAllAtomicUTXOsX(): Promise<AVMUTXOSet>;
-    /**
-     * Fetches P-Chain atomic utxos from all source networks and returns them as one set.
-     */
-    getAllAtomicUTXOsP(): Promise<PlatformUTXOSet>;
-    /**
-     * Fetches C-Chain atomic utxos from all source networks and returns them as one set.
-     */
-    getAllAtomicUTXOsC(): Promise<EVMUTXOSet>;
-    /**
      * Imports atomic X chain UTXOs to the current active X chain address
      * @param sourceChain The chain to import from, either `P` or `C`
      */
@@ -347,32 +305,10 @@ export declare abstract class WalletProvider {
      * @param tx A universal transaction json object.
      */
     issueUniversalTx(tx: UniversalTx): Promise<string>;
-    getHistoryX(limit?: number): Promise<OrteliusAxiaTx[]>;
-    getHistoryP(limit?: number): Promise<OrteliusAxiaTx[]>;
-    /**
-     * Returns atomic history for this wallet on the C chain.
-     * @remarks Excludes EVM transactions.
-     * @param limit
-     */
-    getHistoryC(limit?: number): Promise<OrteliusAxiaTx[]>;
-    /**
-     * Returns history for this wallet on the C chain.
-     * @remarks Excludes atomic C chain import/export transactions.
-     */
-    getHistoryEVM(): Promise<import("../Explorer").OrteliusEvmTx[]>;
-    /**
-     * Returns the erc 20 activity for this wallet's C chain address. Uses Snowtrace APIs.
-     * @param offset Number of items per page. Optional.
-     * @param page If provided will paginate the results. Optional.
-     * @param contractAddress Filter activity by the ERC20 contract address. Optional.
-     */
-    getHistoryERC20(page?: number, offset?: number, contractAddress?: string): Promise<import("../Explorer").SnowtraceErc20Tx[]>;
-    /**
-     * Get a list of 'Normal' Transactions for wallet's C chain address. Uses Snowtrace APIs.
-     * @param offset Number of items per page. Optional.
-     * @param page If provided will paginate the results. Optional.
-     */
-    getHistoryNormalTx(page?: number, offset?: number): Promise<import("../Explorer").SnowtraceNormalTx[]>;
+    getHistoryX(limit?: number): Promise<ITransactionData[]>;
+    getHistoryP(limit?: number): Promise<ITransactionData[]>;
+    getHistoryC(limit?: number): Promise<ITransactionData[]>;
+    getHistoryEVM(): Promise<import("../History").ITransactionDataEVM[]>;
     getHistory(limit?: number): Promise<HistoryItemType[]>;
     /**
      * Fetches information about the given txId and parses it from the wallet's perspective
@@ -384,5 +320,4 @@ export declare abstract class WalletProvider {
      * @param txHash
      */
     getHistoryTxEvm(txHash: string): Promise<HistoryItemType>;
-    parseOrteliusTx(tx: OrteliusAxiaTx): Promise<HistoryItemType>;
 }

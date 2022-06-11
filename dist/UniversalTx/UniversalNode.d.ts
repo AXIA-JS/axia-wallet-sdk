@@ -1,6 +1,6 @@
 /// <reference types="bn.js" />
 import { BN } from '@zee-ava/avajs';
-import { ChainIdType } from "../common";
+import { ChainIdType } from "../types";
 import { UniversalTx, UniversalTxActionExport, UniversalTxActionImport, UniversalTxExport, UniversalTxImport } from './types';
 export declare abstract class UniversalNodeAbstract {
     parents: UniversalNodeAbstract[];

@@ -1,21 +1,24 @@
-import { HistoryItemType, HistoryItemTypeName, iHistoryImportExport, iHistoryItem, iHistoryStaking } from '@/History';
-import { parseMemo } from '@/History/history_helpers';
+import {
+    HistoryItemType,
+    HistoryItemTypeName,
+    iHistoryEVMTx,
+    iHistoryImportExport,
+    iHistoryItem,
+    iHistoryStaking,
+    ITransactionData,
+    ITransactionDataEVM,
+} from '@/History';
+import { findSourceChain, getEvmAssetBalanceFromUTXOs, parseMemo } from '@/History/history_helpers';
 import { activeNetwork, xChain } from '@/Network/network';
-import { bnToAxcP, bnToAxcX } from '@/utils';
+import { bnToAxcC, bnToAxcP, bnToAxcX } from '@/utils';
 import { BN } from '@zee-ava/avajs';
 import { getBaseTxSummary } from '@/History/base_tx_parser';
 import { idToChainAlias } from '@/Network/helpers/aliasFromNetworkID';
 import { getExportSummary, getImportSummary } from '@/History/importExportParser';
-import { findSourceChain, getStakeAmount, OrteliusAxiaTx } from '@/Explorer';
-import {
-    getEvmAssetBalanceFromUTXOs,
-    getOutputTotals,
-    getOwnedOutputs,
-    getRewardOuts,
-} from '@/Explorer/ortelius/utxoUtils';
+import { getOutputTotals, getOwnedOutputs, getRewardOuts, getStakeAmount } from '@/History/utxo_helpers';
 
 export async function getTransactionSummary(
-    tx: OrteliusAxiaTx,
+    tx: ITransactionData,
     walletAddrs: string[],
     evmAddress: string
 ): Promise<HistoryItemType> {
@@ -42,7 +45,7 @@ export async function getTransactionSummary(
     }
 }
 
-function getUnsupportedSummary(tx: OrteliusAxiaTx): iHistoryItem {
+function getUnsupportedSummary(tx: ITransactionData): iHistoryItem {
     return {
         id: tx.id,
         type: 'not_supported',
@@ -51,7 +54,7 @@ function getUnsupportedSummary(tx: OrteliusAxiaTx): iHistoryItem {
     };
 }
 
-function getStakingSummary(tx: OrteliusAxiaTx, ownerAddrs: string[]): iHistoryStaking {
+function getStakingSummary(tx: ITransactionData, ownerAddrs: string[]): iHistoryStaking {
     let time = new Date(tx.timestamp);
 
     // let pChainID = activeNetwork.pChainID;
@@ -99,7 +102,7 @@ function getStakingSummary(tx: OrteliusAxiaTx, ownerAddrs: string[]): iHistorySt
 }
 
 // Returns the summary for a C chain import TX
-function getImportSummaryC(tx: OrteliusAxiaTx, ownerAddr: string) {
+function getImportSummaryC(tx: ITransactionData, ownerAddr: string) {
     let sourceChain = findSourceChain(tx);
     let chainAliasFrom = idToChainAlias(sourceChain);
     let chainAliasTo = idToChainAlias(tx.chainID);

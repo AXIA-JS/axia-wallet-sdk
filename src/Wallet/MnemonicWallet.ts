@@ -1,6 +1,6 @@
 import * as bip39 from 'bip39';
 import * as bip32 from 'bip32';
-import { EvmWallet } from './EVM/EvmWallet';
+import EvmWallet from './EvmWallet';
 import { UnsafeWallet, WalletNameType } from './types';
 import { Buffer } from '@zee-ava/avajs';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
@@ -9,17 +9,16 @@ import { Tx as PlatformTx, UnsignedTx as PlatformUnsignedTx } from '@zee-ava/ava
 import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from '@zee-ava/avajs/dist/apis/avm/keychain';
 import { KeyChain as PlatformKeyChain } from '@zee-ava/avajs/dist/apis/platformvm';
 import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx, KeyPair as EVMKeyPair } from '@zee-ava/avajs/dist/apis/evm';
-import { CypherAES, digestMessage } from '@/utils';
+import { axia } from '@/Network/network';
+import { digestMessage } from '@/utils';
 import { HDWalletAbstract } from '@/Wallet/HDWalletAbstract';
 import { bintools } from '@/common';
 import { getAccountPathAxia, getAccountPathEVM } from '@/Wallet/helpers/derivationHelper';
-import { TypedDataV1, TypedMessage } from '@metamask/eth-sig-util';
 
-//TODO: Should extend public mnemonic wallet
-export class MnemonicWallet extends HDWalletAbstract implements UnsafeWallet {
+export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWallet {
     evmWallet: EvmWallet;
     type: WalletNameType;
-    private mnemonicCypher: CypherAES;
+    mnemonic: string;
     accountIndex: number;
 
     private ethAccountKey: bip32.BIP32Interface;
@@ -43,8 +42,20 @@ export class MnemonicWallet extends HDWalletAbstract implements UnsafeWallet {
         let evmWallet = new EvmWallet(ethKey!);
 
         this.accountIndex = account;
-        this.mnemonicCypher = new CypherAES(mnemonic);
+        this.mnemonic = mnemonic;
         this.evmWallet = evmWallet;
+    }
+
+    /**
+     * Gets the active address on the C chain in Bech32 encoding
+     * @return
+     * Bech32 representation of the EVM address.
+     */
+    public getEvmAddressBech(): string {
+        let keypair = new EVMKeyPair(axia.getHRP(), 'C');
+        //@ts-ignore
+        let addr = keypair.addressFromPublicKey(Buffer.from(this.ethAccountKey.publicKey));
+        return bintools.addressToString(axia.getHRP(), 'C', addr);
     }
 
     /**
@@ -52,13 +63,6 @@ export class MnemonicWallet extends HDWalletAbstract implements UnsafeWallet {
      */
     public getEvmPrivateKeyHex(): string {
         return this.evmWallet.getPrivateKeyHex();
-    }
-
-    /**
-     * Return the mnemonic phrase for this wallet.
-     */
-    public getMnemonic(): string {
-        return this.mnemonicCypher.getValue();
     }
 
     /**
@@ -83,14 +87,6 @@ export class MnemonicWallet extends HDWalletAbstract implements UnsafeWallet {
      */
     static fromMnemonic(mnemonic: string): MnemonicWallet {
         return new MnemonicWallet(mnemonic);
-    }
-
-    /**
-     * Validates the given string is a valid mnemonic.
-     * @param mnemonic
-     */
-    static validateMnemonic(mnemonic: string): boolean {
-        return bip39.validateMnemonic(mnemonic);
     }
 
     /**
@@ -145,6 +141,15 @@ export class MnemonicWallet extends HDWalletAbstract implements UnsafeWallet {
         return this.externalScan.getKeyChainP();
     }
 
+    /**
+     * Gets the active address on the C chain
+     * @return
+     * Hex representation of the EVM address.
+     */
+    public getAddressC(): string {
+        return this.evmWallet.getAddress();
+    }
+
     // TODO: Support internal address as well
     signMessage(msgStr: string, index: number): string {
         let key = this.externalScan.getKeyForIndexX(index) as AVMKeyPair;
@@ -156,39 +161,5 @@ export class MnemonicWallet extends HDWalletAbstract implements UnsafeWallet {
         let signed = key.sign(digestBuff);
 
         return bintools.cb58Encode(signed);
-    }
-
-    /**
-     * This function is equivalent to the eth_sign Ethereum JSON-RPC method as specified in EIP-1417,
-     * as well as the MetaMask's personal_sign method.
-     * @remarks Signs using the C chain address.
-     * @param data The hex data to sign
-     */
-    async personalSign(data: string): Promise<string> {
-        return this.evmWallet.personalSign(data);
-    }
-
-    /**
-     * V1 is based upon an early version of EIP-712 that lacked some later security improvements, and should generally be neglected in favor of later versions.
-     * @param data The typed data to sign.
-     * */
-    async signTypedData_V1(data: TypedDataV1): Promise<string> {
-        return this.evmWallet.signTypedData_V1(data);
-    }
-
-    /**
-     * V3 is based on EIP-712, except that arrays and recursive data structures are not supported.
-     * @param data The typed data to sign.
-     */
-    async signTypedData_V3(data: TypedMessage<any>): Promise<string> {
-        return this.evmWallet.signTypedData_V3(data);
-    }
-
-    /**
-     * V4 is based on EIP-712, and includes full support of arrays and recursive data structures.
-     * @param data The typed data to sign.
-     */
-    async signTypedData_V4(data: TypedMessage<any>): Promise<string> {
-        return this.evmWallet.signTypedData_V4(data);
     }
 }

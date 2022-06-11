@@ -1,3 +1,2 @@
-import { HistoryItemType } from "./";
-import { OrteliusAxiaTx } from "../Explorer";
-export declare function getTransactionSummary(tx: OrteliusAxiaTx, walletAddrs: string[], evmAddress: string): Promise<HistoryItemType>;
+import { HistoryItemType, ITransactionData } from "./";
+export declare function getTransactionSummary(tx: ITransactionData, walletAddrs: string[], evmAddress: string): Promise<HistoryItemType>;

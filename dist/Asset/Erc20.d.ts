@@ -1,5 +1,5 @@
 import { Erc20Store, Erc20TokenData } from "./types";
-import { Erc20Token } from "./Erc20Token";
+import Erc20Token from "./Erc20Token";
 export declare let erc20Cache: Erc20Store;
 export declare function getErc20Cache(): Erc20Store;
 /**

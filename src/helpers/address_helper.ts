@@ -1,4 +1,4 @@
-import { ChainIdType } from '@/common';
+import { ChainIdType } from '@/types';
 import Web3 from 'web3';
 import { bintools } from '@/common';
 

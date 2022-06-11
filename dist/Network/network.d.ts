@@ -4,16 +4,14 @@ import { InfoAPI } from '@zee-ava/avajs/dist/apis/info';
 import { EVMAPI } from '@zee-ava/avajs/dist/apis/evm';
 import Web3 from 'web3';
 import { NetworkConfig } from './types';
-import { ethers } from 'ethers';
-import { HttpClient } from "../helpers/http_client";
+import { AxiosInstance } from 'axios';
 export declare const axia: Axia;
 export declare const xChain: AVMAPI;
 export declare const cChain: EVMAPI;
 export declare const pChain: import("@zee-ava/avajs/dist/apis/platformvm").PlatformVMAPI;
 export declare const infoApi: InfoAPI;
 export declare const web3: Web3;
-export declare let ethersProvider: ethers.providers.JsonRpcProvider;
-export declare let explorer_api: HttpClient | null;
+export declare let explorer_api: AxiosInstance | null;
 export declare let activeNetwork: NetworkConfig;
 /**
  * Returns the evm chain ID of the active network

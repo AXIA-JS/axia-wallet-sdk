@@ -1,12 +1,12 @@
-import { iHistoryImportExport } from '@/History/types';
-import { parseMemo } from '@/History/history_helpers';
+import { ITransactionData } from '@/History/raw_types';
+import { iHistoryImportExport } from '@/History/parsed_types';
+import { findDestinationChain, findSourceChain, getAssetBalanceFromUTXOs, parseMemo } from '@/History/history_helpers';
 import { idToChainAlias } from '@/Network/helpers/aliasFromNetworkID';
-import { xChain } from '@/Network/network';
+import { activeNetwork, xChain } from '@/Network/network';
 import { bnToAxcX } from '@/utils';
-import { getOutputsOfChain, getOutputTotals, getOwnedOutputs } from '@/Explorer/ortelius/utxoUtils';
-import { findDestinationChain, findSourceChain, OrteliusAxiaTx } from '@/Explorer';
+import { getOutputsOfChain, getOutputTotals, getOwnedOutputs } from '@/History/utxo_helpers';
 
-export function getImportSummary(tx: OrteliusAxiaTx, addresses: string[]): iHistoryImportExport {
+export function getImportSummary(tx: ITransactionData, addresses: string[]): iHistoryImportExport {
     let sourceChain = findSourceChain(tx);
     let chainAliasFrom = idToChainAlias(sourceChain);
     let chainAliasTo = idToChainAlias(tx.chainID);
@@ -33,7 +33,7 @@ export function getImportSummary(tx: OrteliusAxiaTx, addresses: string[]): iHist
     return res;
 }
 
-export function getExportSummary(tx: OrteliusAxiaTx, addresses: string[]): iHistoryImportExport {
+export function getExportSummary(tx: ITransactionData, addresses: string[]): iHistoryImportExport {
     let sourceChain = findSourceChain(tx);
     let chainAliasFrom = idToChainAlias(sourceChain);
 

@@ -1,4 +1,5 @@
 // HD WALLET
+// Accounts are not used and the account index is fixed to 0
 // m / purpose' / coin_type' / account' / change / address_index
 
 export const AXC_TOKEN_INDEX: string = '9000';

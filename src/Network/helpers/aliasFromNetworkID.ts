@@ -1,4 +1,4 @@
-import { ChainIdType } from '@/common';
+import { ChainIdType } from '@/types';
 import { activeNetwork } from '@/Network/network';
 
 /**

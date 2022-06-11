@@ -2,7 +2,7 @@
 import { Erc20TokenData } from "./types";
 import { BN } from '@zee-ava/avajs';
 import { Contract } from 'web3-eth-contract';
-export declare class Erc20Token {
+export default class Erc20Token {
     contract: Contract;
     address: string;
     name: string;

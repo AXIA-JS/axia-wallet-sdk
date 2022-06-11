@@ -2,9 +2,9 @@ import { KeyPair as AVMKeyPair } from '@zee-ava/avajs/dist/apis/avm';
 
 import { BN } from '@zee-ava/avajs';
 
-import { MnemonicWallet } from '@/Wallet/MnemonicWallet';
-import { SingletonWallet } from '@/Wallet/SingletonWallet';
-import { LedgerWallet } from '@/Wallet/Ledger';
+import MnemonicWallet from '@/Wallet/MnemonicWallet';
+import SingletonWallet from '@/Wallet/SingletonWallet';
+import LedgerWallet from '@/Wallet/LedgerWallet';
 
 import { iAssetDescriptionClean } from '@/Asset/types';
 
@@ -95,8 +95,6 @@ export interface iHDWalletIndex {
     external: number;
     internal: number;
 }
-
-export type BTCNetworkType = 'bitcoin' | 'testnet' | 'regtest';
 
 /**
  * Used by wallets which can access their private keys

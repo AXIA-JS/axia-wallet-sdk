@@ -5,6 +5,7 @@ import { EVMAPI } from '@zee-ava/avajs/dist/apis/evm';
 import Web3 from 'web3';
 import { DefaultConfig } from './constants';
 import { NetworkConfig, NetworkConfigRpc, NetworkProtocolType } from './types';
+import { AxiosInstance } from 'axios';
 import { getRpcC, getRpcP, getRpcX } from './helpers/rpcFromConfig';
 import URL from 'url';
 import { bintools } from '@/common';
@@ -15,11 +16,6 @@ import {
     getNetworkIdFromURL,
 } from '@/helpers/network_helper';
 
-import { FetchHttpProvider } from '@/utils/FetchHTTPProvider';
-import { getEthersJsonRpcProvider } from '@/Network/getEthersProvider';
-import { ethers } from 'ethers';
-import { HttpClient } from '@/helpers/http_client';
-
 export const axia: Axia = createAxiaProvider(DefaultConfig);
 
 export const xChain: AVMAPI = axia.XChain();
@@ -28,17 +24,16 @@ export const pChain = axia.PChain();
 export const infoApi: InfoAPI = axia.Info();
 
 function getProviderFromUrl(url: string, credentials = false) {
-    return new FetchHttpProvider(url, {
+    return new Web3.providers.HttpProvider(url, {
         timeout: 20000,
         withCredentials: credentials,
     });
 }
 
 const rpcUrl = getRpcC(DefaultConfig);
-export const web3 = new Web3(getProviderFromUrl(rpcUrl, true) as any);
-// JSON RPC Ethers provider
-export let ethersProvider: ethers.providers.JsonRpcProvider = getEthersJsonRpcProvider(DefaultConfig);
-export let explorer_api: HttpClient | null = null;
+export const web3 = new Web3(getProviderFromUrl(rpcUrl, true));
+
+export let explorer_api: AxiosInstance | null = null;
 export let activeNetwork: NetworkConfig = DefaultConfig;
 
 /**
@@ -93,9 +88,7 @@ export function setRpcNetwork(conf: NetworkConfig, credentials = true): void {
     }
 
     let rpcUrl = getRpcC(conf);
-    web3.setProvider(getProviderFromUrl(rpcUrl, credentials) as any);
-    // Update ethers provider
-    ethersProvider = getEthersJsonRpcProvider(conf);
+    web3.setProvider(getProviderFromUrl(rpcUrl, credentials));
 
     activeNetwork = conf;
 }
@@ -120,7 +113,7 @@ export async function getConfigFromUrl(url: string): Promise<NetworkConfig> {
 
     let connection = new Axia(urlObj.hostname, parseInt(portStr), protocol, netID);
     // TODO: Use a helper for this
-    let connectionEvm = new Web3(getProviderFromUrl(urlObj.href + 'ext/bc/C/rpc') as any);
+    let connectionEvm = new Web3(urlObj.href + 'ext/bc/C/rpc');
 
     let infoApi = connection.Info();
     let xApi = connection.XChain();

@@ -1,4 +1,4 @@
-import { ChainIdType } from "../common";
+import { ChainIdType } from "../types";
 export declare const validateAddress: (address: string) => boolean | string;
 export declare function validateAddressX(address: string): boolean;
 export declare function validateAddressP(address: string): boolean;

@@ -7,15 +7,14 @@ import {
     UnsignedTx as PlatformUnsignedTx,
     Tx as PlatformTx,
 } from '@zee-ava/avajs/dist/apis/platformvm';
-import { pChain, xChain } from '@/Network/network';
+import { axia, pChain, xChain } from '@/Network/network';
 import { Buffer as BufferAxia } from '@zee-ava/avajs';
-import { EvmWallet } from '@/Wallet/EVM/EvmWallet';
-import { UnsignedTx, Tx } from '@zee-ava/avajs/dist/apis/evm';
+import EvmWallet from '@/Wallet/EvmWallet';
+import { UnsignedTx, Tx, KeyPair as EVMKeyPair } from '@zee-ava/avajs/dist/apis/evm';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { bintools } from '@/common';
-import { TypedDataV1, TypedMessage } from '@metamask/eth-sig-util';
 
-export class SingletonWallet extends WalletProvider implements UnsafeWallet {
+export default class SingletonWallet extends WalletProvider implements UnsafeWallet {
     type: WalletNameType = 'singleton';
     key = '';
     keyBuff: BufferAxia;
@@ -69,6 +68,10 @@ export class SingletonWallet extends WalletProvider implements UnsafeWallet {
         return this.evmWallet.getPrivateKeyHex();
     }
 
+    getAddressC(): string {
+        return this.evmWallet.getAddress();
+    }
+
     getAddressP(): string {
         let keyChain = this.getKeyChainP();
         return keyChain.getAddressStrings()[0];
@@ -97,6 +100,12 @@ export class SingletonWallet extends WalletProvider implements UnsafeWallet {
 
     getChangeAddressX(): string {
         return this.getAddressX();
+    }
+
+    getEvmAddressBech(): string {
+        let keypair = new EVMKeyPair(axia.getHRP(), 'C');
+        keypair.importKey(this.keyBuff);
+        return keypair.getAddressString();
     }
 
     async getExternalAddressesP(): Promise<string[]> {
@@ -137,38 +146,5 @@ export class SingletonWallet extends WalletProvider implements UnsafeWallet {
 
     async signX(tx: AVMUnsignedTx): Promise<AVMTx> {
         return tx.sign(this.getKeyChainX());
-    }
-
-    /**
-     * This function is equivalent to the eth_sign Ethereum JSON-RPC method as specified in EIP-1417,
-     * as well as the MetaMask's personal_sign method.
-     * @param data The hex data to sign
-     */
-    async personalSign(data: string): Promise<string> {
-        return this.evmWallet.personalSign(data);
-    }
-
-    /**
-     * V1 is based upon an early version of EIP-712 that lacked some later security improvements, and should generally be neglected in favor of later versions.
-     * @param data The typed data to sign.
-     * */
-    async signTypedData_V1(data: TypedDataV1): Promise<string> {
-        return this.evmWallet.signTypedData_V1(data);
-    }
-
-    /**
-     * V3 is based on EIP-712, except that arrays and recursive data structures are not supported.
-     * @param data The typed data to sign.
-     */
-    async signTypedData_V3(data: TypedMessage<any>): Promise<string> {
-        return this.evmWallet.signTypedData_V3(data);
-    }
-
-    /**
-     * V4 is based on EIP-712, and includes full support of arrays and recursive data structures.
-     * @param data The typed data to sign.
-     */
-    async signTypedData_V4(data: TypedMessage<any>): Promise<string> {
-        return this.evmWallet.signTypedData_V4(data);
     }
 }

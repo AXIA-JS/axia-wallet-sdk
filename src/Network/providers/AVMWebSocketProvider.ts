@@ -4,7 +4,7 @@ import { WalletType } from '@/Wallet/types';
 
 const FILTER_ADDRESS_SIZE = 1000;
 
-export class AVMWebSocketProvider {
+export default class AVMWebSocketProvider {
     isConnected = false;
     socket: Sockette;
 
