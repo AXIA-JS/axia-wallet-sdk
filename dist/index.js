@@ -125,7 +125,7 @@ const MainnetConfig = {
 const TestnetConfig = {
     rawUrl: 'https://api.avax-test.network',
     apiProtocol: 'https',
-    apiIp: 'api.axc-test.network',
+    apiIp: 'api.avax-test.network',
     apiPort: 443,
     explorerURL: 'https://explorerapi.avax-test.network',
     explorerSiteURL: 'https://explorer.avax-test.network',
@@ -3368,7 +3368,7 @@ function getTxFeeP() {
     return pChain.getTxFee();
 }
 
-const COINGECKO_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=axia-2&vs_currencies=usd';
+const COINGECKO_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=avalanche-2&vs_currencies=usd';
 /**
  * Fetches the current AXC price using Coin Gecko.
  * @remarks
@@ -8245,4 +8245,3 @@ exports.createGraphForX = createGraphForX;
 exports.getStepsForBalanceC = getStepsForBalanceC;
 exports.getStepsForBalanceP = getStepsForBalanceP;
 exports.getStepsForBalanceX = getStepsForBalanceX;
-//# sourceMappingURL=index.js.map
