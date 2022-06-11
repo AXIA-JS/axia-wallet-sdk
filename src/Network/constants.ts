@@ -5,7 +5,7 @@ import { getRpcC, getRpcP, getRpcX } from './helpers/rpcFromConfig';
 export const MainnetConfig: NetworkConfig = {
     rawUrl: 'https://api.avax.network',
     apiProtocol: 'https',
-    apiIp: 'api.axc.network',
+    apiIp: 'api.avax.network',
     apiPort: 443,
     explorerURL: 'https://explorerapi.avax.network',
     explorerSiteURL: 'https://explorer.avax.network',
