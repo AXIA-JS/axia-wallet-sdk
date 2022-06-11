@@ -29,11 +29,11 @@ Using the axia-wallet-sdk developers can:
 
 With npm
 
-`npm install --save @avalabs/axia-wallet-sdk`
+`npm install --save @zee-ava/axia-wallet-sdk`
 
 or yarn
 
-`yarn add @avalabs/axia-wallet-sdk`
+`yarn add @zee-ava/axia-wallet-sdk`
 
 ## Local build
 
