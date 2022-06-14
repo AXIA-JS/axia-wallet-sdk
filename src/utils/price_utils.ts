@@ -12,5 +12,5 @@ const COINGECKO_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=avalanc
  */
 export async function getAxcPrice(): Promise<number> {
     const res = await axios.get(COINGECKO_URL);
-    return res.data['axia-2'].usd;
+    return res.data['avalanche-2'].usd;
 }
