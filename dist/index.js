@@ -123,10 +123,10 @@ const MainnetConfig = {
     },
 };
 const TestnetConfig = {
-    rawUrl: 'https://api.avax-test.network',
-    apiProtocol: 'https',
-    apiIp: 'api.avax-test.network',
-    apiPort: 443,
+    rawUrl: 'http://18.222.205.99:9650',
+    apiProtocol: 'http',
+    apiIp: '18.222.205.99:9650',
+    apiPort: 9650,
     explorerURL: 'https://explorerapi.avax-test.network',
     explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5,
@@ -3380,7 +3380,7 @@ const COINGECKO_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=avalanc
 function getAxcPrice() {
     return __awaiter(this, void 0, void 0, function* () {
         const res = yield axios__default["default"].get(COINGECKO_URL);
-        return res.data['axia-2'].usd;
+        return res.data['avalanche-2'].usd;
     });
 }
 
