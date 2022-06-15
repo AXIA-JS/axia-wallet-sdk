@@ -1,6 +1,6 @@
 import Sockette from 'sockette';
 import { WalletType } from "../../Wallet/types";
-export default class AXVMWebSocketProvider {
+export default class AVMWebSocketProvider {
     isConnected: boolean;
     socket: Sockette;
     wallets: WalletType[];

@@ -1,4 +1,4 @@
-import { UTXOSet as AXVMUTXOSet } from '@zee-ava/avajs/dist/apis/axvm/utxos';
+import { UTXOSet as AVMUTXOSet } from '@zee-ava/avajs/dist/apis/avm/utxos';
 import { UTXOSet as PlatformUTXOSet } from '@zee-ava/avajs/dist/apis/platformvm/utxos';
 import { UTXOSet as EVMUTXOSet } from '@zee-ava/avajs/dist/apis/evm/utxos';
 import { assetChain, appChain, coreChain } from '@/Network/network';
@@ -11,7 +11,7 @@ import { GetStakeResponse } from '@zee-ava/avajs/dist/apis/platformvm/interfaces
  * @param addrs an array of AssetChain addresses to get the atomic utxos of
  * @param sourceChain Which chain to check against, either `P` or `C`
  */
-export async function axvmGetAtomicUTXOs(addrs: string[], sourceChain: ExportChainsX): Promise<AXVMUTXOSet> {
+export async function avmGetAtomicUTXOs(addrs: string[], sourceChain: ExportChainsX): Promise<AVMUTXOSet> {
     const selection = addrs.slice(0, 1024);
     const remaining = addrs.slice(1024);
 
@@ -19,7 +19,7 @@ export async function axvmGetAtomicUTXOs(addrs: string[], sourceChain: ExportCha
     let utxoSet = (await assetChain.getUTXOs(selection, sourceChainId)).utxos;
 
     if (remaining.length > 0) {
-        const nextSet = await axvmGetAtomicUTXOs(remaining, sourceChain);
+        const nextSet = await avmGetAtomicUTXOs(remaining, sourceChain);
         utxoSet = utxoSet.merge(nextSet);
     }
     return utxoSet;
@@ -70,21 +70,21 @@ export async function getStakeForAddresses(addrs: string[]): Promise<GetStakeRes
     }
 }
 
-export async function axvmGetAllUTXOs(addrs: string[]): Promise<AXVMUTXOSet> {
+export async function avmGetAllUTXOs(addrs: string[]): Promise<AVMUTXOSet> {
     if (addrs.length <= 1024) {
-        let utxos = await axvmGetAllUTXOsForAddresses(addrs);
+        let utxos = await avmGetAllUTXOsForAddresses(addrs);
         return utxos;
     } else {
         //Break the list in to 1024 chunks
         let chunk = addrs.slice(0, 1024);
         let remainingChunk = addrs.slice(1024);
 
-        let newSet = await axvmGetAllUTXOsForAddresses(chunk);
-        return newSet.merge(await axvmGetAllUTXOs(remainingChunk));
+        let newSet = await avmGetAllUTXOsForAddresses(chunk);
+        return newSet.merge(await avmGetAllUTXOs(remainingChunk));
     }
 }
 
-export async function axvmGetAllUTXOsForAddresses(addrs: string[], endIndex?: any): Promise<AXVMUTXOSet> {
+export async function avmGetAllUTXOsForAddresses(addrs: string[], endIndex?: any): Promise<AVMUTXOSet> {
     if (addrs.length > 1024) throw new Error('Maximum length of addresses is 1024');
     let response;
     if (!endIndex) {
@@ -98,7 +98,7 @@ export async function axvmGetAllUTXOsForAddresses(addrs: string[], endIndex?: an
     let len = response.numFetched;
 
     if (len >= 1024) {
-        let subUtxos = await axvmGetAllUTXOsForAddresses(addrs, nextEndIndex);
+        let subUtxos = await avmGetAllUTXOsForAddresses(addrs, nextEndIndex);
         return utxoSet.merge(subUtxos);
     }
     return utxoSet;

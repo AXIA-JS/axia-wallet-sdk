@@ -2,8 +2,8 @@
 import { BN } from '@zee-ava/avajs';
 import { ChainIdType } from "../types";
 import { iAssetDescriptionClean } from "../Asset/types";
-export declare type HistoryItemType = AXVMHistoryItemType | PVMHistoryItemType | EVMHistoryITemType | iHistoryItem;
-export declare type AXVMHistoryItemType = iHistoryBaseTx | iHistoryImportExport;
+export declare type HistoryItemType = AVMHistoryItemType | PVMHistoryItemType | EVMHistoryITemType | iHistoryItem;
+export declare type AVMHistoryItemType = iHistoryBaseTx | iHistoryImportExport;
 export declare type PVMHistoryItemType = iHistoryStaking;
 export declare type EVMHistoryITemType = iHistoryEVMTx;
 export declare type HistoryImportExportTypeName = 'import' | 'export';

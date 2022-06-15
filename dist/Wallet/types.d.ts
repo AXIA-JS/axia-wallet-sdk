@@ -1,12 +1,12 @@
 /// <reference types="bn.js" />
-import { KeyPair as AXVMKeyPair } from '@zee-ava/avajs/dist/apis/axvm';
+import { KeyPair as AVMKeyPair } from '@zee-ava/avajs/dist/apis/avm';
 import { BN } from '@zee-ava/avajs';
 import MnemonicWallet from "./MnemonicWallet";
 import SingletonWallet from "./SingletonWallet";
 import LedgerWallet from "./LedgerWallet";
 import { iAssetDescriptionClean } from "../Asset/types";
 export interface IIndexKeyCache {
-    [index: number]: AXVMKeyPair;
+    [index: number]: AVMKeyPair;
 }
 export declare type ChainAlias = 'X' | 'P';
 export declare type ExportChainsX = 'P' | 'C';

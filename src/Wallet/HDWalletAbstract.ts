@@ -1,6 +1,6 @@
 import { WalletProvider } from '@/Wallet/Wallet';
 import HdScanner from '@/Wallet/HdScanner';
-import { UTXOSet as AXVMUTXOSet } from '@zee-ava/avajs/dist/apis/axvm/utxos';
+import { UTXOSet as AVMUTXOSet } from '@zee-ava/avajs/dist/apis/avm/utxos';
 import { axia } from '@/Network/network';
 import { UTXOSet as PlatformUTXOSet } from '@zee-ava/avajs/dist/apis/platformvm';
 import { iHDWalletIndex } from '@/Wallet/types';
@@ -171,7 +171,7 @@ export abstract class HDWalletAbstract extends WalletProvider {
         });
     }
 
-    public async updateUtxosX(): Promise<AXVMUTXOSet> {
+    public async updateUtxosX(): Promise<AVMUTXOSet> {
         let utxosX = await super.updateUtxosX();
 
         // If the current internal or external X address is in the utxo set, increment hd index

@@ -2,7 +2,7 @@
 // else return current chain
 import { iHistoryNftFamilyBalance, ITransactionData, UTXO } from '@/History';
 import { BN } from '@zee-ava/avajs';
-import { AXVMConstants } from '@zee-ava/avajs/dist/apis/axvm';
+import { AVMConstants } from '@zee-ava/avajs/dist/apis/avm';
 import { parseNftPayload } from '@/utils';
 
 /**
@@ -120,7 +120,7 @@ export function getAssetBalanceFromUTXOs(
 export function getNFTBalanceFromUTXOs(utxos: UTXO[], addresses: string[], assetID: string): iHistoryNftFamilyBalance {
     let nftUTXOs = utxos.filter((utxo) => {
         if (
-            utxo.outputType === AXVMConstants.NFTXFEROUTPUTID &&
+            utxo.outputType === AVMConstants.NFTXFEROUTPUTID &&
             utxo.assetID === assetID &&
             isOutputOwner(addresses, utxo)
         ) {

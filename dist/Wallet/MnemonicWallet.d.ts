@@ -1,7 +1,7 @@
 import EvmWallet from './EvmWallet';
 import { UnsafeWallet, WalletNameType } from './types';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
-import { Tx as AXVMTx, UnsignedTx as AXVMUnsignedTx } from '@zee-ava/avajs/dist/apis/axvm';
+import { Tx as AVMTx, UnsignedTx as AVMUnsignedTx } from '@zee-ava/avajs/dist/apis/avm';
 import { Tx as PlatformTx, UnsignedTx as PlatformUnsignedTx } from '@zee-ava/avajs/dist/apis/platformvm';
 import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx } from '@zee-ava/avajs/dist/apis/evm';
 import { HDWalletAbstract } from "./HDWalletAbstract";
@@ -42,10 +42,10 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
      */
     signEvm(tx: Transaction | FeeMarketEIP1559Transaction): Promise<Transaction | FeeMarketEIP1559Transaction>;
     /**
-     * Signs an AXVM transaction.
+     * Signs an AVM transaction.
      * @param tx The unsigned transaction
      */
-    signX(tx: AXVMUnsignedTx): Promise<AXVMTx>;
+    signX(tx: AVMUnsignedTx): Promise<AVMTx>;
     /**
      * Signs a PlatformVM transaction.
      * @param tx The unsigned transaction

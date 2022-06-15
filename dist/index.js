@@ -10,7 +10,7 @@ var axios = require('axios');
 var Sockette = require('sockette');
 var ethers = require('ethers');
 var xss = require('xss');
-var axvm = require('@zee-ava/avajs/dist/apis/axvm');
+var avm = require('@zee-ava/avajs/dist/apis/avm');
 var createHash = require('create-hash');
 var Big = require('big.js');
 var bip39 = require('bip39');
@@ -22,7 +22,7 @@ var common$1 = require('@zee-ava/avajs/dist/common');
 var platformvm = require('@zee-ava/avajs/dist/apis/platformvm');
 var tx = require('@ethereumjs/tx');
 var EthereumjsCommon = require('@ethereumjs/common');
-var keychain$1 = require('@zee-ava/avajs/dist/apis/axvm/keychain');
+var keychain$1 = require('@zee-ava/avajs/dist/apis/avm/keychain');
 var Eth = require('@ledgerhq/hw-app-eth');
 var AppAxc = require('@zee-ava/hd-wallet-axia');
 var HDKey = require('hdkey');
@@ -123,10 +123,10 @@ const MainnetConfig = {
     },
 };
 const TestnetConfig = {
-    rawUrl: 'https://api.avax-test.network',
-    apiProtocol: 'https',
-    apiIp: 'api.avax-test.network',
-    apiPort: 443,
+    rawUrl: 'http://18.222.205.99:9650',
+    apiProtocol: 'http',
+    apiIp: '18.222.205.99',
+    apiPort: 9650,
     explorerURL: 'https://explorerapi.avax-test.network',
     explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5,
@@ -1751,7 +1751,7 @@ function getConfigFromUrl(url$1) {
 }
 
 const FILTER_ADDRESS_SIZE = 1000;
-class AXVMWebSocketProvider {
+class AVMWebSocketProvider {
     constructor(wsUrl) {
         this.isConnected = false;
         this.wallets = [];
@@ -1942,8 +1942,8 @@ class EVMWebSocketProvider {
 }
 
 class WebsocketProvider {
-    constructor(axvmEndpoint, evmEndpoint) {
-        this.axvmProvider = new AXVMWebSocketProvider(axvmEndpoint);
+    constructor(avmEndpoint, evmEndpoint) {
+        this.avmProvider = new AVMWebSocketProvider(avmEndpoint);
         this.evmProvider = new EVMWebSocketProvider(evmEndpoint);
     }
     static fromActiveNetwork() {
@@ -1951,24 +1951,24 @@ class WebsocketProvider {
     }
     static fromNetworkConfig(config) {
         let evm = wsUrlFromConfigEVM(config);
-        let axvm = wsUrlFromConfigX(config);
-        return new WebsocketProvider(axvm, evm);
+        let avm = wsUrlFromConfigX(config);
+        return new WebsocketProvider(avm, evm);
     }
-    setEndpoints(axvmEndpoint, evmEndpoint) {
-        this.axvmProvider.setEndpoint(axvmEndpoint);
+    setEndpoints(avmEndpoint, evmEndpoint) {
+        this.avmProvider.setEndpoint(avmEndpoint);
         this.evmProvider.setEndpoint(evmEndpoint);
     }
     setNetwork(config) {
         let evm = wsUrlFromConfigEVM(config);
-        let axvm = wsUrlFromConfigX(config);
-        this.setEndpoints(axvm, evm);
+        let avm = wsUrlFromConfigX(config);
+        this.setEndpoints(avm, evm);
     }
     trackWallet(wallet) {
-        this.axvmProvider.trackWallet(wallet);
+        this.avmProvider.trackWallet(wallet);
         this.evmProvider.trackWallet(wallet);
     }
     removeWallet(wallet) {
-        this.axvmProvider.removeWallet(wallet);
+        this.avmProvider.removeWallet(wallet);
         this.evmProvider.removeWallet(wallet);
     }
 }
@@ -3677,7 +3677,7 @@ function getAssetBalanceFromUTXOs(utxos, addresses, assetID, chainID, isStake = 
 }
 function getNFTBalanceFromUTXOs(utxos, addresses, assetID) {
     let nftUTXOs = utxos.filter((utxo) => {
-        if (utxo.outputType === axvm.AXVMConstants.NFTXFEROUTPUTID &&
+        if (utxo.outputType === avm.AVMConstants.NFTXFEROUTPUTID &&
             utxo.assetID === assetID &&
             isOutputOwner(addresses, utxo)) {
             return true;
@@ -3879,7 +3879,7 @@ function getBaseTxSummary(tx, ownerAddrs) {
  * @param ownerAddrs
  */
 function getOwnedTokens(utxos, ownerAddrs) {
-    let tokenUTXOs = getOutputsOfType(utxos, axvm.AXVMConstants.SECPXFEROUTPUTID);
+    let tokenUTXOs = getOutputsOfType(utxos, avm.AVMConstants.SECPXFEROUTPUTID);
     // Owned inputs
     let myUTXOs = getOwnedOutputs(tokenUTXOs, ownerAddrs);
     // Asset IDs received
@@ -4601,7 +4601,7 @@ function buildCreateNftFamilyTx(name, symbol, groupNum, fromAddrs, minterAddr, c
         const minterSets = [];
         // Create the groups
         for (let i = 0; i < groupNum; i++) {
-            const minterSet = new axvm.MinterSet(1, [minterAddress]);
+            const minterSet = new avm.MinterSet(1, [minterAddress]);
             minterSets.push(minterSet);
         }
         let unsignedTx = yield assetChain.buildCreateNFTAssetTx(utxoSet, fromAddresses, [changeAddress], minterSets, name, symbol);
@@ -4622,7 +4622,7 @@ function buildMintNftTx(mintUtxo, payload, quantity, ownerAddress, changeAddress
         return mintTx;
     });
 }
-function buildAxvmExportTransaction(destinationChain, utxoSet, fromAddresses, toAddress, amount, // export amount + fee
+function buildAvmExportTransaction(destinationChain, utxoSet, fromAddresses, toAddress, amount, // export amount + fee
 sourceChangeAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         let destinationChainId = chainIdFromAlias(destinationChain);
@@ -4793,14 +4793,14 @@ function estimateAxcGas(from, to, amount, gasPrice) {
         }
     });
 }
-var AxvmTxNameEnum;
-(function (AxvmTxNameEnum) {
-    AxvmTxNameEnum[AxvmTxNameEnum["Transaction"] = axvm.AXVMConstants.BASETX] = "Transaction";
-    AxvmTxNameEnum[AxvmTxNameEnum["Mint"] = axvm.AXVMConstants.CREATEASSETTX] = "Mint";
-    AxvmTxNameEnum[AxvmTxNameEnum["Operation"] = axvm.AXVMConstants.OPERATIONTX] = "Operation";
-    AxvmTxNameEnum[AxvmTxNameEnum["Import"] = axvm.AXVMConstants.IMPORTTX] = "Import";
-    AxvmTxNameEnum[AxvmTxNameEnum["Export"] = axvm.AXVMConstants.EXPORTTX] = "Export";
-})(AxvmTxNameEnum || (AxvmTxNameEnum = {}));
+var AvmTxNameEnum;
+(function (AvmTxNameEnum) {
+    AvmTxNameEnum[AvmTxNameEnum["Transaction"] = avm.AVMConstants.BASETX] = "Transaction";
+    AvmTxNameEnum[AvmTxNameEnum["Mint"] = avm.AVMConstants.CREATEASSETTX] = "Mint";
+    AvmTxNameEnum[AvmTxNameEnum["Operation"] = avm.AVMConstants.OPERATIONTX] = "Operation";
+    AvmTxNameEnum[AvmTxNameEnum["Import"] = avm.AVMConstants.IMPORTTX] = "Import";
+    AvmTxNameEnum[AvmTxNameEnum["Export"] = avm.AVMConstants.EXPORTTX] = "Export";
+})(AvmTxNameEnum || (AvmTxNameEnum = {}));
 var PlatfromTxNameEnum;
 (function (PlatfromTxNameEnum) {
     PlatfromTxNameEnum[PlatfromTxNameEnum["Transaction"] = platformvm.PlatformVMConstants.BASETX] = "Transaction";
@@ -4815,12 +4815,12 @@ var PlatfromTxNameEnum;
     PlatfromTxNameEnum[PlatfromTxNameEnum["Reward Validator"] = platformvm.PlatformVMConstants.REWARDVALIDATORTX] = "Reward Validator";
 })(PlatfromTxNameEnum || (PlatfromTxNameEnum = {}));
 // TODO: create asset transactions
-var ParseableAxvmTxEnum;
-(function (ParseableAxvmTxEnum) {
-    ParseableAxvmTxEnum[ParseableAxvmTxEnum["Transaction"] = axvm.AXVMConstants.BASETX] = "Transaction";
-    ParseableAxvmTxEnum[ParseableAxvmTxEnum["Import"] = axvm.AXVMConstants.IMPORTTX] = "Import";
-    ParseableAxvmTxEnum[ParseableAxvmTxEnum["Export"] = axvm.AXVMConstants.EXPORTTX] = "Export";
-})(ParseableAxvmTxEnum || (ParseableAxvmTxEnum = {}));
+var ParseableAvmTxEnum;
+(function (ParseableAvmTxEnum) {
+    ParseableAvmTxEnum[ParseableAvmTxEnum["Transaction"] = avm.AVMConstants.BASETX] = "Transaction";
+    ParseableAvmTxEnum[ParseableAvmTxEnum["Import"] = avm.AVMConstants.IMPORTTX] = "Import";
+    ParseableAvmTxEnum[ParseableAvmTxEnum["Export"] = avm.AVMConstants.EXPORTTX] = "Export";
+})(ParseableAvmTxEnum || (ParseableAvmTxEnum = {}));
 var ParseablePlatformEnum;
 (function (ParseablePlatformEnum) {
     ParseablePlatformEnum[ParseablePlatformEnum["Transaction"] = platformvm.PlatformVMConstants.BASETX] = "Transaction";
@@ -4839,7 +4839,7 @@ var tx_helper = /*#__PURE__*/Object.freeze({
     __proto__: null,
     buildCreateNftFamilyTx: buildCreateNftFamilyTx,
     buildMintNftTx: buildMintNftTx,
-    buildAxvmExportTransaction: buildAxvmExportTransaction,
+    buildAvmExportTransaction: buildAvmExportTransaction,
     buildPlatformExportTransaction: buildPlatformExportTransaction,
     buildEvmExportTransaction: buildEvmExportTransaction,
     buildEvmTransferEIP1559Tx: buildEvmTransferEIP1559Tx,
@@ -4849,9 +4849,9 @@ var tx_helper = /*#__PURE__*/Object.freeze({
     buildEvmTransferErc721Tx: buildEvmTransferErc721Tx,
     estimateErc20Gas: estimateErc20Gas,
     estimateAxcGas: estimateAxcGas,
-    get AxvmTxNameEnum () { return AxvmTxNameEnum; },
+    get AvmTxNameEnum () { return AvmTxNameEnum; },
     get PlatfromTxNameEnum () { return PlatfromTxNameEnum; },
-    get ParseableAxvmTxEnum () { return ParseableAxvmTxEnum; },
+    get ParseableAvmTxEnum () { return ParseableAvmTxEnum; },
     get ParseablePlatformEnum () { return ParseablePlatformEnum; },
     get ParseableEvmTxEnum () { return ParseableEvmTxEnum; }
 });
@@ -4861,14 +4861,14 @@ var tx_helper = /*#__PURE__*/Object.freeze({
  * @param addrs an array of AssetChain addresses to get the atomic utxos of
  * @param sourceChain Which chain to check against, either `P` or `C`
  */
-function axvmGetAtomicUTXOs(addrs, sourceChain) {
+function avmGetAtomicUTXOs(addrs, sourceChain) {
     return __awaiter(this, void 0, void 0, function* () {
         const selection = addrs.slice(0, 1024);
         const remaining = addrs.slice(1024);
         const sourceChainId = chainIdFromAlias(sourceChain);
         let utxoSet = (yield assetChain.getUTXOs(selection, sourceChainId)).utxos;
         if (remaining.length > 0) {
-            const nextSet = yield axvmGetAtomicUTXOs(remaining, sourceChain);
+            const nextSet = yield avmGetAtomicUTXOs(remaining, sourceChain);
             utxoSet = utxoSet.merge(nextSet);
         }
         return utxoSet;
@@ -4920,22 +4920,22 @@ function getStakeForAddresses(addrs) {
         }
     });
 }
-function axvmGetAllUTXOs(addrs) {
+function avmGetAllUTXOs(addrs) {
     return __awaiter(this, void 0, void 0, function* () {
         if (addrs.length <= 1024) {
-            let utxos = yield axvmGetAllUTXOsForAddresses(addrs);
+            let utxos = yield avmGetAllUTXOsForAddresses(addrs);
             return utxos;
         }
         else {
             //Break the list in to 1024 chunks
             let chunk = addrs.slice(0, 1024);
             let remainingChunk = addrs.slice(1024);
-            let newSet = yield axvmGetAllUTXOsForAddresses(chunk);
-            return newSet.merge(yield axvmGetAllUTXOs(remainingChunk));
+            let newSet = yield avmGetAllUTXOsForAddresses(chunk);
+            return newSet.merge(yield avmGetAllUTXOs(remainingChunk));
         }
     });
 }
-function axvmGetAllUTXOsForAddresses(addrs, endIndex) {
+function avmGetAllUTXOsForAddresses(addrs, endIndex) {
     return __awaiter(this, void 0, void 0, function* () {
         if (addrs.length > 1024)
             throw new Error('Maximum length of addresses is 1024');
@@ -4950,7 +4950,7 @@ function axvmGetAllUTXOsForAddresses(addrs, endIndex) {
         let nextEndIndex = response.endIndex;
         let len = response.numFetched;
         if (len >= 1024) {
-            let subUtxos = yield axvmGetAllUTXOsForAddresses(addrs, nextEndIndex);
+            let subUtxos = yield avmGetAllUTXOsForAddresses(addrs, nextEndIndex);
             return utxoSet.merge(subUtxos);
         }
         return utxoSet;
@@ -4994,12 +4994,12 @@ function platformGetAllUTXOsForAddresses(addrs, endIndex) {
 
 var utxo_helper = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    axvmGetAtomicUTXOs: axvmGetAtomicUTXOs,
+    avmGetAtomicUTXOs: avmGetAtomicUTXOs,
     platformGetAtomicUTXOs: platformGetAtomicUTXOs,
     evmGetAtomicUTXOs: evmGetAtomicUTXOs,
     getStakeForAddresses: getStakeForAddresses,
-    axvmGetAllUTXOs: axvmGetAllUTXOs,
-    axvmGetAllUTXOsForAddresses: axvmGetAllUTXOsForAddresses,
+    avmGetAllUTXOs: avmGetAllUTXOs,
+    avmGetAllUTXOsForAddresses: avmGetAllUTXOsForAddresses,
     platformGetAllUTXOs: platformGetAllUTXOs,
     platformGetAllUTXOsForAddresses: platformGetAllUTXOsForAddresses
 });
@@ -5397,7 +5397,7 @@ class WalletProvider {
         /**
          * The AssetChain UTXOs of the wallet's current state
          */
-        this.utxosX = new axvm.UTXOSet();
+        this.utxosX = new avm.UTXOSet();
         /**
          * The CoreChain UTXOs of the wallet's current state
          */
@@ -5683,7 +5683,7 @@ class WalletProvider {
     updateUtxosX() {
         return __awaiter(this, void 0, void 0, function* () {
             const addresses = yield this.getAllAddressesX();
-            this.utxosX = yield axvmGetAllUTXOs(addresses);
+            this.utxosX = yield avmGetAllUTXOs(addresses);
             yield this.updateUnknownAssetsX();
             this.updateBalanceX();
             return this.utxosX;
@@ -5781,7 +5781,7 @@ class WalletProvider {
                 let utxo = utxos[i];
                 let out = utxo.getOutput();
                 let type = out.getOutputID();
-                if (type != axvm.AXVMConstants.SECPXFEROUTPUTID)
+                if (type != avm.AVMConstants.SECPXFEROUTPUTID)
                     continue;
                 let locktime = out.getLocktime();
                 let amount = out.getAmount();
@@ -5975,7 +5975,7 @@ class WalletProvider {
             let fromAddresses = yield this.getAllAddressesX();
             let changeAddress = this.getChangeAddressX();
             let utxos = this.utxosX;
-            let exportTx = yield buildAxvmExportTransaction(destinationChain, utxos, fromAddresses, destinationAddr, amt, changeAddress);
+            let exportTx = yield buildAvmExportTransaction(destinationChain, utxos, fromAddresses, destinationAddr, amt, changeAddress);
             let tx = yield this.signX(exportTx);
             let txId = yield assetChain.issueTx(tx);
             yield waitTxX(txId);
@@ -5987,7 +5987,7 @@ class WalletProvider {
     getAtomicUTXOsX(sourceChain) {
         return __awaiter(this, void 0, void 0, function* () {
             let addrs = yield this.getAllAddressesX();
-            let result = yield axvmGetAtomicUTXOs(addrs, sourceChain);
+            let result = yield avmGetAtomicUTXOs(addrs, sourceChain);
             return result;
         });
     }
@@ -6364,9 +6364,9 @@ class HdScanner {
         this.keyCacheP = {};
         this.changePath = isInternal ? '1' : '0';
         this.accountKey = accountKey;
-        // We need an instance of an AXVM key to generate adddresses from public keys
+        // We need an instance of an AVM key to generate adddresses from public keys
         let hrp = utils.getPreferredHRP(axia.getNetworkID());
-        this.axvmAddrFactory = new keychain$1.KeyPair(hrp, 'X');
+        this.avmAddrFactory = new keychain$1.KeyPair(hrp, 'X');
     }
     getIndex() {
         return this.index;
@@ -6493,7 +6493,7 @@ class HdScanner {
         let publicKeyBuff = avajs.Buffer.from(publicKey, 'hex');
         let hrp = utils.getPreferredHRP(axia.getNetworkID());
         //@ts-ignore
-        let addrBuf = this.axvmAddrFactory.addressFromPublicKey(publicKeyBuff);
+        let addrBuf = this.avmAddrFactory.addressFromPublicKey(publicKeyBuff);
         let addr = bintools.addressToString(hrp, chainId, addrBuf);
         return addr;
     }
@@ -6883,7 +6883,7 @@ class MnemonicWallet extends HDWalletAbstract {
         });
     }
     /**
-     * Signs an AXVM transaction.
+     * Signs an AVM transaction.
      * @param tx The unsigned transaction
      */
     signX(tx) {
@@ -6969,8 +6969,8 @@ class SingletonWallet extends WalletProvider {
     }
     static fromEvmKey(key) {
         let keyBuff = bintools.cb58Encode(avajs.Buffer.from(key, 'hex'));
-        let axvmKeyStr = `PrivateKey-${keyBuff}`;
-        return new SingletonWallet(axvmKeyStr);
+        let avmKeyStr = `PrivateKey-${keyBuff}`;
+        return new SingletonWallet(avmKeyStr);
     }
     getKeyChainX() {
         let keyChain = assetChain.newKeyChain();
@@ -7348,7 +7348,7 @@ class LedgerWallet extends HDWalletAbstract {
                 console.log('Failed to get tx operations.');
             }
             let items = ins;
-            if ((txType === axvm.AXVMConstants.IMPORTTX && chainId === 'X') ||
+            if ((txType === avm.AVMConstants.IMPORTTX && chainId === 'X') ||
                 (txType === platformvm.PlatformVMConstants.IMPORTTX && chainId === 'P')) {
                 items = (tx || platformvm.ImportTx).getImportInputs();
             }
@@ -7422,7 +7422,7 @@ class LedgerWallet extends HDWalletAbstract {
             let tx = unsignedTx.getTransaction();
             let txType = tx.getTxType();
             let chainId = 'X';
-            let parseableTxs = ParseableAxvmTxEnum;
+            let parseableTxs = ParseableAvmTxEnum;
             let { paths, isAxcOnly } = yield this.getTransactionPaths(unsignedTx, chainId);
             // If ledger doesnt support parsing, sign hash
             let canLedgerParse = this.config.version >= '0.3.1';
@@ -7484,7 +7484,7 @@ class LedgerWallet extends HDWalletAbstract {
             let tx = unsignedTx.getTransaction();
             let txType = tx.getTxType();
             let parseableTxs = {
-                X: ParseableAxvmTxEnum,
+                X: ParseableAvmTxEnum,
                 P: ParseablePlatformEnum,
                 C: ParseableEvmTxEnum,
             }[chainId];
@@ -7500,7 +7500,7 @@ class LedgerWallet extends HDWalletAbstract {
             let signedTx;
             switch (chainId) {
                 case 'X':
-                    signedTx = new axvm.Tx(unsignedTx, creds);
+                    signedTx = new avm.Tx(unsignedTx, creds);
                     break;
                 case 'P':
                     signedTx = new platformvm.Tx(unsignedTx, creds);
@@ -7529,7 +7529,7 @@ class LedgerWallet extends HDWalletAbstract {
             let signedTx;
             switch (chainId) {
                 case 'X':
-                    signedTx = new axvm.Tx(unsignedTx, creds);
+                    signedTx = new avm.Tx(unsignedTx, creds);
                     break;
                 case 'P':
                     signedTx = new platformvm.Tx(unsignedTx, creds);
@@ -7559,7 +7559,7 @@ class LedgerWallet extends HDWalletAbstract {
         let operations = [];
         let evmInputs = [];
         let items = ins;
-        if ((txType === axvm.AXVMConstants.IMPORTTX && chainId === 'X') ||
+        if ((txType === avm.AVMConstants.IMPORTTX && chainId === 'X') ||
             (txType === platformvm.PlatformVMConstants.IMPORTTX && chainId === 'P') ||
             (txType === evm.EVMConstants.IMPORTTX && chainId === 'C')) {
             items = (tx || platformvm.ImportTx || evm.ImportTx).getImportInputs();
@@ -7573,7 +7573,7 @@ class LedgerWallet extends HDWalletAbstract {
         }
         let CredentialClass;
         if (chainId === 'X') {
-            CredentialClass = axvm.SelectCredentialClass;
+            CredentialClass = avm.SelectCredentialClass;
         }
         else if (chainId === 'P') {
             CredentialClass = platformvm.SelectCredentialClass;
@@ -7734,13 +7734,13 @@ class LedgerWallet extends HDWalletAbstract {
 class PublicMnemonicWallet extends HDWalletAbstract {
     /**
      *
-     * @param xpubAXVM of derivation path m/44'/9000'/0'
+     * @param xpubAVM of derivation path m/44'/9000'/0'
      * @param xpubEVM of derivation path m/44'/60'/0'
      */
-    constructor(xpubAXVM, xpubEVM) {
-        let axvmAcct = bip32__namespace.fromBase58(xpubAXVM);
+    constructor(xpubAVM, xpubEVM) {
+        let avmAcct = bip32__namespace.fromBase58(xpubAVM);
         let evmAcct = bip32__namespace.fromBase58(xpubEVM).derivePath('0/0');
-        super(axvmAcct);
+        super(avmAcct);
         this.type = 'xpub';
         this.evmWallet = new EvmWalletReadonly(ethereumjsUtil.importPublic(evmAcct.publicKey));
     }
@@ -8245,4 +8245,3 @@ exports.createGraphForX = createGraphForX;
 exports.getStepsForBalanceC = getStepsForBalanceC;
 exports.getStepsForBalanceP = getStepsForBalanceP;
 exports.getStepsForBalanceX = getStepsForBalanceX;
-//# sourceMappingURL=index.js.map

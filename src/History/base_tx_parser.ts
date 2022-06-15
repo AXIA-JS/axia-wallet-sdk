@@ -12,7 +12,7 @@ import {
 } from '@/History';
 import * as Assets from '@/Asset/Assets';
 import { bnToLocaleString, getTxFeeX } from '@/utils';
-import { AXVMConstants } from '@zee-ava/avajs/dist/apis/axvm';
+import { AVMConstants } from '@zee-ava/avajs/dist/apis/avm';
 import { BN } from '@zee-ava/avajs';
 import { getAssetBalanceFromUTXOs, getNFTBalanceFromUTXOs, parseMemo } from '@/History/history_helpers';
 import {
@@ -57,7 +57,7 @@ function getBaseTxNFTLosses(tx: ITransactionData, ownerAddrs: string[]): iHistor
     let ins = tx.inputs || [];
     let inUTXOs = ins.map((input) => input.output);
     let nftUTXOs = inUTXOs.filter((utxo) => {
-        return utxo.outputType === AXVMConstants.NFTXFEROUTPUTID;
+        return utxo.outputType === AVMConstants.NFTXFEROUTPUTID;
     });
 
     let res: iHistoryBaseTxNFTsSentRaw = {};
@@ -75,7 +75,7 @@ function getBaseTxNFTLosses(tx: ITransactionData, ownerAddrs: string[]): iHistor
 function getBaseTxNFTGains(tx: ITransactionData, ownerAddrs: string[]): iHistoryBaseTxNFTsReceivedRaw {
     let outs = tx.outputs || [];
     let nftUTXOs = outs.filter((utxo) => {
-        return utxo.outputType === AXVMConstants.NFTXFEROUTPUTID;
+        return utxo.outputType === AVMConstants.NFTXFEROUTPUTID;
     });
     let res: iHistoryBaseTxNFTsReceivedRaw = {};
 
@@ -95,7 +95,7 @@ function getBaseTxNFTGains(tx: ITransactionData, ownerAddrs: string[]): iHistory
  * @param ownerAddrs
  */
 function getOwnedTokens(utxos: UTXO[], ownerAddrs: string[]): iHistoryBaseTxTokenLossGain {
-    let tokenUTXOs = getOutputsOfType(utxos, AXVMConstants.SECPXFEROUTPUTID);
+    let tokenUTXOs = getOutputsOfType(utxos, AVMConstants.SECPXFEROUTPUTID);
     // Owned inputs
     let myUTXOs = getOwnedOutputs(tokenUTXOs, ownerAddrs);
 

@@ -3,7 +3,7 @@ import AppAxc from '@zee-ava/hd-wallet-axia';
 import HDKey from 'hdkey';
 import { ChainAlias, ILedgerAppConfig, WalletNameType } from "./types";
 import { Transaction } from '@ethereumjs/tx';
-import { UnsignedTx as AXVMUnsignedTx, Tx as AXVMTx } from '@zee-ava/avajs/dist/apis/axvm';
+import { UnsignedTx as AVMUnsignedTx, Tx as AVMTx } from '@zee-ava/avajs/dist/apis/avm';
 import { Credential } from '@zee-ava/avajs/dist/common';
 import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx } from '@zee-ava/avajs/dist/apis/evm';
 import { UnsignedTx as PlatformUnsignedTx, Tx as PlatformTx } from '@zee-ava/avajs/dist/apis/platformvm';
@@ -57,19 +57,19 @@ export default class LedgerWallet extends HDWalletAbstract {
     getAddressC(): string;
     getEvmAddressBech(): string;
     signEvm(tx: Transaction): Promise<Transaction>;
-    getTransactionPaths<UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx>(unsignedTx: UnsignedTx, chainId: ChainIdType): Promise<{
+    getTransactionPaths<UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx>(unsignedTx: UnsignedTx, chainId: ChainIdType): Promise<{
         paths: string[];
         isAxcOnly: boolean;
     }>;
     getPathFromAddress(address: string): Promise<string>;
-    signX(unsignedTx: AXVMUnsignedTx): Promise<AXVMTx>;
+    signX(unsignedTx: AVMUnsignedTx): Promise<AVMTx>;
     getChangePath(chainId?: ChainAlias): string;
     getChangeIndex(chainId?: ChainAlias): number;
-    getChangeBipPath<UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx>(unsignedTx: UnsignedTx, chainId: ChainIdType): any;
-    signTransactionParsable<UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx, SignedTx extends AXVMTx | PlatformTx | EVMTx>(unsignedTx: UnsignedTx, paths: string[], chainId: ChainIdType): Promise<SignedTx>;
-    signTransactionHash<UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx, SignedTx extends AXVMTx | PlatformTx | EVMTx>(unsignedTx: UnsignedTx, paths: string[], chainId: ChainIdType): Promise<SignedTx>;
+    getChangeBipPath<UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx>(unsignedTx: UnsignedTx, chainId: ChainIdType): any;
+    signTransactionParsable<UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx, SignedTx extends AVMTx | PlatformTx | EVMTx>(unsignedTx: UnsignedTx, paths: string[], chainId: ChainIdType): Promise<SignedTx>;
+    signTransactionHash<UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx, SignedTx extends AVMTx | PlatformTx | EVMTx>(unsignedTx: UnsignedTx, paths: string[], chainId: ChainIdType): Promise<SignedTx>;
     pathsToUniqueBipPaths(paths: string[]): any[];
-    getCredentials<UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx>(unsignedTx: UnsignedTx, paths: string[], sigMap: any, chainId: ChainIdType): Credential[];
+    getCredentials<UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx>(unsignedTx: UnsignedTx, paths: string[], sigMap: any, chainId: ChainIdType): Credential[];
     signP(unsignedTx: PlatformUnsignedTx): Promise<PlatformTx>;
     signC(unsignedTx: EVMUnsignedTx): Promise<EVMTx>;
 }

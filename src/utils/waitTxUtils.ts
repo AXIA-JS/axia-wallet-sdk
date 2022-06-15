@@ -1,6 +1,6 @@
 import {
-    AxvmStatusResponseType,
-    AxvmStatusType,
+    AvmStatusResponseType,
+    AvmStatusType,
     ChainStatusResponseTypeC,
     ChainStatusTypeC,
     PlatformStatusResponseType,
@@ -17,20 +17,20 @@ export async function waitTxX(txId: string, tryCount = 10): Promise<string> {
     if (tryCount <= 0) {
         throw new Error('Timeout');
     }
-    let resp: AxvmStatusResponseType;
+    let resp: AvmStatusResponseType;
 
     try {
-        resp = (await assetChain.getTxStatus(txId)) as AxvmStatusResponseType;
+        resp = (await assetChain.getTxStatus(txId)) as AvmStatusResponseType;
     } catch (e) {
         throw new Error('Unable to get transaction status.');
     }
 
-    let status: AxvmStatusType;
+    let status: AvmStatusType;
     let reason;
     if (typeof resp === 'string') {
-        status = resp as AxvmStatusType;
+        status = resp as AvmStatusType;
     } else {
-        status = resp.status as AxvmStatusType;
+        status = resp.status as AvmStatusType;
         reason = resp.reason;
     }
 

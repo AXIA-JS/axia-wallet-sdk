@@ -1,7 +1,7 @@
 import * as bip32 from 'bip32';
 import { getPreferredHRP } from '@zee-ava/avajs/dist/utils';
 import { activeNetwork, axia, coreChain, assetChain } from '@/Network/network';
-import { KeyPair as AXVMKeyPair, KeyChain as AXVMKeyChain } from '@zee-ava/avajs/dist/apis/axvm/keychain';
+import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from '@zee-ava/avajs/dist/apis/avm/keychain';
 import { KeyChain as PlatformKeyChain, KeyPair as PlatformKeyPair } from '@zee-ava/avajs/dist/apis/platformvm';
 import { HdChainType } from './types';
 import { Buffer } from '@zee-ava/avajs';
@@ -22,7 +22,7 @@ type AddressCache = {
 };
 
 type KeyCacheX = {
-    [index: string]: AXVMKeyPair;
+    [index: string]: AVMKeyPair;
 };
 
 type KeyCacheP = {
@@ -36,15 +36,15 @@ export default class HdScanner {
     protected keyCacheX: KeyCacheX = {};
     protected keyCacheP: KeyCacheP = {};
     readonly changePath: string;
-    private axvmAddrFactory: AXVMKeyPair;
+    private avmAddrFactory: AVMKeyPair;
     readonly accountKey: bip32.BIP32Interface;
 
     constructor(accountKey: bip32.BIP32Interface, isInternal = true) {
         this.changePath = isInternal ? '1' : '0';
         this.accountKey = accountKey;
-        // We need an instance of an AXVM key to generate adddresses from public keys
+        // We need an instance of an AVM key to generate adddresses from public keys
         let hrp = getPreferredHRP(axia.getNetworkID());
-        this.axvmAddrFactory = new AXVMKeyPair(hrp, 'X');
+        this.avmAddrFactory = new AVMKeyPair(hrp, 'X');
     }
 
     getIndex() {
@@ -120,7 +120,7 @@ export default class HdScanner {
         return res;
     }
 
-    getKeyChainX(): AXVMKeyChain {
+    getKeyChainX(): AVMKeyChain {
         let keychain = assetChain.newKeyChain();
         for (let i = 0; i <= this.index; i++) {
             let key = this.getKeyForIndexX(i);
@@ -138,7 +138,7 @@ export default class HdScanner {
         return keychain;
     }
 
-    getKeyForIndexX(index: number): AXVMKeyPair {
+    getKeyForIndexX(index: number): AVMKeyPair {
         let cache = this.keyCacheX[index];
         if (cache) return cache;
 
@@ -190,7 +190,7 @@ export default class HdScanner {
 
         let hrp = getPreferredHRP(axia.getNetworkID());
         //@ts-ignore
-        let addrBuf = this.axvmAddrFactory.addressFromPublicKey(publicKeyBuff);
+        let addrBuf = this.avmAddrFactory.addressFromPublicKey(publicKeyBuff);
         let addr = bintools.addressToString(hrp, chainId, addrBuf);
 
         return addr;

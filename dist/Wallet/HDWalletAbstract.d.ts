@@ -1,6 +1,6 @@
 import { WalletProvider } from "./Wallet";
 import HdScanner from "./HdScanner";
-import { UTXOSet as AXVMUTXOSet } from '@zee-ava/avajs/dist/apis/axvm/utxos';
+import { UTXOSet as AVMUTXOSet } from '@zee-ava/avajs/dist/apis/avm/utxos';
 import { UTXOSet as PlatformUTXOSet } from '@zee-ava/avajs/dist/apis/platformvm';
 import { iHDWalletIndex } from "./types";
 import * as bip32 from 'bip32';
@@ -81,7 +81,7 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
      * @protected
      */
     protected emitHdReady(): void;
-    updateUtxosX(): Promise<AXVMUTXOSet>;
+    updateUtxosX(): Promise<AVMUTXOSet>;
     private incrementExternal;
     private incrementInternal;
     updateUtxosP(): Promise<PlatformUTXOSet>;

@@ -1,5 +1,5 @@
 import { Axia } from '@zee-ava/avajs/dist';
-import { AXVMAPI } from '@zee-ava/avajs/dist/apis/axvm';
+import { AVMAPI } from '@zee-ava/avajs/dist/apis/avm';
 import { InfoAPI } from '@zee-ava/avajs/dist/apis/info';
 import { EVMAPI } from '@zee-ava/avajs/dist/apis/evm';
 import Web3 from 'web3';
@@ -18,7 +18,7 @@ import {
 
 export const axia: Axia = createAxiaProvider(DefaultConfig);
 
-export const assetChain: AXVMAPI = axia.AssetChain();
+export const assetChain: AVMAPI = axia.AssetChain();
 export const appChain: EVMAPI = axia.AppChain();
 export const coreChain = axia.CoreChain();
 export const infoApi: InfoAPI = axia.Info();

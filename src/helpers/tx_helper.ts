@@ -2,14 +2,14 @@ import { appChain, coreChain, web3, assetChain } from '@/Network/network';
 
 import { BN, Buffer } from '@zee-ava/avajs';
 import {
-    AXVMConstants,
+    AVMConstants,
     MinterSet,
     NFTMintOutput,
-    UnsignedTx as AXVMUnsignedTx,
-    UTXO as AXVMUTXO,
-    UTXOSet as AXVMUTXOSet,
+    UnsignedTx as AVMUnsignedTx,
+    UTXO as AVMUTXO,
+    UTXOSet as AVMUTXOSet,
     UTXOSet,
-} from '@zee-ava/avajs/dist/apis/axvm';
+} from '@zee-ava/avajs/dist/apis/avm';
 
 import { PayloadBase } from '@zee-ava/avajs/dist/utils';
 import { OutputOwners } from '@zee-ava/avajs/dist/common';
@@ -48,7 +48,7 @@ export async function buildCreateNftFamilyTx(
         minterSets.push(minterSet);
     }
 
-    let unsignedTx: AXVMUnsignedTx = await assetChain.buildCreateNFTAssetTx(
+    let unsignedTx: AVMUnsignedTx = await assetChain.buildCreateNFTAssetTx(
         utxoSet,
         fromAddresses,
         [changeAddress],
@@ -60,14 +60,14 @@ export async function buildCreateNftFamilyTx(
 }
 
 export async function buildMintNftTx(
-    mintUtxo: AXVMUTXO,
+    mintUtxo: AVMUTXO,
     payload: PayloadBase,
     quantity: number,
     ownerAddress: string,
     changeAddress: string,
     fromAddresses: string[],
     utxoSet: UTXOSet
-): Promise<AXVMUnsignedTx> {
+): Promise<AVMUnsignedTx> {
     let addrBuf = bintools.parseAddress(ownerAddress, 'X');
     let owners = [];
 
@@ -92,9 +92,9 @@ export async function buildMintNftTx(
     return mintTx;
 }
 
-export async function buildAxvmExportTransaction(
+export async function buildAvmExportTransaction(
     destinationChain: ExportChainsX,
-    utxoSet: AXVMUTXOSet,
+    utxoSet: AVMUTXOSet,
     fromAddresses: string[],
     toAddress: string,
     amount: BN, // export amount + fee
@@ -102,7 +102,7 @@ export async function buildAxvmExportTransaction(
 ) {
     let destinationChainId = chainIdFromAlias(destinationChain);
 
-    return await assetChain.buildExportTx(utxoSet as AXVMUTXOSet, amount, destinationChainId, [toAddress], fromAddresses, [
+    return await assetChain.buildExportTx(utxoSet as AVMUTXOSet, amount, destinationChainId, [toAddress], fromAddresses, [
         sourceChangeAddress,
     ]);
 }
@@ -338,12 +338,12 @@ export async function estimateAxcGas(from: string, to: string, amount: BN, gasPr
     }
 }
 
-export enum AxvmTxNameEnum {
-    'Transaction' = AXVMConstants.BASETX,
-    'Mint' = AXVMConstants.CREATEASSETTX,
-    'Operation' = AXVMConstants.OPERATIONTX,
-    'Import' = AXVMConstants.IMPORTTX,
-    'Export' = AXVMConstants.EXPORTTX,
+export enum AvmTxNameEnum {
+    'Transaction' = AVMConstants.BASETX,
+    'Mint' = AVMConstants.CREATEASSETTX,
+    'Operation' = AVMConstants.OPERATIONTX,
+    'Import' = AVMConstants.IMPORTTX,
+    'Export' = AVMConstants.EXPORTTX,
 }
 
 export enum PlatfromTxNameEnum {
@@ -360,10 +360,10 @@ export enum PlatfromTxNameEnum {
 }
 
 // TODO: create asset transactions
-export enum ParseableAxvmTxEnum {
-    'Transaction' = AXVMConstants.BASETX,
-    'Import' = AXVMConstants.IMPORTTX,
-    'Export' = AXVMConstants.EXPORTTX,
+export enum ParseableAvmTxEnum {
+    'Transaction' = AVMConstants.BASETX,
+    'Import' = AVMConstants.IMPORTTX,
+    'Export' = AVMConstants.EXPORTTX,
 }
 
 export enum ParseablePlatformEnum {

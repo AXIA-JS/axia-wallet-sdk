@@ -1,13 +1,13 @@
-export type AxvmStatusType = 'Accepted' | 'Processing' | 'Rejected' | 'Unknown';
+export type AvmStatusType = 'Accepted' | 'Processing' | 'Rejected' | 'Unknown';
 export type PlatformStatusType = 'Committed' | 'Processing' | 'Dropped' | 'Unknown';
 export type ChainStatusTypeC = 'Accepted' | 'Processing' | 'Dropped' | 'Unknown';
 
-export type AxvmStatusResponseType = AxvmStatusType | iAxvmStatusResponse;
+export type AvmStatusResponseType = AvmStatusType | iAvmStatusResponse;
 export type PlatformStatusResponseType = PlatformStatusType | iPlatformStatusResponse;
 export type ChainStatusResponseTypeC = ChainStatusTypeC | iChainStatusResponseC;
 
-export interface iAxvmStatusResponse {
-    status: AxvmStatusType;
+export interface iAvmStatusResponse {
+    status: AvmStatusType;
     reason: string;
 }
 

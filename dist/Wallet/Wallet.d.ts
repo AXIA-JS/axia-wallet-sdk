@@ -4,7 +4,7 @@ import { AssetBalanceP, AssetBalanceRawX, ERC20Balance, ExportChainsC, ExportCha
 import { BN } from '@zee-ava/avajs';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import EvmWallet from "./EvmWallet";
-import { UTXOSet as AXVMUTXOSet, UnsignedTx as AXVMUnsignedTx, UTXO as AXVMUTXO, Tx as AxvmTx } from '@zee-ava/avajs/dist/apis/axvm';
+import { UTXOSet as AVMUTXOSet, UnsignedTx as AVMUnsignedTx, UTXO as AVMUTXO, Tx as AvmTx } from '@zee-ava/avajs/dist/apis/avm';
 import { UTXOSet as PlatformUTXOSet, UTXO as PlatformUTXO, UnsignedTx as PlatformUnsignedTx, Tx as PlatformTx } from '@zee-ava/avajs/dist/apis/platformvm';
 import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx, UTXOSet as EVMUTXOSet } from '@zee-ava/avajs/dist/apis/evm';
 import { PayloadBase } from '@zee-ava/avajs/dist/utils';
@@ -21,14 +21,14 @@ export declare abstract class WalletProvider {
     /**
      * The AssetChain UTXOs of the wallet's current state
      */
-    utxosX: AXVMUTXOSet;
+    utxosX: AVMUTXOSet;
     /**
      * The CoreChain UTXOs of the wallet's current state
      */
     utxosP: PlatformUTXOSet;
     balanceX: WalletBalanceX;
     abstract signEvm(tx: Transaction | FeeMarketEIP1559Transaction): Promise<Transaction | FeeMarketEIP1559Transaction>;
-    abstract signX(tx: AXVMUnsignedTx): Promise<AxvmTx>;
+    abstract signX(tx: AVMUnsignedTx): Promise<AvmTx>;
     abstract signP(tx: PlatformUnsignedTx): Promise<PlatformTx>;
     abstract signC(tx: EVMUnsignedTx): Promise<EVMTx>;
     abstract getAddressX(): string;
@@ -171,11 +171,11 @@ export declare abstract class WalletProvider {
      *  - Updates `this.utxosX` with new UTXOs
      *  - Calls `this.updateBalanceX()` after success.
      *  */
-    updateUtxosX(): Promise<AXVMUTXOSet>;
+    updateUtxosX(): Promise<AVMUTXOSet>;
     /**
      *  Returns the fetched UTXOs on the AssetChain that belong to this wallet.
      */
-    getUtxosX(): AXVMUTXOSet;
+    getUtxosX(): AVMUTXOSet;
     /**
      *  Returns UTXOs on the CoreChain that belong to this wallet.
      *  - Makes network request.
@@ -262,7 +262,7 @@ export declare abstract class WalletProvider {
      * @return returns the transaction id.
      */
     exportAssetChain(amt: BN, destinationChain: ExportChainsX): Promise<string>;
-    getAtomicUTXOsX(sourceChain: ExportChainsX): Promise<AXVMUTXOSet>;
+    getAtomicUTXOsX(sourceChain: ExportChainsX): Promise<AVMUTXOSet>;
     getAtomicUTXOsP(sourceChain: ExportChainsP): Promise<PlatformUTXOSet>;
     getAtomicUTXOsC(sourceChain: ExportChainsC): Promise<EVMUTXOSet>;
     /**
@@ -284,7 +284,7 @@ export declare abstract class WalletProvider {
      */
     importC(sourceChain: ExportChainsC, fee?: BN, utxoSet?: EVMUTXOSet): Promise<string>;
     createNftFamily(name: string, symbol: string, groupNum: number): Promise<string>;
-    mintNft(mintUtxo: AXVMUTXO, payload: PayloadBase, quantity: number): Promise<string>;
+    mintNft(mintUtxo: AVMUTXO, payload: PayloadBase, quantity: number): Promise<string>;
     /**
      * Adds a validator to the network using the given node id.
      *

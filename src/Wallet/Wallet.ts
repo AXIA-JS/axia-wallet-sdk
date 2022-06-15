@@ -13,7 +13,7 @@ import {
     WalletNameType,
 } from './types';
 import {
-    buildAxvmExportTransaction,
+    buildAvmExportTransaction,
     buildCreateNftFamilyTx,
     buildCustomEvmTx,
     buildEvmExportTransaction,
@@ -31,8 +31,8 @@ import { activeNetwork, axia, appChain, coreChain, web3, assetChain } from '@/Ne
 import EvmWallet from '@/Wallet/EvmWallet';
 
 import {
-    axvmGetAllUTXOs,
-    axvmGetAtomicUTXOs,
+    avmGetAllUTXOs,
+    avmGetAtomicUTXOs,
     evmGetAtomicUTXOs,
     getStakeForAddresses,
     platformGetAllUTXOs,
@@ -40,13 +40,13 @@ import {
 } from '@/helpers/utxo_helper';
 
 import {
-    UTXOSet as AXVMUTXOSet,
-    UnsignedTx as AXVMUnsignedTx,
-    UTXO as AXVMUTXO,
-    Tx as AxvmTx,
-    AXVMConstants,
+    UTXOSet as AVMUTXOSet,
+    UnsignedTx as AVMUnsignedTx,
+    UTXO as AVMUTXO,
+    Tx as AvmTx,
+    AVMConstants,
     AmountOutput,
-} from '@zee-ava/avajs/dist/apis/axvm';
+} from '@zee-ava/avajs/dist/apis/avm';
 import {
     UTXOSet as PlatformUTXOSet,
     UTXO as PlatformUTXO,
@@ -105,7 +105,7 @@ export abstract class WalletProvider {
     /**
      * The AssetChain UTXOs of the wallet's current state
      */
-    public utxosX: AXVMUTXOSet = new AXVMUTXOSet();
+    public utxosX: AVMUTXOSet = new AVMUTXOSet();
 
     /**
      * The CoreChain UTXOs of the wallet's current state
@@ -115,7 +115,7 @@ export abstract class WalletProvider {
     public balanceX: WalletBalanceX = {};
 
     abstract signEvm(tx: Transaction | FeeMarketEIP1559Transaction): Promise<Transaction | FeeMarketEIP1559Transaction>;
-    abstract signX(tx: AXVMUnsignedTx): Promise<AxvmTx>;
+    abstract signX(tx: AVMUnsignedTx): Promise<AvmTx>;
     abstract signP(tx: PlatformUnsignedTx): Promise<PlatformTx>;
     abstract signC(tx: EVMUnsignedTx): Promise<EVMTx>;
 
@@ -441,9 +441,9 @@ export abstract class WalletProvider {
      *  - Updates `this.utxosX` with new UTXOs
      *  - Calls `this.updateBalanceX()` after success.
      *  */
-    public async updateUtxosX(): Promise<AXVMUTXOSet> {
+    public async updateUtxosX(): Promise<AVMUTXOSet> {
         const addresses = await this.getAllAddressesX();
-        this.utxosX = await axvmGetAllUTXOs(addresses);
+        this.utxosX = await avmGetAllUTXOs(addresses);
 
         await this.updateUnknownAssetsX();
         this.updateBalanceX();
@@ -454,7 +454,7 @@ export abstract class WalletProvider {
     /**
      *  Returns the fetched UTXOs on the AssetChain that belong to this wallet.
      */
-    public getUtxosX(): AXVMUTXOSet {
+    public getUtxosX(): AVMUTXOSet {
         return this.utxosX;
     }
 
@@ -549,7 +549,7 @@ export abstract class WalletProvider {
             let out = utxo.getOutput();
             let type = out.getOutputID();
 
-            if (type != AXVMConstants.SECPXFEROUTPUTID) continue;
+            if (type != AVMConstants.SECPXFEROUTPUTID) continue;
 
             let locktime = out.getLocktime();
             let amount = (out as AmountOutput).getAmount();
@@ -785,7 +785,7 @@ export abstract class WalletProvider {
         let fromAddresses = await this.getAllAddressesX();
         let changeAddress = this.getChangeAddressX();
         let utxos = this.utxosX;
-        let exportTx = await buildAxvmExportTransaction(
+        let exportTx = await buildAvmExportTransaction(
             destinationChain,
             utxos,
             fromAddresses,
@@ -807,7 +807,7 @@ export abstract class WalletProvider {
 
     async getAtomicUTXOsX(sourceChain: ExportChainsX) {
         let addrs = await this.getAllAddressesX();
-        let result = await axvmGetAtomicUTXOs(addrs, sourceChain);
+        let result = await avmGetAtomicUTXOs(addrs, sourceChain);
         return result;
     }
 
@@ -981,7 +981,7 @@ export abstract class WalletProvider {
         return await waitTxX(txId);
     }
 
-    async mintNft(mintUtxo: AXVMUTXO, payload: PayloadBase, quantity: number) {
+    async mintNft(mintUtxo: AVMUTXO, payload: PayloadBase, quantity: number) {
         let ownerAddress = this.getAddressX();
         let changeAddress = this.getChangeAddressX();
 

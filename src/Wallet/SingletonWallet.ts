@@ -1,7 +1,7 @@
 import { WalletProvider } from '@/Wallet/Wallet';
 import { UnsafeWallet, WalletNameType } from '@/Wallet/types';
 
-import { KeyChain as AXVMKeyChain, UnsignedTx as AXVMUnsignedTx, Tx as AXVMTx } from '@zee-ava/avajs/dist/apis/axvm';
+import { KeyChain as AVMKeyChain, UnsignedTx as AVMUnsignedTx, Tx as AVMTx } from '@zee-ava/avajs/dist/apis/avm';
 import {
     KeyChain as PlatformKeyChain,
     UnsignedTx as PlatformUnsignedTx,
@@ -45,11 +45,11 @@ export default class SingletonWallet extends WalletProvider implements UnsafeWal
 
     static fromEvmKey(key: string): SingletonWallet {
         let keyBuff = bintools.cb58Encode(BufferAxia.from(key, 'hex'));
-        let axvmKeyStr = `PrivateKey-${keyBuff}`;
-        return new SingletonWallet(axvmKeyStr);
+        let avmKeyStr = `PrivateKey-${keyBuff}`;
+        return new SingletonWallet(avmKeyStr);
     }
 
-    private getKeyChainX(): AXVMKeyChain {
+    private getKeyChainX(): AVMKeyChain {
         let keyChain = assetChain.newKeyChain();
         keyChain.importKey(this.key);
         return keyChain;
@@ -144,7 +144,7 @@ export default class SingletonWallet extends WalletProvider implements UnsafeWal
         return tx.sign(this.getKeyChainP());
     }
 
-    async signX(tx: AXVMUnsignedTx): Promise<AXVMTx> {
+    async signX(tx: AVMUnsignedTx): Promise<AVMTx> {
         return tx.sign(this.getKeyChainX());
     }
 }
