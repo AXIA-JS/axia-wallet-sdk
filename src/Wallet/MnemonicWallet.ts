@@ -47,7 +47,7 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
     }
 
     /**
-     * Gets the active address on the C chain in Bech32 encoding
+     * Gets the active address on the AppChain in Bech32 encoding
      * @return
      * Bech32 representation of the EVM address.
      */
@@ -90,7 +90,7 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
     }
 
     /**
-     * Signs an EVM transaction on the C chain.
+     * Signs an EVM transaction on the AppChain.
      * @param tx The unsigned transaction
      */
     async signEvm(tx: Transaction | FeeMarketEIP1559Transaction): Promise<Transaction | FeeMarketEIP1559Transaction> {
@@ -114,9 +114,9 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
     }
 
     /**
-     * Signs a C chain transaction
+     * Signs a AppChain transaction
      * @remarks
-     * Used for Import and Export transactions on the C chain. For everything else, use `this.signEvm()`
+     * Used for Import and Export transactions on the AppChain. For everything else, use `this.signEvm()`
      * @param tx The unsigned transaction
      */
     async signC(tx: EVMUnsignedTx): Promise<EVMTx> {
@@ -134,7 +134,7 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
     }
 
     /**
-     * Returns a keychain with the keys of every derived P chain address.
+     * Returns a keychain with the keys of every derived CoreChain address.
      * @private
      */
     private getKeyChainP(): PlatformKeyChain {
@@ -142,7 +142,7 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
     }
 
     /**
-     * Gets the active address on the C chain
+     * Gets the active address on the AppChain
      * @return
      * Hex representation of the EVM address.
      */

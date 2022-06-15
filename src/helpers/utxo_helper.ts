@@ -1,7 +1,7 @@
 import { UTXOSet as AVMUTXOSet } from '@zee-ava/avajs/dist/apis/avm/utxos';
 import { UTXOSet as PlatformUTXOSet } from '@zee-ava/avajs/dist/apis/platformvm/utxos';
 import { UTXOSet as EVMUTXOSet } from '@zee-ava/avajs/dist/apis/evm/utxos';
-import { xChain, cChain, pChain } from '@/Network/network';
+import { xChain, appChain, coreChain } from '@/Network/network';
 import { ExportChainsC, ExportChainsP, ExportChainsX } from '@/Wallet/types';
 import { chainIdFromAlias } from '@/Network/helpers/idFromAlias';
 import { GetStakeResponse } from '@zee-ava/avajs/dist/apis/platformvm/interfaces';
@@ -31,7 +31,7 @@ export async function platformGetAtomicUTXOs(addrs: string[], sourceChain: Expor
     let remaining = addrs.slice(1024);
     const sourceChainId = chainIdFromAlias(sourceChain);
 
-    let utxoSet = (await pChain.getUTXOs(selection, sourceChainId)).utxos;
+    let utxoSet = (await coreChain.getUTXOs(selection, sourceChainId)).utxos;
     if (remaining.length > 0) {
         let nextSet = await platformGetAtomicUTXOs(remaining, sourceChain);
         utxoSet = utxoSet.merge(nextSet);
@@ -45,20 +45,20 @@ export async function evmGetAtomicUTXOs(addrs: string[], sourceChain: ExportChai
         throw new Error('Number of addresses can not be greater than 1024.');
     }
     const sourceChainId = chainIdFromAlias(sourceChain);
-    let result: EVMUTXOSet = (await cChain.getUTXOs(addrs, sourceChainId)).utxos;
+    let result: EVMUTXOSet = (await appChain.getUTXOs(addrs, sourceChainId)).utxos;
     return result;
 }
 
 export async function getStakeForAddresses(addrs: string[]): Promise<GetStakeResponse> {
     if (addrs.length <= 256) {
-        let data = await pChain.getStake(addrs);
+        let data = await coreChain.getStake(addrs);
         return data;
     } else {
         //Break the list in to 1024 chunks
         let chunk = addrs.slice(0, 256);
         let remainingChunk = addrs.slice(256);
 
-        let chunkData = await pChain.getStake(chunk);
+        let chunkData = await coreChain.getStake(chunk);
         let chunkStake = chunkData.staked;
         let chunkUtxos = chunkData.stakedOutputs;
 
@@ -123,9 +123,9 @@ export async function platformGetAllUTXOs(addrs: string[]): Promise<PlatformUTXO
 export async function platformGetAllUTXOsForAddresses(addrs: string[], endIndex?: any): Promise<PlatformUTXOSet> {
     let response;
     if (!endIndex) {
-        response = await pChain.getUTXOs(addrs);
+        response = await coreChain.getUTXOs(addrs);
     } else {
-        response = await pChain.getUTXOs(addrs, undefined, 0, endIndex);
+        response = await coreChain.getUTXOs(addrs, undefined, 0, endIndex);
     }
 
     let utxoSet = response.utxos;

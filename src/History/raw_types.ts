@@ -1,5 +1,5 @@
 /**
- * Data coming from explorer for C chain
+ * Data coming from explorer for AppChain
  */
 export interface ITransactionDataEVM {
     block: string;
@@ -34,7 +34,7 @@ export interface ITransactionDataEVM {
 }
 
 /**
- * Data coming from the explorer for X,P chain
+ * Data coming from the explorer for X,CoreChain
  */
 export interface ITransactionData {
     chainID: string;
@@ -100,13 +100,13 @@ export type TransactionType =
     | 'import'
     | 'export'
     | 'add_validator'
-    | 'add_subnet_validator'
-    | 'add_delegator'
+    | 'add_allyChain_validator'
+    | 'add_nominator'
     | 'create_chain'
-    | 'create_subnet'
+    | 'create_allyChain'
     | 'pvm_import'
     | 'pvm_export'
-    | 'atomic_import_tx' // for c chain imports?
-    | 'atomic_export_tx' // for c chain exports?
+    | 'atomic_import_tx' // for AppChain imports?
+    | 'atomic_export_tx' // for AppChain exports?
     | 'advance_time'
     | 'reward_validator';

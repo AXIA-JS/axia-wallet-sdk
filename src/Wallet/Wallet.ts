@@ -27,7 +27,7 @@ import {
 } from '@/helpers/tx_helper';
 import { BN, Buffer } from '@zee-ava/avajs';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
-import { activeNetwork, axia, cChain, pChain, web3, xChain } from '@/Network/network';
+import { activeNetwork, axia, appChain, coreChain, web3, xChain } from '@/Network/network';
 import EvmWallet from '@/Wallet/EvmWallet';
 
 import {
@@ -108,7 +108,7 @@ export abstract class WalletProvider {
     public utxosX: AVMUTXOSet = new AVMUTXOSet();
 
     /**
-     * The P chain UTXOs of the wallet's current state
+     * The CoreChain UTXOs of the wallet's current state
      */
     public utxosP: PlatformUTXOSet = new PlatformUTXOSet();
 
@@ -233,7 +233,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Sends AXC to another address on the C chain using legacy transaction format.
+     * Sends AXC to another address on the AppChain using legacy transaction format.
      * @param to Hex address to send AXC to.
      * @param amount Amount of AXC to send, represented in WEI format.
      * @param gasPrice Gas price in WEI format
@@ -325,7 +325,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Estimate the gas needed for a AXC send transaction on the C chain.
+     * Estimate the gas needed for a AXC send transaction on the AppChain.
      * @param to Destination address.
      * @param amount Amount of AXC to send, in WEI.
      */
@@ -422,7 +422,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Returns the C chain AXC balance of the wallet in WEI format.
+     * Returns the AppChain AXC balance of the wallet in WEI format.
      */
     async updateAxcBalanceC(): Promise<BN> {
         let balOld = this.evmWallet.getBalance();
@@ -459,7 +459,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     *  Returns UTXOs on the P chain that belong to this wallet.
+     *  Returns UTXOs on the CoreChain that belong to this wallet.
      *  - Makes network request.
      *  - Updates `this.utxosP` with the new UTXOs
      */
@@ -473,7 +473,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Returns the fetched UTXOs on the P chain that belong to this wallet.
+     * Returns the fetched UTXOs on the CoreChain that belong to this wallet.
      */
     public getUtxosP(): PlatformUTXOSet {
         return this.utxosP;
@@ -597,7 +597,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * A helpful method that returns the AXC balance on X, P, C chains.
+     * A helpful method that returns the AXC balance on X, P, AppChains.
      * Internally calls chain specific getAxcBalance methods.
      */
     public getAxcBalance(): iAxcBalance {
@@ -634,7 +634,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Returns the P chain AXC balance of the current wallet state.
+     * Returns the CoreChain AXC balance of the current wallet state.
      * - Does not make a network request.
      * - Does not refresh wallet balance.
      */
@@ -678,7 +678,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Exports AXC from P chain to X chain
+     * Exports AXC from CoreChain to X chain
      * @remarks
      * The export fee is added automatically to the amount. Make sure the exported amount includes the import fee for the destination chain.
      *
@@ -686,7 +686,7 @@ export abstract class WalletProvider {
      * @param destinationChain Either `X` or `C`
      * @return returns the transaction id.
      */
-    async exportPChain(amt: BN, destinationChain: ExportChainsP) {
+    async exportCoreChain(amt: BN, destinationChain: ExportChainsP) {
         let pChangeAddr = this.getAddressP();
         let fromAddrs = await this.getAllAddressesP();
 
@@ -704,7 +704,7 @@ export abstract class WalletProvider {
         );
 
         let tx = await this.signP(exportTx);
-        let txId = await pChain.issueTx(tx);
+        let txId = await coreChain.issueTx(tx);
         await waitTxP(txId);
 
         await this.updateUtxosP();
@@ -713,10 +713,10 @@ export abstract class WalletProvider {
     }
 
     /***
-     * Estimates the required fee for a C chain export transaction
+     * Estimates the required fee for a AppChain export transaction
      * @param destinationChain Either `X` or `P`
      * @param baseFee Current base fee of the network, use a padded amount.
-     * @return BN C chain atomic export transaction fee in nAXC.
+     * @return BN AppChain atomic export transaction fee in nAXC.
      */
     estimateAtomicFeeExportC(destinationChain: ExportChainsC, baseFee: BN): BN {
         let destinationAddr = destinationChain === 'X' ? this.getAddressX() : this.getAddressP();
@@ -728,7 +728,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Exports AXC from C chain to X chain
+     * Exports AXC from AppChain to X chain
      * @remarks
      * Make sure the exported `amt` includes the import fee for the destination chain.
      *
@@ -737,7 +737,7 @@ export abstract class WalletProvider {
      * @param exportFee Export fee in nAXC
      * @return returns the transaction id.
      */
-    async exportCChain(amt: BN, destinationChain: ExportChainsC, exportFee?: BN): Promise<string> {
+    async exportAppChain(amt: BN, destinationChain: ExportChainsC, exportFee?: BN): Promise<string> {
         let hexAddr = this.getAddressC();
         let bechAddr = this.getEvmAddressBech();
 
@@ -762,7 +762,7 @@ export abstract class WalletProvider {
 
         let tx = await this.signC(exportTx);
 
-        let txId = await cChain.issueTx(tx);
+        let txId = await appChain.issueTx(tx);
 
         await waitTxC(txId);
 
@@ -771,7 +771,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Exports AXC from X chain to either P or C chain
+     * Exports AXC from X chain to either P or AppChain
      * @remarks
      * The export fee will be added to the amount automatically. Make sure the exported amount has the import fee for the destination chain.
      *
@@ -859,9 +859,9 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Import utxos in atomic memory to the P chain.
+     * Import utxos in atomic memory to the CoreChain.
      * @param sourceChain Either `X` or `C`
-     * @param [toAddress] The destination P chain address assets will get imported to. Defaults to the P chain address of the wallet.
+     * @param [toAddress] The destination CoreChain address assets will get imported to. Defaults to the CoreChain address of the wallet.
      */
     async importP(sourceChain: ExportChainsP, toAddress?: string): Promise<string> {
         const utxoSet = await this.getAtomicUTXOsP(sourceChain);
@@ -884,7 +884,7 @@ export abstract class WalletProvider {
 
         const sourceChainId = chainIdFromAlias(sourceChain);
 
-        const unsignedTx = await pChain.buildImportTx(
+        const unsignedTx = await coreChain.buildImportTx(
             utxoSet,
             ownerAddrs,
             sourceChainId,
@@ -895,7 +895,7 @@ export abstract class WalletProvider {
             undefined
         );
         const tx = await this.signP(unsignedTx);
-        const txId = await pChain.issueTx(tx);
+        const txId = await coreChain.issueTx(tx);
 
         await waitTxP(txId);
 
@@ -940,7 +940,7 @@ export abstract class WalletProvider {
             fee = axcCtoX(baseFee.mul(new BN(importGas)));
         }
 
-        const unsignedTx = await cChain.buildImportTx(
+        const unsignedTx = await appChain.buildImportTx(
             utxoSet,
             toAddress,
             ownerAddresses,
@@ -949,7 +949,7 @@ export abstract class WalletProvider {
             fee
         );
         let tx = await this.signC(unsignedTx);
-        let id = await cChain.issueTx(tx);
+        let id = await appChain.issueTx(tx);
 
         await waitTxC(id);
 
@@ -1010,7 +1010,7 @@ export abstract class WalletProvider {
      * @param start Validation period start date
      * @param end Validation period end date
      * @param delegationFee Minimum 2%
-     * @param rewardAddress P chain address to send staking rewards
+     * @param rewardAddress CoreChain address to send staking rewards
      * @param utxos
      *
      * @return Transaction id
@@ -1050,7 +1050,7 @@ export abstract class WalletProvider {
         let startTime = new BN(Math.round(start.getTime() / 1000));
         let endTime = new BN(Math.round(end.getTime() / 1000));
 
-        const unsignedTx = await pChain.buildAddValidatorTx(
+        const unsignedTx = await coreChain.buildAddValidatorTx(
             utxoSet,
             [stakeReturnAddr],
             pAddressStrings, // from
@@ -1064,7 +1064,7 @@ export abstract class WalletProvider {
         );
 
         let tx = await this.signP(unsignedTx);
-        const txId = await pChain.issueTx(tx);
+        const txId = await coreChain.issueTx(tx);
         await waitTxP(txId);
 
         this.updateUtxosP();
@@ -1105,7 +1105,7 @@ export abstract class WalletProvider {
         let startTime = new BN(Math.round(start.getTime() / 1000));
         let endTime = new BN(Math.round(end.getTime() / 1000));
 
-        const unsignedTx = await pChain.buildAddDelegatorTx(
+        const unsignedTx = await coreChain.buildAddNominatorTx(
             utxoSet,
             [stakeReturnAddr],
             pAddressStrings,
@@ -1118,7 +1118,7 @@ export abstract class WalletProvider {
         );
 
         const tx = await this.signP(unsignedTx);
-        const txId = await pChain.issueTx(tx);
+        const txId = await coreChain.issueTx(tx);
         await waitTxP(txId);
 
         this.updateUtxosP();
@@ -1140,19 +1140,19 @@ export abstract class WalletProvider {
             case 'import_x_p':
                 return await this.importP('X');
             case 'export_c_x':
-                return await this.exportCChain(tx.amount, 'X', tx.fee);
+                return await this.exportAppChain(tx.amount, 'X', tx.fee);
             case 'import_c_x':
                 return await this.importX('C');
             case 'export_c_p':
-                return await this.exportCChain(tx.amount, 'P', tx.fee);
+                return await this.exportAppChain(tx.amount, 'P', tx.fee);
             case 'import_c_p':
                 return await this.importP('C');
             case 'export_p_x':
-                return await this.exportPChain(tx.amount, 'X');
+                return await this.exportCoreChain(tx.amount, 'X');
             case 'import_p_x':
                 return await this.importX('P');
             case 'export_p_c':
-                return await this.exportPChain(tx.amount, 'C');
+                return await this.exportCoreChain(tx.amount, 'C');
             case 'import_p_c':
                 return await this.importC('P', tx.fee);
             default:
@@ -1167,12 +1167,12 @@ export abstract class WalletProvider {
 
     async getHistoryP(limit = 0): Promise<ITransactionData[]> {
         let addrs = await this.getAllAddressesP();
-        return await getAddressHistory(addrs, limit, pChain.getBlockchainID());
+        return await getAddressHistory(addrs, limit, coreChain.getBlockchainID());
     }
 
     async getHistoryC(limit = 0): Promise<ITransactionData[]> {
         let addrs = [this.getEvmAddressBech(), ...(await this.getAllAddressesX())];
-        return await getAddressHistory(addrs, limit, cChain.getBlockchainID());
+        return await getAddressHistory(addrs, limit, appChain.getBlockchainID());
     }
 
     async getHistoryEVM() {

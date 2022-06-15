@@ -13,9 +13,9 @@ export const MainnetConfig: NetworkConfig = {
     // @ts-ignore
     xChainID: Defaults.network[1]['X']['blockchainID'],
     // @ts-ignore
-    pChainID: Defaults.network[1]['P']['blockchainID'],
+    coreChainID: Defaults.network[1]['P']['blockchainID'],
     // @ts-ignore
-    cChainID: Defaults.network[1]['C']['blockchainID'],
+    appChainID: Defaults.network[1]['C']['blockchainID'],
     // @ts-ignore
     evmChainID: Defaults.network[1]['C']['chainID'],
     // @ts-ignore
@@ -40,9 +40,9 @@ export const TestnetConfig: NetworkConfig = {
     // @ts-ignore
     xChainID: Defaults.network[5]['X']['blockchainID'],
     // @ts-ignore
-    pChainID: Defaults.network[5]['P']['blockchainID'],
+    coreChainID: Defaults.network[5]['P']['blockchainID'],
     // @ts-ignore
-    cChainID: Defaults.network[5]['C']['blockchainID'],
+    appChainID: Defaults.network[5]['C']['blockchainID'],
     // @ts-ignore
     evmChainID: Defaults.network[5]['C']['chainID'],
     // @ts-ignore
@@ -65,9 +65,9 @@ export const LocalnetConfig: NetworkConfig = {
     // @ts-ignore
     xChainID: Defaults.network[12345]['X']['blockchainID'],
     // @ts-ignore
-    pChainID: Defaults.network[12345]['P']['blockchainID'],
+    coreChainID: Defaults.network[12345]['P']['blockchainID'],
     // @ts-ignore
-    cChainID: Defaults.network[12345]['C']['blockchainID'],
+    appChainID: Defaults.network[12345]['C']['blockchainID'],
     // @ts-ignore
     evmChainID: Defaults.network[12345]['C']['chainID'],
     // @ts-ignore

@@ -101,7 +101,7 @@ export async function getTx(txID: string): Promise<ITransactionData> {
 }
 
 /**
- * Returns ortelius data for a transaction hash on C chain EVM,
+ * Returns ortelius data for a transaction hash on AppChain EVM,
  * @param txHash
  */
 export async function getTxEvm(txHash: string): Promise<ITransactionDataEVM> {

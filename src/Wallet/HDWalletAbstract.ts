@@ -59,7 +59,7 @@ export abstract class HDWalletAbstract extends WalletProvider {
     }
 
     /**
-     * Gets the active address on the P chain
+     * Gets the active address on the CoreChain
      */
     public getAddressP(): string {
         return this.externalScan.getAddressP();
@@ -116,14 +116,14 @@ export abstract class HDWalletAbstract extends WalletProvider {
     }
 
     /**
-     * Returns every P chain address used by the wallet up to now.
+     * Returns every CoreChain address used by the wallet up to now.
      */
     public getAllAddressesP(): Promise<string[]> {
         return this.getExternalAddressesP();
     }
 
     /**
-     * Returns every P chain address used by the wallet up to now.
+     * Returns every CoreChain address used by the wallet up to now.
      */
     public getAllAddressesPSync(): string[] {
         return this.getExternalAddressesPSync();

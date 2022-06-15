@@ -6,7 +6,7 @@ import {
     PlatformStatusResponseType,
     PlatformStatusType,
 } from '@/utils/types';
-import { cChain, pChain, web3, xChain } from '@/Network/network';
+import { appChain, coreChain, web3, xChain } from '@/Network/network';
 
 /**
  * Waits until the given tx id is accepted on X chain
@@ -57,7 +57,7 @@ export async function waitTxP(txId: string, tryCount = 10): Promise<string> {
     let resp: PlatformStatusResponseType;
 
     try {
-        resp = (await pChain.getTxStatus(txId)) as PlatformStatusResponseType;
+        resp = (await coreChain.getTxStatus(txId)) as PlatformStatusResponseType;
     } catch (e) {
         throw new Error('Unable to get transaction status.');
     }
@@ -122,7 +122,7 @@ export async function waitTxC(txId: string, tryCount = 10): Promise<string> {
 
     let resp: ChainStatusResponseTypeC;
     try {
-        resp = (await cChain.getAtomicTxStatus(txId)) as ChainStatusResponseTypeC;
+        resp = (await appChain.getAtomicTxStatus(txId)) as ChainStatusResponseTypeC;
     } catch (e) {
         throw new Error('Unable to get transaction status.');
     }

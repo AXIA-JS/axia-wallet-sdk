@@ -152,8 +152,8 @@ export default class LedgerWallet extends HDWalletAbstract {
     }
 
     /**
-     * Returns the extended public key used by C chain for address derivation.
-     * @remarks Returns the extended public key for path `m/44'/60'/0'`. This key can be used to derive C chain accounts.
+     * Returns the extended public key used by AppChain for address derivation.
+     * @remarks Returns the extended public key for path `m/44'/60'/0'`. This key can be used to derive AppChain accounts.
      * @param transport
      */
     static async getExtendedPublicKeyEth(transport: any): Promise<string> {
@@ -168,7 +168,7 @@ export default class LedgerWallet extends HDWalletAbstract {
     }
 
     /**
-     * Returns the extended public key used by X and P chains for address derivation.
+     * Returns the extended public key used by X and CoreChains for address derivation.
      * @remarks Returns the extended public key for path `m/44'/90000'/n'` where `n` is the account index.
      * @param transport
      * @param accountIndex Which account's public key to derive
@@ -427,7 +427,7 @@ export default class LedgerWallet extends HDWalletAbstract {
             txType === PlatformVMConstants.IMPORTTX ||
             txType === PlatformVMConstants.EXPORTTX ||
             txType === PlatformVMConstants.ADDVALIDATORTX ||
-            txType === PlatformVMConstants.ADDDELEGATORTX
+            txType === PlatformVMConstants.ADDNOMINATORTX
         ) {
             return null;
         }
@@ -655,7 +655,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         // Ledger is not able to parse P/C atomic transactions
         if (txType === PlatformVMConstants.EXPORTTX) {
             const destChainBuff = (tx as PlatformExportTx).getDestinationChain();
-            // If destination chain is C chain, sign hash
+            // If destination chain is AppChain, sign hash
             const destChain = idToChainAlias(bintools.cb58Encode(destChainBuff));
             if (destChain === 'C') {
                 canLedgerParse = false;
@@ -665,7 +665,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         // Ledger is not able to parse P/C atomic transactions
         if (txType === PlatformVMConstants.IMPORTTX) {
             const sourceChainBuff = (tx as PlatformImportTx).getSourceChain();
-            // If destination chain is C chain, sign hash
+            // If destination chain is AppChain, sign hash
             const sourceChain = idToChainAlias(bintools.cb58Encode(sourceChainBuff));
             if (sourceChain === 'C') {
                 canLedgerParse = false;
@@ -702,7 +702,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         // Ledger is not able to parse P/C atomic transactions
         if (typeId === EVMConstants.EXPORTTX) {
             const destChainBuff = (tx as EVMExportTx).getDestinationChain();
-            // If destination chain is C chain, sign hash
+            // If destination chain is AppChain, sign hash
             const destChain = idToChainAlias(bintools.cb58Encode(destChainBuff));
             if (destChain === 'P') {
                 canLedgerParse = false;
@@ -711,7 +711,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         // TODO: Remove after ledger update
         if (typeId === EVMConstants.IMPORTTX) {
             const sourceChainBuff = (tx as EVMImportTx).getSourceChain();
-            // If destination chain is C chain, sign hash
+            // If destination chain is AppChain, sign hash
             const sourceChain = idToChainAlias(bintools.cb58Encode(sourceChainBuff));
             if (sourceChain === 'P') {
                 canLedgerParse = false;

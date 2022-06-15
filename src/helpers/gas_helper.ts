@@ -1,4 +1,4 @@
-import { activeNetwork, cChain, web3 } from '@/Network/network';
+import { activeNetwork, appChain, web3 } from '@/Network/network';
 import { BN } from '@zee-ava/avajs';
 import { EVMInput, ExportTx, SECPTransferOutput, TransferableOutput, UnsignedTx } from '@zee-ava/avajs/dist/apis/evm';
 import { ExportChainsC } from '@/Wallet/types';
@@ -39,7 +39,7 @@ export function adjustValue(val: BN, perc: number) {
  * Returns the base fee from the network.
  */
 export async function getBaseFee(): Promise<BN> {
-    const rawHex = (await cChain.getBaseFee()).substring(2);
+    const rawHex = (await appChain.getBaseFee()).substring(2);
     return new BN(rawHex, 'hex');
 }
 
@@ -55,7 +55,7 @@ export async function getBaseFeeRecommended() {
  * Returns the base max priority fee from the network.
  */
 export async function getMaxPriorityFee(): Promise<BN> {
-    const rawHex = (await cChain.getMaxPriorityFeePerGas()).substring(2);
+    const rawHex = (await appChain.getMaxPriorityFeePerGas()).substring(2);
     return new BN(rawHex, 'hex');
 }
 
@@ -84,7 +84,7 @@ export function estimateImportGasFeeFromMockTx(
     const SINGLE_OWNER_INPUT_SIZE = 90; // in bytes
     const OUTPUT_SIZE = 60; // in bytes
 
-    // C chain imports consolidate inputs to one output
+    // AppChain imports consolidate inputs to one output
     const numOutputs = 1;
     // Assuming each input has 1 owner
     const baseSize = BASE_TX_SIZE + numIns * SINGLE_OWNER_INPUT_SIZE + numOutputs * OUTPUT_SIZE;
@@ -97,7 +97,7 @@ export function estimateImportGasFeeFromMockTx(
  * Estimates the gas fee using a mock ExportTx built from the passed values.
  * @param destinationChain `X` or `P`
  * @param amount in nAXC
- * @param from The C chain hex address exported from
+ * @param from The AppChain hex address exported from
  * @param to The destination X or P address
  */
 export function estimateExportGasFeeFromMockTx(
@@ -110,7 +110,7 @@ export function estimateExportGasFeeFromMockTx(
     const destChainIdBuff = bintools.cb58Decode(destChainId);
     const toBuff = bintools.stringToAddress(to);
     const netID = activeNetwork.networkID;
-    const chainID = activeNetwork.cChainID;
+    const chainID = activeNetwork.appChainID;
     const AXC_ID = activeNetwork.axcID;
     const axcIDBuff = bintools.cb58Decode(AXC_ID);
 
@@ -131,8 +131,8 @@ export function estimateExportGasFeeFromMockTx(
  * Returns the estimated gas for the export transaction.
  * @param destinationChain Either `X` or `P`
  * @param amount The amount to export. In nAXC.
- * @param from The C chain hex address exporting the asset
- * @param fromBech The C chain bech32 address exporting the asset
+ * @param from The AppChain hex address exporting the asset
+ * @param fromBech The AppChain bech32 address exporting the asset
  * @param to The destination address on the destination chain
  */
 export async function estimateExportGasFee(

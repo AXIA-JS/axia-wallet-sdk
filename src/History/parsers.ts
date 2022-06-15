@@ -33,7 +33,7 @@ export async function getTransactionSummary(
         case 'atomic_export_tx':
             return getExportSummary(tx, cleanAddressesXP);
         case 'add_validator':
-        case 'add_delegator':
+        case 'add_nominator':
             return getStakingSummary(tx, cleanAddressesXP);
         case 'atomic_import_tx':
             return getImportSummaryC(tx, evmAddress);
@@ -57,7 +57,7 @@ function getUnsupportedSummary(tx: ITransactionData): iHistoryItem {
 function getStakingSummary(tx: ITransactionData, ownerAddrs: string[]): iHistoryStaking {
     let time = new Date(tx.timestamp);
 
-    // let pChainID = activeNetwork.pChainID;
+    // let coreChainID = activeNetwork.coreChainID;
     // let axcID = activeNetwork.axcID;
     let ins = tx.inputs?.map((tx) => tx.output) || [];
     let myIns = getOwnedOutputs(ins, ownerAddrs);
@@ -68,9 +68,9 @@ function getStakingSummary(tx: ITransactionData, ownerAddrs: string[]): iHistory
     let stakeAmount = getStakeAmount(tx);
 
     // Assign the type
-    let type: HistoryItemTypeName = tx.type === 'add_validator' ? 'add_validator' : 'add_delegator';
+    let type: HistoryItemTypeName = tx.type === 'add_validator' ? 'add_validator' : 'add_nominator';
     // If this wallet only received the fee
-    if (myIns.length === 0 && type === 'add_delegator') {
+    if (myIns.length === 0 && type === 'add_nominator') {
         type = 'delegation_fee';
     } else if (myIns.length === 0 && type === 'add_validator') {
         type = 'validation_fee';
@@ -101,7 +101,7 @@ function getStakingSummary(tx: ITransactionData, ownerAddrs: string[]): iHistory
     };
 }
 
-// Returns the summary for a C chain import TX
+// Returns the summary for a AppChain import TX
 function getImportSummaryC(tx: ITransactionData, ownerAddr: string) {
     let sourceChain = findSourceChain(tx);
     let chainAliasFrom = idToChainAlias(sourceChain);

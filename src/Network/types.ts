@@ -16,8 +16,8 @@ export interface NetworkConfig {
     networkID: number;
     evmChainID: number;
     xChainID: string;
-    pChainID: string;
-    cChainID: string;
+    coreChainID: string;
+    appChainID: string;
     axcID: string;
     rpcUrl: NetworkConfigRpc;
 }

@@ -1,4 +1,4 @@
-import { pChain, xChain } from '@/Network/network';
+import { coreChain, xChain } from '@/Network/network';
 import { BN } from '@zee-ava/avajs';
 
 /**
@@ -9,8 +9,8 @@ export function getTxFeeX(): BN {
 }
 
 /**
- * Returns the transaction fee for P chain.
+ * Returns the transaction fee for CoreChain.
  */
 export function getTxFeeP(): BN {
-    return pChain.getTxFee();
+    return coreChain.getTxFee();
 }

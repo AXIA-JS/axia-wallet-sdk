@@ -13,7 +13,7 @@ export type HistoryItemTypeName =
     | HistoryImportExportTypeName
     | 'transaction'
     | 'transaction_evm'
-    | 'add_delegator'
+    | 'add_nominator'
     | 'add_validator'
     | 'delegation_fee'
     | 'validation_fee'
@@ -65,7 +65,7 @@ export interface iHistoryStaking extends iHistoryItem {
  * @param tx The parsed history object
  */
 export function isHistoryStakingTx(tx: HistoryItemType): tx is iHistoryStaking {
-    let types: HistoryItemTypeName[] = ['add_validator', 'add_delegator', 'validation_fee', 'delegation_fee'];
+    let types: HistoryItemTypeName[] = ['add_validator', 'add_nominator', 'validation_fee', 'delegation_fee'];
     return types.includes(tx.type);
 }
 

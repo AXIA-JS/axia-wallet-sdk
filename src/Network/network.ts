@@ -19,8 +19,8 @@ import {
 export const axia: Axia = createAxiaProvider(DefaultConfig);
 
 export const xChain: AVMAPI = axia.XChain();
-export const cChain: EVMAPI = axia.CChain();
-export const pChain = axia.PChain();
+export const appChain: EVMAPI = axia.AppChain();
+export const coreChain = axia.CoreChain();
 export const infoApi: InfoAPI = axia.Info();
 
 function getProviderFromUrl(url: string, credentials = false) {
@@ -71,15 +71,15 @@ export function setRpcNetwork(conf: NetworkConfig, credentials = true): void {
     xChain.refreshBlockchainID(conf.xChainID);
     xChain.setBlockchainAlias('X');
 
-    pChain.refreshBlockchainID(conf.pChainID);
-    pChain.setBlockchainAlias('P');
+    coreChain.refreshBlockchainID(conf.coreChainID);
+    coreChain.setBlockchainAlias('P');
 
-    cChain.refreshBlockchainID(conf.cChainID);
-    cChain.setBlockchainAlias('C');
+    appChain.refreshBlockchainID(conf.appChainID);
+    appChain.setBlockchainAlias('C');
 
     xChain.setAXCAssetID(conf.axcID);
-    pChain.setAXCAssetID(conf.axcID);
-    cChain.setAXCAssetID(conf.axcID);
+    coreChain.setAXCAssetID(conf.axcID);
+    appChain.setAXCAssetID(conf.axcID);
 
     if (conf.explorerURL) {
         explorer_api = createExplorerApi(conf);
@@ -139,8 +139,8 @@ export async function getConfigFromUrl(url: string): Promise<NetworkConfig> {
         apiPort: parseInt(portStr),
         networkID: netID,
         xChainID: idX,
-        pChainID: idP,
-        cChainID: idC,
+        coreChainID: idP,
+        appChainID: idC,
         axcID: axcId,
         evmChainID: evmChainId,
         get rpcUrl(): NetworkConfigRpc {

@@ -1,4 +1,4 @@
-import { cChain, pChain, web3, xChain } from '@/Network/network';
+import { appChain, coreChain, web3, xChain } from '@/Network/network';
 
 import { BN, Buffer } from '@zee-ava/avajs';
 import {
@@ -117,7 +117,7 @@ export async function buildPlatformExportTransaction(
 ) {
     let destinationChainId = chainIdFromAlias(destinationChain);
 
-    return await pChain.buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [
+    return await coreChain.buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [
         sourceChangeAddress,
     ]);
 }
@@ -147,7 +147,7 @@ export async function buildEvmExportTransaction(
 
     let fromAddressHex = fromAddresses[0];
 
-    return await cChain.buildExportTx(
+    return await appChain.buildExportTx(
         amount,
         axcAssetIDStr,
         destinationChainId,
@@ -349,12 +349,12 @@ export enum AvmTxNameEnum {
 export enum PlatfromTxNameEnum {
     'Transaction' = PlatformVMConstants.BASETX,
     'Add Validator' = PlatformVMConstants.ADDVALIDATORTX,
-    'Add Delegator' = PlatformVMConstants.ADDDELEGATORTX,
+    'Add Nominator' = PlatformVMConstants.ADDNOMINATORTX,
     'Import' = PlatformVMConstants.IMPORTTX,
     'Export' = PlatformVMConstants.EXPORTTX,
-    'Add Subnet Validator' = PlatformVMConstants.ADDSUBNETVALIDATORTX,
+    'Add AllyChain Validator' = PlatformVMConstants.ADDALLYCHAINVALIDATORTX,
     'Create Chain' = PlatformVMConstants.CREATECHAINTX,
-    'Create Subnet' = PlatformVMConstants.CREATESUBNETTX,
+    'Create AllyChain' = PlatformVMConstants.CREATEALLYCHAINTX,
     'Advance Time' = PlatformVMConstants.ADVANCETIMETX,
     'Reward Validator' = PlatformVMConstants.REWARDVALIDATORTX,
 }
@@ -369,7 +369,7 @@ export enum ParseableAvmTxEnum {
 export enum ParseablePlatformEnum {
     'Transaction' = PlatformVMConstants.BASETX,
     'Add Validator' = PlatformVMConstants.ADDVALIDATORTX,
-    'Add Delegator' = PlatformVMConstants.ADDDELEGATORTX,
+    'Add Nominator' = PlatformVMConstants.ADDNOMINATORTX,
     'Import' = PlatformVMConstants.IMPORTTX,
     'Export' = PlatformVMConstants.EXPORTTX,
 }
