@@ -87,7 +87,7 @@ export async function getAddressHistory(
 }
 
 /**
- * Returns the ortelius data from the given tx id.
+ * Returns the Axtract data from the given tx id.
  * @param txID
  */
 export async function getTx(txID: string): Promise<ITransactionData> {
@@ -101,7 +101,7 @@ export async function getTx(txID: string): Promise<ITransactionData> {
 }
 
 /**
- * Returns ortelius data for a transaction hash on AppChain EVM,
+ * Returns Axtract data for a transaction hash on AppChain EVM,
  * @param txHash
  */
 export async function getTxEvm(txHash: string): Promise<ITransactionDataEVM> {

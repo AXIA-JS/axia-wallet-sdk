@@ -3068,7 +3068,7 @@ function getAddressHistory(addrs, limit = 20, chainID, endTime) {
     });
 }
 /**
- * Returns the ortelius data from the given tx id.
+ * Returns the Axtract data from the given tx id.
  * @param txID
  */
 function getTx(txID) {
@@ -3082,7 +3082,7 @@ function getTx(txID) {
     });
 }
 /**
- * Returns ortelius data for a transaction hash on AppChain EVM,
+ * Returns Axtract data for a transaction hash on AppChain EVM,
  * @param txHash
  */
 function getTxEvm(txHash) {
