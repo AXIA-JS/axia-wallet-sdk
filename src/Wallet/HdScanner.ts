@@ -1,7 +1,7 @@
 import * as bip32 from 'bip32';
 import { getPreferredHRP } from '@zee-ava/avajs/dist/utils';
-import { activeNetwork, axia, coreChain, xChain } from '@/Network/network';
-import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from '@zee-ava/avajs/dist/apis/avm/keychain';
+import { activeNetwork, axia, coreChain, assetChain } from '@/Network/network';
+import { KeyPair as AXVMKeyPair, KeyChain as AXVMKeyChain } from '@zee-ava/avajs/dist/apis/axvm/keychain';
 import { KeyChain as PlatformKeyChain, KeyPair as PlatformKeyPair } from '@zee-ava/avajs/dist/apis/platformvm';
 import { HdChainType } from './types';
 import { Buffer } from '@zee-ava/avajs';
@@ -22,7 +22,7 @@ type AddressCache = {
 };
 
 type KeyCacheX = {
-    [index: string]: AVMKeyPair;
+    [index: string]: AXVMKeyPair;
 };
 
 type KeyCacheP = {
@@ -36,15 +36,15 @@ export default class HdScanner {
     protected keyCacheX: KeyCacheX = {};
     protected keyCacheP: KeyCacheP = {};
     readonly changePath: string;
-    private avmAddrFactory: AVMKeyPair;
+    private axvmAddrFactory: AXVMKeyPair;
     readonly accountKey: bip32.BIP32Interface;
 
     constructor(accountKey: bip32.BIP32Interface, isInternal = true) {
         this.changePath = isInternal ? '1' : '0';
         this.accountKey = accountKey;
-        // We need an instance of an AVM key to generate adddresses from public keys
+        // We need an instance of an AXVM key to generate adddresses from public keys
         let hrp = getPreferredHRP(axia.getNetworkID());
-        this.avmAddrFactory = new AVMKeyPair(hrp, 'X');
+        this.axvmAddrFactory = new AXVMKeyPair(hrp, 'X');
     }
 
     getIndex() {
@@ -120,8 +120,8 @@ export default class HdScanner {
         return res;
     }
 
-    getKeyChainX(): AVMKeyChain {
-        let keychain = xChain.newKeyChain();
+    getKeyChainX(): AXVMKeyChain {
+        let keychain = assetChain.newKeyChain();
         for (let i = 0; i <= this.index; i++) {
             let key = this.getKeyForIndexX(i);
             keychain.addKey(key);
@@ -138,7 +138,7 @@ export default class HdScanner {
         return keychain;
     }
 
-    getKeyForIndexX(index: number): AVMKeyPair {
+    getKeyForIndexX(index: number): AXVMKeyPair {
         let cache = this.keyCacheX[index];
         if (cache) return cache;
 
@@ -147,7 +147,7 @@ export default class HdScanner {
 
         let pkBuf: Buffer = new Buffer(pkHex, 'hex');
 
-        let keychain = xChain.newKeyChain();
+        let keychain = assetChain.newKeyChain();
         let keypair = keychain.importKey(pkBuf);
 
         this.keyCacheX[index] = keypair;
@@ -190,7 +190,7 @@ export default class HdScanner {
 
         let hrp = getPreferredHRP(axia.getNetworkID());
         //@ts-ignore
-        let addrBuf = this.avmAddrFactory.addressFromPublicKey(publicKeyBuff);
+        let addrBuf = this.axvmAddrFactory.addressFromPublicKey(publicKeyBuff);
         let addr = bintools.addressToString(hrp, chainId, addrBuf);
 
         return addr;
@@ -258,7 +258,7 @@ export default class HdScanner {
             addrsP.push(addressP);
         }
 
-        let utxoSetX = (await xChain.getUTXOs(addrsX)).utxos;
+        let utxoSetX = (await assetChain.getUTXOs(addrsX)).utxos;
         let utxoSetP = (await coreChain.getUTXOs(addrsP)).utxos;
 
         // Scan UTXOs of these indexes and try to find a gap of HD_SCAN_GAP_SIZE

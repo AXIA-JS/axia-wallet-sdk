@@ -15,7 +15,7 @@ export interface NetworkConfig {
     explorerSiteURL?: string;
     networkID: number;
     evmChainID: number;
-    xChainID: string;
+    assetChainID: string;
     coreChainID: string;
     appChainID: string;
     axcID: string;

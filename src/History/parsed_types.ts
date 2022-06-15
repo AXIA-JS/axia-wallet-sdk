@@ -2,9 +2,9 @@ import { BN } from '@zee-ava/avajs';
 import { ChainIdType } from '@/types';
 import { iAssetDescriptionClean } from '@/Asset/types';
 
-export type HistoryItemType = AVMHistoryItemType | PVMHistoryItemType | EVMHistoryITemType | iHistoryItem;
+export type HistoryItemType = AXVMHistoryItemType | PVMHistoryItemType | EVMHistoryITemType | iHistoryItem;
 
-export type AVMHistoryItemType = iHistoryBaseTx | iHistoryImportExport;
+export type AXVMHistoryItemType = iHistoryBaseTx | iHistoryImportExport;
 export type PVMHistoryItemType = iHistoryStaking;
 export type EVMHistoryITemType = iHistoryEVMTx;
 
@@ -70,7 +70,7 @@ export function isHistoryStakingTx(tx: HistoryItemType): tx is iHistoryStaking {
 }
 
 /**
- * Interface for parsed X chain base transactions.
+ * Interface for parsed AssetChain base transactions.
  */
 export interface iHistoryBaseTx extends iHistoryItem {
     tokens: iHistoryBaseTxToken[];

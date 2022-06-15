@@ -1,12 +1,12 @@
 import { Axia } from '@zee-ava/avajs/dist';
-import { AVMAPI } from '@zee-ava/avajs/dist/apis/avm';
+import { AXVMAPI } from '@zee-ava/avajs/dist/apis/axvm';
 import { InfoAPI } from '@zee-ava/avajs/dist/apis/info';
 import { EVMAPI } from '@zee-ava/avajs/dist/apis/evm';
 import Web3 from 'web3';
 import { NetworkConfig } from './types';
 import { AxiosInstance } from 'axios';
 export declare const axia: Axia;
-export declare const xChain: AVMAPI;
+export declare const assetChain: AXVMAPI;
 export declare const appChain: EVMAPI;
 export declare const coreChain: import("@zee-ava/avajs/dist/apis/platformvm").PlatformVMAPI;
 export declare const infoApi: InfoAPI;

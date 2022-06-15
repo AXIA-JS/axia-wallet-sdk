@@ -1,15 +1,15 @@
 import {
-    AvmStatusResponseType,
-    AvmStatusType,
+    AxvmStatusResponseType,
+    AxvmStatusType,
     ChainStatusResponseTypeC,
     ChainStatusTypeC,
     PlatformStatusResponseType,
     PlatformStatusType,
 } from '@/utils/types';
-import { appChain, coreChain, web3, xChain } from '@/Network/network';
+import { appChain, coreChain, web3, assetChain } from '@/Network/network';
 
 /**
- * Waits until the given tx id is accepted on X chain
+ * Waits until the given tx id is accepted on AssetChain
  * @param txId Tx ID to wait for
  * @param tryCount Number of attempts until timeout
  */
@@ -17,20 +17,20 @@ export async function waitTxX(txId: string, tryCount = 10): Promise<string> {
     if (tryCount <= 0) {
         throw new Error('Timeout');
     }
-    let resp: AvmStatusResponseType;
+    let resp: AxvmStatusResponseType;
 
     try {
-        resp = (await xChain.getTxStatus(txId)) as AvmStatusResponseType;
+        resp = (await assetChain.getTxStatus(txId)) as AxvmStatusResponseType;
     } catch (e) {
         throw new Error('Unable to get transaction status.');
     }
 
-    let status: AvmStatusType;
+    let status: AxvmStatusType;
     let reason;
     if (typeof resp === 'string') {
-        status = resp as AvmStatusType;
+        status = resp as AxvmStatusType;
     } else {
-        status = resp.status as AvmStatusType;
+        status = resp.status as AxvmStatusType;
         reason = resp.reason;
     }
 

@@ -1,11 +1,11 @@
-import { coreChain, xChain } from '@/Network/network';
+import { coreChain, assetChain } from '@/Network/network';
 import { BN } from '@zee-ava/avajs';
 
 /**
- * Returns the transaction fee for X chain.
+ * Returns the transaction fee for AssetChain.
  */
 export function getTxFeeX(): BN {
-    return xChain.getTxFee();
+    return assetChain.getTxFee();
 }
 
 /**

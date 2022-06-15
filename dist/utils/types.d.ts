@@ -1,11 +1,11 @@
-export declare type AvmStatusType = 'Accepted' | 'Processing' | 'Rejected' | 'Unknown';
+export declare type AxvmStatusType = 'Accepted' | 'Processing' | 'Rejected' | 'Unknown';
 export declare type PlatformStatusType = 'Committed' | 'Processing' | 'Dropped' | 'Unknown';
 export declare type ChainStatusTypeC = 'Accepted' | 'Processing' | 'Dropped' | 'Unknown';
-export declare type AvmStatusResponseType = AvmStatusType | iAvmStatusResponse;
+export declare type AxvmStatusResponseType = AxvmStatusType | iAxvmStatusResponse;
 export declare type PlatformStatusResponseType = PlatformStatusType | iPlatformStatusResponse;
 export declare type ChainStatusResponseTypeC = ChainStatusTypeC | iChainStatusResponseC;
-export interface iAvmStatusResponse {
-    status: AvmStatusType;
+export interface iAxvmStatusResponse {
+    status: AxvmStatusType;
     reason: string;
 }
 export interface iPlatformStatusResponse {

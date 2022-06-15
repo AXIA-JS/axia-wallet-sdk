@@ -15,14 +15,14 @@ import HDKey from 'hdkey';
 import { ChainAlias, ILedgerAppConfig, WalletNameType } from '@/Wallet/types';
 import { Transaction, TxOptions } from '@ethereumjs/tx';
 import {
-    UnsignedTx as AVMUnsignedTx,
-    Tx as AVMTx,
+    UnsignedTx as AXVMUnsignedTx,
+    Tx as AXVMTx,
     TransferableOperation,
     OperationTx,
-    AVMConstants,
-    ImportTx as AVMImportTx,
-    SelectCredentialClass as AVMSelectCredentialClass,
-} from '@zee-ava/avajs/dist/apis/avm';
+    AXVMConstants,
+    ImportTx as AXVMImportTx,
+    SelectCredentialClass as AXVMSelectCredentialClass,
+} from '@zee-ava/avajs/dist/apis/axvm';
 import { Credential, SigIdx, Signature } from '@zee-ava/avajs/dist/common';
 import {
     UnsignedTx as EVMUnsignedTx,
@@ -47,7 +47,7 @@ import { KeyPair as EVMKeyPair } from '@zee-ava/avajs/dist/apis/evm/keychain';
 import { activeNetwork, axia, web3 } from '@/Network/network';
 import { Buffer } from '@zee-ava/avajs';
 import { ChainIdType } from '@/types';
-import { ParseableAvmTxEnum, ParseablePlatformEnum, ParseableEvmTxEnum } from '@/helpers/tx_helper';
+import { ParseableAxvmTxEnum, ParseablePlatformEnum, ParseableEvmTxEnum } from '@/helpers/tx_helper';
 import createHash from 'create-hash';
 //@ts-ignore
 import bippath from 'bip32-path';
@@ -265,7 +265,7 @@ export default class LedgerWallet extends HDWalletAbstract {
 
     // Returns an array of derivation paths that need to sign this transaction
     // Used with signTransactionHash and signTransactionParsable
-    async getTransactionPaths<UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx>(
+    async getTransactionPaths<UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx>(
         unsignedTx: UnsignedTx,
         chainId: ChainIdType
     ): Promise<{ paths: string[]; isAxcOnly: boolean }> {
@@ -284,10 +284,10 @@ export default class LedgerWallet extends HDWalletAbstract {
 
         let items = ins;
         if (
-            (txType === AVMConstants.IMPORTTX && chainId === 'X') ||
+            (txType === AXVMConstants.IMPORTTX && chainId === 'X') ||
             (txType === PlatformVMConstants.IMPORTTX && chainId === 'P')
         ) {
-            items = ((tx as AVMImportTx) || PlatformImportTx).getImportInputs();
+            items = ((tx as AXVMImportTx) || PlatformImportTx).getImportInputs();
         }
 
         let hrp = axia.getHRP();
@@ -361,13 +361,13 @@ export default class LedgerWallet extends HDWalletAbstract {
         }
     }
 
-    async signX(unsignedTx: AVMUnsignedTx): Promise<AVMTx> {
+    async signX(unsignedTx: AXVMUnsignedTx): Promise<AXVMTx> {
         let tx = unsignedTx.getTransaction();
         let txType = tx.getTxType();
         let chainId: ChainIdType = 'X';
 
-        let parseableTxs = ParseableAvmTxEnum;
-        let { paths, isAxcOnly } = await this.getTransactionPaths<AVMUnsignedTx>(unsignedTx, chainId);
+        let parseableTxs = ParseableAxvmTxEnum;
+        let { paths, isAxcOnly } = await this.getTransactionPaths<AXVMUnsignedTx>(unsignedTx, chainId);
 
         // If ledger doesnt support parsing, sign hash
         let canLedgerParse = this.config.version >= '0.3.1';
@@ -375,9 +375,9 @@ export default class LedgerWallet extends HDWalletAbstract {
 
         let signedTx;
         if (canLedgerParse && isParsableType) {
-            signedTx = await this.signTransactionParsable<AVMUnsignedTx, AVMTx>(unsignedTx, paths, chainId);
+            signedTx = await this.signTransactionParsable<AXVMUnsignedTx, AXVMTx>(unsignedTx, paths, chainId);
         } else {
-            signedTx = await this.signTransactionHash<AVMUnsignedTx, AVMTx>(unsignedTx, paths, chainId);
+            signedTx = await this.signTransactionHash<AXVMUnsignedTx, AXVMTx>(unsignedTx, paths, chainId);
         }
 
         return signedTx;
@@ -405,7 +405,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         }
     }
 
-    getChangeBipPath<UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx>(
+    getChangeBipPath<UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx>(
         unsignedTx: UnsignedTx,
         chainId: ChainIdType
     ) {
@@ -437,13 +437,13 @@ export default class LedgerWallet extends HDWalletAbstract {
 
     // Used for signing transactions that are parsable
     async signTransactionParsable<
-        UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx,
-        SignedTx extends AVMTx | PlatformTx | EVMTx
+        UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx,
+        SignedTx extends AXVMTx | PlatformTx | EVMTx
     >(unsignedTx: UnsignedTx, paths: string[], chainId: ChainIdType): Promise<SignedTx> {
         let tx = unsignedTx.getTransaction();
         let txType = tx.getTxType();
         let parseableTxs = {
-            X: ParseableAvmTxEnum,
+            X: ParseableAxvmTxEnum,
             P: ParseablePlatformEnum,
             C: ParseableEvmTxEnum,
         }[chainId];
@@ -465,7 +465,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         let signedTx;
         switch (chainId) {
             case 'X':
-                signedTx = new AVMTx(unsignedTx as AVMUnsignedTx, creds);
+                signedTx = new AXVMTx(unsignedTx as AXVMUnsignedTx, creds);
                 break;
             case 'P':
                 signedTx = new PlatformTx(unsignedTx as PlatformUnsignedTx, creds);
@@ -481,8 +481,8 @@ export default class LedgerWallet extends HDWalletAbstract {
     // Used for non parsable transactions.
     // Ideally we wont use this function at all, but ledger is not ready yet.
     async signTransactionHash<
-        UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx,
-        SignedTx extends AVMTx | PlatformTx | EVMTx
+        UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx,
+        SignedTx extends AXVMTx | PlatformTx | EVMTx
     >(unsignedTx: UnsignedTx, paths: string[], chainId: ChainIdType): Promise<SignedTx> {
         let txbuff = unsignedTx.toBuffer();
         const msg: Buffer = Buffer.from(createHash('sha256').update(txbuff).digest());
@@ -501,7 +501,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         let signedTx;
         switch (chainId) {
             case 'X':
-                signedTx = new AVMTx(unsignedTx as AVMUnsignedTx, creds);
+                signedTx = new AXVMTx(unsignedTx as AXVMUnsignedTx, creds);
                 break;
             case 'P':
                 signedTx = new PlatformTx(unsignedTx as PlatformUnsignedTx, creds);
@@ -526,7 +526,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         return bip32Paths;
     }
 
-    getCredentials<UnsignedTx extends AVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx>(
+    getCredentials<UnsignedTx extends AXVMUnsignedTx | PlatformUnsignedTx | EVMUnsignedTx>(
         unsignedTx: UnsignedTx,
         paths: string[],
         sigMap: any,
@@ -543,11 +543,11 @@ export default class LedgerWallet extends HDWalletAbstract {
 
         let items = ins;
         if (
-            (txType === AVMConstants.IMPORTTX && chainId === 'X') ||
+            (txType === AXVMConstants.IMPORTTX && chainId === 'X') ||
             (txType === PlatformVMConstants.IMPORTTX && chainId === 'P') ||
             (txType === EVMConstants.IMPORTTX && chainId === 'C')
         ) {
-            items = ((tx as AVMImportTx) || PlatformImportTx || EVMImportTx).getImportInputs();
+            items = ((tx as AXVMImportTx) || PlatformImportTx || EVMImportTx).getImportInputs();
         }
 
         // Try to get operations, it will fail if there are none, ignore and continue
@@ -559,7 +559,7 @@ export default class LedgerWallet extends HDWalletAbstract {
 
         let CredentialClass;
         if (chainId === 'X') {
-            CredentialClass = AVMSelectCredentialClass;
+            CredentialClass = AXVMSelectCredentialClass;
         } else if (chainId === 'P') {
             CredentialClass = PlatformSelectCredentialClass;
         } else {

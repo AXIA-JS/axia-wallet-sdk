@@ -1,4 +1,4 @@
-import AVMWebSocketProvider from '@/Network/providers/AVMWebSocketProvider';
+import AXVMWebSocketProvider from '@/Network/providers/AXVMWebSocketProvider';
 import EVMWebSocketProvider from '@/Network/providers/EVMWebSocketProvider';
 import { WalletType } from '@/Wallet/types';
 import { NetworkConfig } from '@/Network/types';
@@ -6,11 +6,11 @@ import { wsUrlFromConfigEVM, wsUrlFromConfigX } from '@/helpers/network_helper';
 import { activeNetwork } from '@/Network/network';
 
 export default class WebsocketProvider {
-    avmProvider: AVMWebSocketProvider;
+    axvmProvider: AXVMWebSocketProvider;
     evmProvider: EVMWebSocketProvider;
 
-    constructor(avmEndpoint: string, evmEndpoint: string) {
-        this.avmProvider = new AVMWebSocketProvider(avmEndpoint);
+    constructor(axvmEndpoint: string, evmEndpoint: string) {
+        this.axvmProvider = new AXVMWebSocketProvider(axvmEndpoint);
         this.evmProvider = new EVMWebSocketProvider(evmEndpoint);
     }
 
@@ -20,28 +20,28 @@ export default class WebsocketProvider {
 
     static fromNetworkConfig(config: NetworkConfig): WebsocketProvider {
         let evm = wsUrlFromConfigEVM(config);
-        let avm = wsUrlFromConfigX(config);
-        return new WebsocketProvider(avm, evm);
+        let axvm = wsUrlFromConfigX(config);
+        return new WebsocketProvider(axvm, evm);
     }
 
-    public setEndpoints(avmEndpoint: string, evmEndpoint: string): void {
-        this.avmProvider.setEndpoint(avmEndpoint);
+    public setEndpoints(axvmEndpoint: string, evmEndpoint: string): void {
+        this.axvmProvider.setEndpoint(axvmEndpoint);
         this.evmProvider.setEndpoint(evmEndpoint);
     }
 
     public setNetwork(config: NetworkConfig): void {
         let evm = wsUrlFromConfigEVM(config);
-        let avm = wsUrlFromConfigX(config);
-        this.setEndpoints(avm, evm);
+        let axvm = wsUrlFromConfigX(config);
+        this.setEndpoints(axvm, evm);
     }
 
     public trackWallet(wallet: WalletType): void {
-        this.avmProvider.trackWallet(wallet);
+        this.axvmProvider.trackWallet(wallet);
         this.evmProvider.trackWallet(wallet);
     }
 
     public removeWallet(wallet: WalletType): void {
-        this.avmProvider.removeWallet(wallet);
+        this.axvmProvider.removeWallet(wallet);
         this.evmProvider.removeWallet(wallet);
     }
 }

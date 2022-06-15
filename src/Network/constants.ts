@@ -11,7 +11,7 @@ export const MainnetConfig: NetworkConfig = {
     explorerSiteURL: 'https://explorer.avax.network',
     networkID: 1,
     // @ts-ignore
-    xChainID: Defaults.network[1]['X']['blockchainID'],
+    assetChainID: Defaults.network[1]['X']['blockchainID'],
     // @ts-ignore
     coreChainID: Defaults.network[1]['P']['blockchainID'],
     // @ts-ignore
@@ -30,15 +30,15 @@ export const MainnetConfig: NetworkConfig = {
 };
 
 export const TestnetConfig: NetworkConfig = {
-    rawUrl: 'http://18.222.205.99:9650',
-    apiProtocol: 'http',
-    apiIp: '18.222.205.99:9650',
-    apiPort: 9650,
+    rawUrl: 'https://api.avax-test.network',
+    apiProtocol: 'https',
+    apiIp: 'api.avax-test.network',
+    apiPort: 443,
     explorerURL: 'https://explorerapi.avax-test.network',
     explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5,
     // @ts-ignore
-    xChainID: Defaults.network[5]['X']['blockchainID'],
+    assetChainID: Defaults.network[5]['X']['blockchainID'],
     // @ts-ignore
     coreChainID: Defaults.network[5]['P']['blockchainID'],
     // @ts-ignore
@@ -63,7 +63,7 @@ export const LocalnetConfig: NetworkConfig = {
     apiPort: 9650,
     networkID: 12345,
     // @ts-ignore
-    xChainID: Defaults.network[12345]['X']['blockchainID'],
+    assetChainID: Defaults.network[12345]['X']['blockchainID'],
     // @ts-ignore
     coreChainID: Defaults.network[12345]['P']['blockchainID'],
     // @ts-ignore

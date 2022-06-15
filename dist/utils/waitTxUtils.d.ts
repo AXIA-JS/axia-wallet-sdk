@@ -1,5 +1,5 @@
 /**
- * Waits until the given tx id is accepted on X chain
+ * Waits until the given tx id is accepted on AssetChain
  * @param txId Tx ID to wait for
  * @param tryCount Number of attempts until timeout
  */

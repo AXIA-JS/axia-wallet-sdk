@@ -1,15 +1,15 @@
-import { appChain, coreChain, web3, xChain } from '@/Network/network';
+import { appChain, coreChain, web3, assetChain } from '@/Network/network';
 
 import { BN, Buffer } from '@zee-ava/avajs';
 import {
-    AVMConstants,
+    AXVMConstants,
     MinterSet,
     NFTMintOutput,
-    UnsignedTx as AVMUnsignedTx,
-    UTXO as AVMUTXO,
-    UTXOSet as AVMUTXOSet,
+    UnsignedTx as AXVMUnsignedTx,
+    UTXO as AXVMUTXO,
+    UTXOSet as AXVMUTXOSet,
     UTXOSet,
-} from '@zee-ava/avajs/dist/apis/avm';
+} from '@zee-ava/avajs/dist/apis/axvm';
 
 import { PayloadBase } from '@zee-ava/avajs/dist/utils';
 import { OutputOwners } from '@zee-ava/avajs/dist/common';
@@ -48,7 +48,7 @@ export async function buildCreateNftFamilyTx(
         minterSets.push(minterSet);
     }
 
-    let unsignedTx: AVMUnsignedTx = await xChain.buildCreateNFTAssetTx(
+    let unsignedTx: AXVMUnsignedTx = await assetChain.buildCreateNFTAssetTx(
         utxoSet,
         fromAddresses,
         [changeAddress],
@@ -60,14 +60,14 @@ export async function buildCreateNftFamilyTx(
 }
 
 export async function buildMintNftTx(
-    mintUtxo: AVMUTXO,
+    mintUtxo: AXVMUTXO,
     payload: PayloadBase,
     quantity: number,
     ownerAddress: string,
     changeAddress: string,
     fromAddresses: string[],
     utxoSet: UTXOSet
-): Promise<AVMUnsignedTx> {
+): Promise<AXVMUnsignedTx> {
     let addrBuf = bintools.parseAddress(ownerAddress, 'X');
     let owners = [];
 
@@ -80,7 +80,7 @@ export async function buildMintNftTx(
 
     let groupID = (mintUtxo.getOutput() as NFTMintOutput).getGroupID();
 
-    let mintTx = await xChain.buildCreateNFTMintTx(
+    let mintTx = await assetChain.buildCreateNFTMintTx(
         utxoSet,
         owners,
         sourceAddresses,
@@ -92,9 +92,9 @@ export async function buildMintNftTx(
     return mintTx;
 }
 
-export async function buildAvmExportTransaction(
+export async function buildAxvmExportTransaction(
     destinationChain: ExportChainsX,
-    utxoSet: AVMUTXOSet,
+    utxoSet: AXVMUTXOSet,
     fromAddresses: string[],
     toAddress: string,
     amount: BN, // export amount + fee
@@ -102,7 +102,7 @@ export async function buildAvmExportTransaction(
 ) {
     let destinationChainId = chainIdFromAlias(destinationChain);
 
-    return await xChain.buildExportTx(utxoSet as AVMUTXOSet, amount, destinationChainId, [toAddress], fromAddresses, [
+    return await assetChain.buildExportTx(utxoSet as AXVMUTXOSet, amount, destinationChainId, [toAddress], fromAddresses, [
         sourceChangeAddress,
     ]);
 }
@@ -142,7 +142,7 @@ export async function buildEvmExportTransaction(
     let destinationChainId = chainIdFromAlias(destinationChain);
 
     const nonce = await web3.eth.getTransactionCount(fromAddresses[0]);
-    const axcAssetIDBuf: Buffer = await xChain.getAXCAssetID();
+    const axcAssetIDBuf: Buffer = await assetChain.getAXCAssetID();
     const axcAssetIDStr: string = bintools.cb58Encode(axcAssetIDBuf);
 
     let fromAddressHex = fromAddresses[0];
@@ -338,12 +338,12 @@ export async function estimateAxcGas(from: string, to: string, amount: BN, gasPr
     }
 }
 
-export enum AvmTxNameEnum {
-    'Transaction' = AVMConstants.BASETX,
-    'Mint' = AVMConstants.CREATEASSETTX,
-    'Operation' = AVMConstants.OPERATIONTX,
-    'Import' = AVMConstants.IMPORTTX,
-    'Export' = AVMConstants.EXPORTTX,
+export enum AxvmTxNameEnum {
+    'Transaction' = AXVMConstants.BASETX,
+    'Mint' = AXVMConstants.CREATEASSETTX,
+    'Operation' = AXVMConstants.OPERATIONTX,
+    'Import' = AXVMConstants.IMPORTTX,
+    'Export' = AXVMConstants.EXPORTTX,
 }
 
 export enum PlatfromTxNameEnum {
@@ -352,18 +352,18 @@ export enum PlatfromTxNameEnum {
     'Add Nominator' = PlatformVMConstants.ADDNOMINATORTX,
     'Import' = PlatformVMConstants.IMPORTTX,
     'Export' = PlatformVMConstants.EXPORTTX,
-    'Add AllyChain Validator' = PlatformVMConstants.ADDALLYCHAINVALIDATORTX,
+    'Add Subnet Validator' = PlatformVMConstants.ADDSUBNETVALIDATORTX,
     'Create Chain' = PlatformVMConstants.CREATECHAINTX,
-    'Create AllyChain' = PlatformVMConstants.CREATEALLYCHAINTX,
+    'Create Subnet' = PlatformVMConstants.CREATESUBNETTX,
     'Advance Time' = PlatformVMConstants.ADVANCETIMETX,
     'Reward Validator' = PlatformVMConstants.REWARDVALIDATORTX,
 }
 
 // TODO: create asset transactions
-export enum ParseableAvmTxEnum {
-    'Transaction' = AVMConstants.BASETX,
-    'Import' = AVMConstants.IMPORTTX,
-    'Export' = AVMConstants.EXPORTTX,
+export enum ParseableAxvmTxEnum {
+    'Transaction' = AXVMConstants.BASETX,
+    'Import' = AXVMConstants.IMPORTTX,
+    'Export' = AXVMConstants.EXPORTTX,
 }
 
 export enum ParseablePlatformEnum {

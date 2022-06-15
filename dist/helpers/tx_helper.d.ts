@@ -1,14 +1,14 @@
 /// <reference types="bn.js" />
 import { BN } from '@zee-ava/avajs';
-import { UnsignedTx as AVMUnsignedTx, UTXO as AVMUTXO, UTXOSet as AVMUTXOSet, UTXOSet } from '@zee-ava/avajs/dist/apis/avm';
+import { UnsignedTx as AXVMUnsignedTx, UTXO as AXVMUTXO, UTXOSet as AXVMUTXOSet, UTXOSet } from '@zee-ava/avajs/dist/apis/axvm';
 import { PayloadBase } from '@zee-ava/avajs/dist/utils';
 import { UTXOSet as PlatformUTXOSet } from '@zee-ava/avajs/dist/apis/platformvm';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import { ExportChainsC, ExportChainsP, ExportChainsX } from "../Wallet/types";
-export declare function buildCreateNftFamilyTx(name: string, symbol: string, groupNum: number, fromAddrs: string[], minterAddr: string, changeAddr: string, utxoSet: UTXOSet): Promise<AVMUnsignedTx>;
-export declare function buildMintNftTx(mintUtxo: AVMUTXO, payload: PayloadBase, quantity: number, ownerAddress: string, changeAddress: string, fromAddresses: string[], utxoSet: UTXOSet): Promise<AVMUnsignedTx>;
-export declare function buildAvmExportTransaction(destinationChain: ExportChainsX, utxoSet: AVMUTXOSet, fromAddresses: string[], toAddress: string, amount: BN, // export amount + fee
-sourceChangeAddress: string): Promise<AVMUnsignedTx>;
+export declare function buildCreateNftFamilyTx(name: string, symbol: string, groupNum: number, fromAddrs: string[], minterAddr: string, changeAddr: string, utxoSet: UTXOSet): Promise<AXVMUnsignedTx>;
+export declare function buildMintNftTx(mintUtxo: AXVMUTXO, payload: PayloadBase, quantity: number, ownerAddress: string, changeAddress: string, fromAddresses: string[], utxoSet: UTXOSet): Promise<AXVMUnsignedTx>;
+export declare function buildAxvmExportTransaction(destinationChain: ExportChainsX, utxoSet: AXVMUTXOSet, fromAddresses: string[], toAddress: string, amount: BN, // export amount + fee
+sourceChangeAddress: string): Promise<AXVMUnsignedTx>;
 export declare function buildPlatformExportTransaction(utxoSet: PlatformUTXOSet, fromAddresses: string[], toAddress: string, amount: BN, // export amount + fee
 sourceChangeAddress: string, destinationChain: ExportChainsP): Promise<import("@zee-ava/avajs/dist/apis/platformvm").UnsignedTx>;
 /**
@@ -38,7 +38,7 @@ export declare function estimateErc20Gas(tokenContract: string, from: string, to
  * @param gasPrice Given in WEI
  */
 export declare function estimateAxcGas(from: string, to: string, amount: BN, gasPrice: BN): Promise<number>;
-export declare enum AvmTxNameEnum {
+export declare enum AxvmTxNameEnum {
     'Transaction',
     'Mint',
     'Operation',
@@ -51,13 +51,13 @@ export declare enum PlatfromTxNameEnum {
     'Add Nominator',
     'Import',
     'Export',
-    'Add AllyChain Validator',
+    'Add Subnet Validator',
     'Create Chain',
-    'Create AllyChain',
+    'Create Subnet',
     'Advance Time',
     'Reward Validator'
 }
-export declare enum ParseableAvmTxEnum {
+export declare enum ParseableAxvmTxEnum {
     'Transaction',
     'Import',
     'Export'

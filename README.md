@@ -23,7 +23,7 @@ Using the axia-wallet-sdk developers can:
 -   Validation & Delegation
 -   Create keystore files from wallet instances
 -   Get transaction history of wallets
--   Mint NFTs on the X chain
+-   Mint NFTs on the AssetChain
 
 ## Installation
 

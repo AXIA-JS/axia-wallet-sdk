@@ -1,5 +1,5 @@
 import { Axia } from '@zee-ava/avajs/dist';
-import { AVMAPI } from '@zee-ava/avajs/dist/apis/avm';
+import { AXVMAPI } from '@zee-ava/avajs/dist/apis/axvm';
 import { InfoAPI } from '@zee-ava/avajs/dist/apis/info';
 import { EVMAPI } from '@zee-ava/avajs/dist/apis/evm';
 import Web3 from 'web3';
@@ -18,7 +18,7 @@ import {
 
 export const axia: Axia = createAxiaProvider(DefaultConfig);
 
-export const xChain: AVMAPI = axia.XChain();
+export const assetChain: AXVMAPI = axia.AssetChain();
 export const appChain: EVMAPI = axia.AppChain();
 export const coreChain = axia.CoreChain();
 export const infoApi: InfoAPI = axia.Info();
@@ -68,8 +68,8 @@ export function setRpcNetwork(conf: NetworkConfig, credentials = true): void {
         axia.removeRequestConfig('withCredentials');
     }
 
-    xChain.refreshBlockchainID(conf.xChainID);
-    xChain.setBlockchainAlias('X');
+    assetChain.refreshBlockchainID(conf.assetChainID);
+    assetChain.setBlockchainAlias('X');
 
     coreChain.refreshBlockchainID(conf.coreChainID);
     coreChain.setBlockchainAlias('P');
@@ -77,7 +77,7 @@ export function setRpcNetwork(conf: NetworkConfig, credentials = true): void {
     appChain.refreshBlockchainID(conf.appChainID);
     appChain.setBlockchainAlias('C');
 
-    xChain.setAXCAssetID(conf.axcID);
+    assetChain.setAXCAssetID(conf.axcID);
     coreChain.setAXCAssetID(conf.axcID);
     appChain.setAXCAssetID(conf.axcID);
 
@@ -116,7 +116,7 @@ export async function getConfigFromUrl(url: string): Promise<NetworkConfig> {
     let connectionEvm = new Web3(urlObj.href + 'ext/bc/C/rpc');
 
     let infoApi = connection.Info();
-    let xApi = connection.XChain();
+    let xApi = connection.AssetChain();
 
     let fetchIdX = infoApi.getBlockchainID('X');
     let fetchIdP = infoApi.getBlockchainID('P');
@@ -138,7 +138,7 @@ export async function getConfigFromUrl(url: string): Promise<NetworkConfig> {
         apiIp: urlObj.hostname,
         apiPort: parseInt(portStr),
         networkID: netID,
-        xChainID: idX,
+        assetChainID: idX,
         coreChainID: idP,
         appChainID: idC,
         axcID: axcId,

@@ -1,6 +1,6 @@
 import { WalletProvider } from "./Wallet";
 import { UnsafeWallet, WalletNameType } from "./types";
-import { UnsignedTx as AVMUnsignedTx, Tx as AVMTx } from '@zee-ava/avajs/dist/apis/avm';
+import { UnsignedTx as AXVMUnsignedTx, Tx as AXVMTx } from '@zee-ava/avajs/dist/apis/axvm';
 import { UnsignedTx as PlatformUnsignedTx, Tx as PlatformTx } from '@zee-ava/avajs/dist/apis/platformvm';
 import { Buffer as BufferAxia } from '@zee-ava/avajs';
 import EvmWallet from "./EvmWallet";
@@ -42,5 +42,5 @@ export default class SingletonWallet extends WalletProvider implements UnsafeWal
     signC(tx: UnsignedTx): Promise<Tx>;
     signEvm(tx: Transaction | FeeMarketEIP1559Transaction): Promise<Transaction | FeeMarketEIP1559Transaction>;
     signP(tx: PlatformUnsignedTx): Promise<PlatformTx>;
-    signX(tx: AVMUnsignedTx): Promise<AVMTx>;
+    signX(tx: AXVMUnsignedTx): Promise<AXVMTx>;
 }

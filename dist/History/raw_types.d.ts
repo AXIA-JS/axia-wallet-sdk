@@ -87,5 +87,5 @@ export interface UTXO {
     transactionID: string;
     rewardUtxo: boolean;
 }
-export declare type TransactionType = 'base' | 'create_asset' | 'operation' | 'import' | 'export' | 'add_validator' | 'add_allyChain_validator' | 'add_nominator' | 'create_chain' | 'create_allyChain' | 'pvm_import' | 'pvm_export' | 'atomic_import_tx' | 'atomic_export_tx' | 'advance_time' | 'reward_validator';
+export declare type TransactionType = 'base' | 'create_asset' | 'operation' | 'import' | 'export' | 'add_validator' | 'add_subnet_validator' | 'add_nominator' | 'create_chain' | 'create_subnet' | 'pvm_import' | 'pvm_export' | 'atomic_import_tx' | 'atomic_export_tx' | 'advance_time' | 'reward_validator';
 export {};

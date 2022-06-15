@@ -1,7 +1,7 @@
 import { HDWalletAbstract } from '@/Wallet/HDWalletAbstract';
 import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx } from '@zee-ava/avajs/dist/apis/evm';
 import { UnsignedTx as PlatformUnsignedTx, Tx as PlatformTx } from '@zee-ava/avajs/dist/apis/platformvm';
-import { UnsignedTx as AVMUnsignedTx, Tx as AVMTx } from '@zee-ava/avajs/dist/apis/avm';
+import { UnsignedTx as AXVMUnsignedTx, Tx as AXVMTx } from '@zee-ava/avajs/dist/apis/axvm';
 import { Transaction } from '@ethereumjs/tx';
 import { WalletNameType } from '@/Wallet/types';
 import EvmWallet from '@/Wallet/EvmWallet';
@@ -12,13 +12,13 @@ import { importPublic } from 'ethereumjs-util';
 export default class PublicMnemonicWallet extends HDWalletAbstract {
     /**
      *
-     * @param xpubAVM of derivation path m/44'/9000'/0'
+     * @param xpubAXVM of derivation path m/44'/9000'/0'
      * @param xpubEVM of derivation path m/44'/60'/0'
      */
-    constructor(xpubAVM: string, xpubEVM: string) {
-        let avmAcct = bip32.fromBase58(xpubAVM);
+    constructor(xpubAXVM: string, xpubEVM: string) {
+        let axvmAcct = bip32.fromBase58(xpubAXVM);
         let evmAcct = bip32.fromBase58(xpubEVM).derivePath('0/0');
-        super(avmAcct);
+        super(axvmAcct);
 
         this.type = 'xpub';
 
@@ -51,7 +51,7 @@ export default class PublicMnemonicWallet extends HDWalletAbstract {
     }
 
     //@ts-ignore
-    signX(tx: AVMUnsignedTx): Promise<AVMTx> {
+    signX(tx: AXVMUnsignedTx): Promise<AXVMTx> {
         throw new Error('Not supported.');
     }
 }

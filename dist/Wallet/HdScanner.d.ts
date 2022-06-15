@@ -1,12 +1,12 @@
 import * as bip32 from 'bip32';
-import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from '@zee-ava/avajs/dist/apis/avm/keychain';
+import { KeyPair as AXVMKeyPair, KeyChain as AXVMKeyChain } from '@zee-ava/avajs/dist/apis/axvm/keychain';
 import { KeyChain as PlatformKeyChain, KeyPair as PlatformKeyPair } from '@zee-ava/avajs/dist/apis/platformvm';
 import { HdChainType } from './types';
 declare type AddressCache = {
     [index: string]: bip32.BIP32Interface;
 };
 declare type KeyCacheX = {
-    [index: string]: AVMKeyPair;
+    [index: string]: AXVMKeyPair;
 };
 declare type KeyCacheP = {
     [index: string]: PlatformKeyPair;
@@ -17,7 +17,7 @@ export default class HdScanner {
     protected keyCacheX: KeyCacheX;
     protected keyCacheP: KeyCacheP;
     readonly changePath: string;
-    private avmAddrFactory;
+    private axvmAddrFactory;
     readonly accountKey: bip32.BIP32Interface;
     constructor(accountKey: bip32.BIP32Interface, isInternal?: boolean);
     getIndex(): number;
@@ -49,9 +49,9 @@ export default class HdScanner {
      * @param chainId  `X` or `P` optional, returns X by default
      */
     getAddressesInRangeSync(start: number, end: number, chainId?: HdChainType): string[];
-    getKeyChainX(): AVMKeyChain;
+    getKeyChainX(): AXVMKeyChain;
     getKeyChainP(): PlatformKeyChain;
-    getKeyForIndexX(index: number): AVMKeyPair;
+    getKeyForIndexX(index: number): AXVMKeyPair;
     getKeyForIndexP(index: number): PlatformKeyPair;
     private getHdKeyForIndex;
     getAddressForIndex(index: number, chainId?: HdChainType): string;

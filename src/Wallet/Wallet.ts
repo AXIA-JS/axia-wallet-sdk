@@ -13,7 +13,7 @@ import {
     WalletNameType,
 } from './types';
 import {
-    buildAvmExportTransaction,
+    buildAxvmExportTransaction,
     buildCreateNftFamilyTx,
     buildCustomEvmTx,
     buildEvmExportTransaction,
@@ -27,12 +27,12 @@ import {
 } from '@/helpers/tx_helper';
 import { BN, Buffer } from '@zee-ava/avajs';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
-import { activeNetwork, axia, appChain, coreChain, web3, xChain } from '@/Network/network';
+import { activeNetwork, axia, appChain, coreChain, web3, assetChain } from '@/Network/network';
 import EvmWallet from '@/Wallet/EvmWallet';
 
 import {
-    avmGetAllUTXOs,
-    avmGetAtomicUTXOs,
+    axvmGetAllUTXOs,
+    axvmGetAtomicUTXOs,
     evmGetAtomicUTXOs,
     getStakeForAddresses,
     platformGetAllUTXOs,
@@ -40,13 +40,13 @@ import {
 } from '@/helpers/utxo_helper';
 
 import {
-    UTXOSet as AVMUTXOSet,
-    UnsignedTx as AVMUnsignedTx,
-    UTXO as AVMUTXO,
-    Tx as AvmTx,
-    AVMConstants,
+    UTXOSet as AXVMUTXOSet,
+    UnsignedTx as AXVMUnsignedTx,
+    UTXO as AXVMUTXO,
+    Tx as AxvmTx,
+    AXVMConstants,
     AmountOutput,
-} from '@zee-ava/avajs/dist/apis/avm';
+} from '@zee-ava/avajs/dist/apis/axvm';
 import {
     UTXOSet as PlatformUTXOSet,
     UTXO as PlatformUTXO,
@@ -103,9 +103,9 @@ export abstract class WalletProvider {
     abstract evmWallet: EvmWallet | EvmWalletReadonly;
 
     /**
-     * The X chain UTXOs of the wallet's current state
+     * The AssetChain UTXOs of the wallet's current state
      */
-    public utxosX: AVMUTXOSet = new AVMUTXOSet();
+    public utxosX: AXVMUTXOSet = new AXVMUTXOSet();
 
     /**
      * The CoreChain UTXOs of the wallet's current state
@@ -115,7 +115,7 @@ export abstract class WalletProvider {
     public balanceX: WalletBalanceX = {};
 
     abstract signEvm(tx: Transaction | FeeMarketEIP1559Transaction): Promise<Transaction | FeeMarketEIP1559Transaction>;
-    abstract signX(tx: AVMUnsignedTx): Promise<AvmTx>;
+    abstract signX(tx: AXVMUnsignedTx): Promise<AxvmTx>;
     abstract signP(tx: PlatformUnsignedTx): Promise<PlatformTx>;
     abstract signC(tx: EVMUnsignedTx): Promise<EVMTx>;
 
@@ -213,7 +213,7 @@ export abstract class WalletProvider {
         let changeAddress = this.getChangeAddressX();
         let utxoSet = this.utxosX;
 
-        let tx = await xChain.buildBaseTx(
+        let tx = await assetChain.buildBaseTx(
             utxoSet,
             amount,
             activeNetwork.axcID,
@@ -223,7 +223,7 @@ export abstract class WalletProvider {
             memoBuff
         );
         let signedTx = await this.signX(tx);
-        let txId = await xChain.issueTx(signedTx);
+        let txId = await assetChain.issueTx(signedTx);
         await waitTxX(txId);
 
         // Update UTXOs
@@ -250,19 +250,19 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Send Axia Native Tokens on X chain
+     * Send Axia Native Tokens on AssetChain
      * @param assetID ID of the token to send
      * @param amount How many units of the token to send. Based on smallest divisible unit.
-     * @param to X chain address to send tokens to
+     * @param to AssetChain address to send tokens to
      */
     async sendANT(assetID: string, amount: BN, to: string): Promise<string> {
         let utxoSet = this.getUtxosX();
         let fromAddrs = await this.getAllAddressesX();
         let changeAddr = this.getChangeAddressX();
 
-        let tx = await xChain.buildBaseTx(utxoSet, amount, assetID, [to], fromAddrs, [changeAddr]);
+        let tx = await assetChain.buildBaseTx(utxoSet, amount, assetID, [to], fromAddrs, [changeAddr]);
         let signed = await this.signX(tx);
-        let txId = await xChain.issueTx(signed);
+        let txId = await assetChain.issueTx(signed);
         await waitTxX(txId);
 
         this.updateUtxosX();
@@ -436,14 +436,14 @@ export abstract class WalletProvider {
     }
 
     /**
-     *  Returns UTXOs on the X chain that belong to this wallet.
+     *  Returns UTXOs on the AssetChain that belong to this wallet.
      *  - Makes network request.
      *  - Updates `this.utxosX` with new UTXOs
      *  - Calls `this.updateBalanceX()` after success.
      *  */
-    public async updateUtxosX(): Promise<AVMUTXOSet> {
+    public async updateUtxosX(): Promise<AXVMUTXOSet> {
         const addresses = await this.getAllAddressesX();
-        this.utxosX = await avmGetAllUTXOs(addresses);
+        this.utxosX = await axvmGetAllUTXOs(addresses);
 
         await this.updateUnknownAssetsX();
         this.updateBalanceX();
@@ -452,9 +452,9 @@ export abstract class WalletProvider {
     }
 
     /**
-     *  Returns the fetched UTXOs on the X chain that belong to this wallet.
+     *  Returns the fetched UTXOs on the AssetChain that belong to this wallet.
      */
-    public getUtxosX(): AVMUTXOSet {
+    public getUtxosX(): AXVMUTXOSet {
         return this.utxosX;
     }
 
@@ -529,7 +529,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Uses the X chain UTXOs owned by this wallet, gets asset description for unknown assets,
+     * Uses the AssetChain UTXOs owned by this wallet, gets asset description for unknown assets,
      * and returns a dictionary of Asset IDs to balance amounts.
      * - Updates `this.balanceX`
      * - Expensive operation if there are unknown assets
@@ -549,7 +549,7 @@ export abstract class WalletProvider {
             let out = utxo.getOutput();
             let type = out.getOutputID();
 
-            if (type != AVMConstants.SECPXFEROUTPUTID) continue;
+            if (type != AXVMConstants.SECPXFEROUTPUTID) continue;
 
             let locktime = out.getLocktime();
             let amount = (out as AmountOutput).getAmount();
@@ -613,7 +613,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Returns the X chain AXC balance of the current wallet state.
+     * Returns the AssetChain AXC balance of the current wallet state.
      * - Does not make a network request.
      * - Does not refresh wallet balance.
      */
@@ -678,7 +678,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Exports AXC from CoreChain to X chain
+     * Exports AXC from CoreChain to AssetChain
      * @remarks
      * The export fee is added automatically to the amount. Make sure the exported amount includes the import fee for the destination chain.
      *
@@ -728,7 +728,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Exports AXC from AppChain to X chain
+     * Exports AXC from AppChain to AssetChain
      * @remarks
      * Make sure the exported `amt` includes the import fee for the destination chain.
      *
@@ -771,7 +771,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Exports AXC from X chain to either P or AppChain
+     * Exports AXC from AssetChain to either P or AppChain
      * @remarks
      * The export fee will be added to the amount automatically. Make sure the exported amount has the import fee for the destination chain.
      *
@@ -779,13 +779,13 @@ export abstract class WalletProvider {
      * @param destinationChain Which chain to export to.
      * @return returns the transaction id.
      */
-    async exportXChain(amt: BN, destinationChain: ExportChainsX) {
+    async exportAssetChain(amt: BN, destinationChain: ExportChainsX) {
         let destinationAddr = destinationChain === 'P' ? this.getAddressP() : this.getEvmAddressBech();
 
         let fromAddresses = await this.getAllAddressesX();
         let changeAddress = this.getChangeAddressX();
         let utxos = this.utxosX;
-        let exportTx = await buildAvmExportTransaction(
+        let exportTx = await buildAxvmExportTransaction(
             destinationChain,
             utxos,
             fromAddresses,
@@ -796,7 +796,7 @@ export abstract class WalletProvider {
 
         let tx = await this.signX(exportTx);
 
-        let txId = await xChain.issueTx(tx);
+        let txId = await assetChain.issueTx(tx);
         await waitTxX(txId);
 
         // Update UTXOs
@@ -807,7 +807,7 @@ export abstract class WalletProvider {
 
     async getAtomicUTXOsX(sourceChain: ExportChainsX) {
         let addrs = await this.getAllAddressesX();
-        let result = await avmGetAtomicUTXOs(addrs, sourceChain);
+        let result = await axvmGetAtomicUTXOs(addrs, sourceChain);
         return result;
     }
 
@@ -822,7 +822,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Imports atomic X chain UTXOs to the current active X chain address
+     * Imports atomic AssetChain UTXOs to the current active AssetChain address
      * @param sourceChain The chain to import from, either `P` or `C`
      */
     async importX(sourceChain: ExportChainsX) {
@@ -843,12 +843,12 @@ export abstract class WalletProvider {
         const sourceChainId = chainIdFromAlias(sourceChain);
 
         // Owner addresses, the addresses we exported to
-        const unsignedTx = await xChain.buildImportTx(utxoSet, ownerAddrs, sourceChainId, [xToAddr], fromAddrs, [
+        const unsignedTx = await assetChain.buildImportTx(utxoSet, ownerAddrs, sourceChainId, [xToAddr], fromAddrs, [
             xToAddr,
         ]);
 
         const tx = await this.signX(unsignedTx);
-        const txId = await xChain.issueTx(tx);
+        const txId = await assetChain.issueTx(tx);
 
         await waitTxX(txId);
 
@@ -977,11 +977,11 @@ export abstract class WalletProvider {
         );
 
         let signed = await this.signX(unsignedTx);
-        const txId = await xChain.issueTx(signed);
+        const txId = await assetChain.issueTx(signed);
         return await waitTxX(txId);
     }
 
-    async mintNft(mintUtxo: AVMUTXO, payload: PayloadBase, quantity: number) {
+    async mintNft(mintUtxo: AXVMUTXO, payload: PayloadBase, quantity: number) {
         let ownerAddress = this.getAddressX();
         let changeAddress = this.getChangeAddressX();
 
@@ -998,7 +998,7 @@ export abstract class WalletProvider {
             utxoSet
         );
         let signed = await this.signX(tx);
-        const txId = await xChain.issueTx(signed);
+        const txId = await assetChain.issueTx(signed);
         return await waitTxX(txId);
     }
 
@@ -1132,11 +1132,11 @@ export abstract class WalletProvider {
     public async issueUniversalTx(tx: UniversalTx): Promise<string> {
         switch (tx.action) {
             case 'export_x_c':
-                return await this.exportXChain(tx.amount, 'C');
+                return await this.exportAssetChain(tx.amount, 'C');
             case 'import_x_c':
                 return await this.importC('X', tx.fee);
             case 'export_x_p':
-                return await this.exportXChain(tx.amount, 'P');
+                return await this.exportAssetChain(tx.amount, 'P');
             case 'import_x_p':
                 return await this.importP('X');
             case 'export_c_x':
@@ -1162,7 +1162,7 @@ export abstract class WalletProvider {
 
     async getHistoryX(limit = 0): Promise<ITransactionData[]> {
         let addrs = await this.getAllAddressesX();
-        return await getAddressHistory(addrs, limit, xChain.getBlockchainID());
+        return await getAddressHistory(addrs, limit, assetChain.getBlockchainID());
     }
 
     async getHistoryP(limit = 0): Promise<ITransactionData[]> {

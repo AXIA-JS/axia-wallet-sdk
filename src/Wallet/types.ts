@@ -1,4 +1,4 @@
-import { KeyPair as AVMKeyPair } from '@zee-ava/avajs/dist/apis/avm';
+import { KeyPair as AXVMKeyPair } from '@zee-ava/avajs/dist/apis/axvm';
 
 import { BN } from '@zee-ava/avajs';
 
@@ -9,7 +9,7 @@ import LedgerWallet from '@/Wallet/LedgerWallet';
 import { iAssetDescriptionClean } from '@/Asset/types';
 
 export interface IIndexKeyCache {
-    [index: number]: AVMKeyPair;
+    [index: number]: AXVMKeyPair;
 }
 
 export type ChainAlias = 'X' | 'P';

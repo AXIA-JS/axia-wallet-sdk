@@ -4,7 +4,7 @@ import { WalletType } from '@/Wallet/types';
 
 const FILTER_ADDRESS_SIZE = 1000;
 
-export default class AVMWebSocketProvider {
+export default class AXVMWebSocketProvider {
     isConnected = false;
     socket: Sockette;
 
@@ -76,7 +76,7 @@ export default class AVMWebSocketProvider {
         });
     }
 
-    // Clears the filter listening to X chain transactions
+    // Clears the filter listening to AssetChain transactions
     clearFilter(): void {
         let pubsub = new PubSub();
         let bloom = pubsub.newBloom(FILTER_ADDRESS_SIZE);

@@ -4,7 +4,7 @@ import { AssetBalanceP, AssetBalanceRawX, ERC20Balance, ExportChainsC, ExportCha
 import { BN } from '@zee-ava/avajs';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
 import EvmWallet from "./EvmWallet";
-import { UTXOSet as AVMUTXOSet, UnsignedTx as AVMUnsignedTx, UTXO as AVMUTXO, Tx as AvmTx } from '@zee-ava/avajs/dist/apis/avm';
+import { UTXOSet as AXVMUTXOSet, UnsignedTx as AXVMUnsignedTx, UTXO as AXVMUTXO, Tx as AxvmTx } from '@zee-ava/avajs/dist/apis/axvm';
 import { UTXOSet as PlatformUTXOSet, UTXO as PlatformUTXO, UnsignedTx as PlatformUnsignedTx, Tx as PlatformTx } from '@zee-ava/avajs/dist/apis/platformvm';
 import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx, UTXOSet as EVMUTXOSet } from '@zee-ava/avajs/dist/apis/evm';
 import { PayloadBase } from '@zee-ava/avajs/dist/utils';
@@ -19,16 +19,16 @@ export declare abstract class WalletProvider {
     abstract type: WalletNameType;
     abstract evmWallet: EvmWallet | EvmWalletReadonly;
     /**
-     * The X chain UTXOs of the wallet's current state
+     * The AssetChain UTXOs of the wallet's current state
      */
-    utxosX: AVMUTXOSet;
+    utxosX: AXVMUTXOSet;
     /**
      * The CoreChain UTXOs of the wallet's current state
      */
     utxosP: PlatformUTXOSet;
     balanceX: WalletBalanceX;
     abstract signEvm(tx: Transaction | FeeMarketEIP1559Transaction): Promise<Transaction | FeeMarketEIP1559Transaction>;
-    abstract signX(tx: AVMUnsignedTx): Promise<AvmTx>;
+    abstract signX(tx: AXVMUnsignedTx): Promise<AxvmTx>;
     abstract signP(tx: PlatformUnsignedTx): Promise<PlatformTx>;
     abstract signC(tx: EVMUnsignedTx): Promise<EVMTx>;
     abstract getAddressX(): string;
@@ -88,10 +88,10 @@ export declare abstract class WalletProvider {
      */
     sendAxcC(to: string, amount: BN, gasPrice: BN, gasLimit: number): Promise<string>;
     /**
-     * Send Axia Native Tokens on X chain
+     * Send Axia Native Tokens on AssetChain
      * @param assetID ID of the token to send
      * @param amount How many units of the token to send. Based on smallest divisible unit.
-     * @param to X chain address to send tokens to
+     * @param to AssetChain address to send tokens to
      */
     sendANT(assetID: string, amount: BN, to: string): Promise<string>;
     /**
@@ -166,16 +166,16 @@ export declare abstract class WalletProvider {
      */
     updateAxcBalanceC(): Promise<BN>;
     /**
-     *  Returns UTXOs on the X chain that belong to this wallet.
+     *  Returns UTXOs on the AssetChain that belong to this wallet.
      *  - Makes network request.
      *  - Updates `this.utxosX` with new UTXOs
      *  - Calls `this.updateBalanceX()` after success.
      *  */
-    updateUtxosX(): Promise<AVMUTXOSet>;
+    updateUtxosX(): Promise<AXVMUTXOSet>;
     /**
-     *  Returns the fetched UTXOs on the X chain that belong to this wallet.
+     *  Returns the fetched UTXOs on the AssetChain that belong to this wallet.
      */
-    getUtxosX(): AVMUTXOSet;
+    getUtxosX(): AXVMUTXOSet;
     /**
      *  Returns UTXOs on the CoreChain that belong to this wallet.
      *  - Makes network request.
@@ -197,7 +197,7 @@ export declare abstract class WalletProvider {
     getBalanceERC20(addresses: string[]): Promise<ERC20Balance[]>;
     private updateUnknownAssetsX;
     /**
-     * Uses the X chain UTXOs owned by this wallet, gets asset description for unknown assets,
+     * Uses the AssetChain UTXOs owned by this wallet, gets asset description for unknown assets,
      * and returns a dictionary of Asset IDs to balance amounts.
      * - Updates `this.balanceX`
      * - Expensive operation if there are unknown assets
@@ -212,7 +212,7 @@ export declare abstract class WalletProvider {
      */
     getAxcBalance(): iAxcBalance;
     /**
-     * Returns the X chain AXC balance of the current wallet state.
+     * Returns the AssetChain AXC balance of the current wallet state.
      * - Does not make a network request.
      * - Does not refresh wallet balance.
      */
@@ -225,7 +225,7 @@ export declare abstract class WalletProvider {
      */
     getAxcBalanceP(): AssetBalanceP;
     /**
-     * Exports AXC from CoreChain to X chain
+     * Exports AXC from CoreChain to AssetChain
      * @remarks
      * The export fee is added automatically to the amount. Make sure the exported amount includes the import fee for the destination chain.
      *
@@ -242,7 +242,7 @@ export declare abstract class WalletProvider {
      */
     estimateAtomicFeeExportC(destinationChain: ExportChainsC, baseFee: BN): BN;
     /**
-     * Exports AXC from AppChain to X chain
+     * Exports AXC from AppChain to AssetChain
      * @remarks
      * Make sure the exported `amt` includes the import fee for the destination chain.
      *
@@ -253,7 +253,7 @@ export declare abstract class WalletProvider {
      */
     exportAppChain(amt: BN, destinationChain: ExportChainsC, exportFee?: BN): Promise<string>;
     /**
-     * Exports AXC from X chain to either P or AppChain
+     * Exports AXC from AssetChain to either P or AppChain
      * @remarks
      * The export fee will be added to the amount automatically. Make sure the exported amount has the import fee for the destination chain.
      *
@@ -261,12 +261,12 @@ export declare abstract class WalletProvider {
      * @param destinationChain Which chain to export to.
      * @return returns the transaction id.
      */
-    exportXChain(amt: BN, destinationChain: ExportChainsX): Promise<string>;
-    getAtomicUTXOsX(sourceChain: ExportChainsX): Promise<AVMUTXOSet>;
+    exportAssetChain(amt: BN, destinationChain: ExportChainsX): Promise<string>;
+    getAtomicUTXOsX(sourceChain: ExportChainsX): Promise<AXVMUTXOSet>;
     getAtomicUTXOsP(sourceChain: ExportChainsP): Promise<PlatformUTXOSet>;
     getAtomicUTXOsC(sourceChain: ExportChainsC): Promise<EVMUTXOSet>;
     /**
-     * Imports atomic X chain UTXOs to the current active X chain address
+     * Imports atomic AssetChain UTXOs to the current active AssetChain address
      * @param sourceChain The chain to import from, either `P` or `C`
      */
     importX(sourceChain: ExportChainsX): Promise<string>;
@@ -284,7 +284,7 @@ export declare abstract class WalletProvider {
      */
     importC(sourceChain: ExportChainsC, fee?: BN, utxoSet?: EVMUTXOSet): Promise<string>;
     createNftFamily(name: string, symbol: string, groupNum: number): Promise<string>;
-    mintNft(mintUtxo: AVMUTXO, payload: PayloadBase, quantity: number): Promise<string>;
+    mintNft(mintUtxo: AXVMUTXO, payload: PayloadBase, quantity: number): Promise<string>;
     /**
      * Adds a validator to the network using the given node id.
      *

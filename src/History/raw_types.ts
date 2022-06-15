@@ -100,10 +100,10 @@ export type TransactionType =
     | 'import'
     | 'export'
     | 'add_validator'
-    | 'add_allyChain_validator'
+    | 'add_subnet_validator'
     | 'add_nominator'
     | 'create_chain'
-    | 'create_allyChain'
+    | 'create_subnet'
     | 'pvm_import'
     | 'pvm_export'
     | 'atomic_import_tx' // for AppChain imports?

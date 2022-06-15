@@ -1,6 +1,6 @@
 import { WalletProvider } from "./Wallet";
 import HdScanner from "./HdScanner";
-import { UTXOSet as AVMUTXOSet } from '@zee-ava/avajs/dist/apis/avm/utxos';
+import { UTXOSet as AXVMUTXOSet } from '@zee-ava/avajs/dist/apis/axvm/utxos';
 import { UTXOSet as PlatformUTXOSet } from '@zee-ava/avajs/dist/apis/platformvm';
 import { iHDWalletIndex } from "./types";
 import * as bip32 from 'bip32';
@@ -21,13 +21,13 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
      */
     getInternalIndex(): number;
     /**
-     * Gets the active external address on the X chain
+     * Gets the active external address on the AssetChain
      * - The X address will change after every deposit.
      */
     getAddressX(): string;
     /**
-     * Gets the active change address on the X chain
-     * - The change address will change after every transaction on the X chain.
+     * Gets the active change address on the AssetChain
+     * - The change address will change after every transaction on the AssetChain.
      */
     getChangeAddressX(): string;
     /**
@@ -35,27 +35,27 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
      */
     getAddressP(): string;
     /**
-     * Returns every external X chain address used by the wallet up to now.
+     * Returns every external AssetChain address used by the wallet up to now.
      */
     getExternalAddressesX(): Promise<string[]>;
     /**
-     * Returns every external X chain address used by the wallet up to now.
+     * Returns every external AssetChain address used by the wallet up to now.
      */
     getExternalAddressesXSync(): string[];
     /**
-     * Returns every internal X chain address used by the wallet up to now.
+     * Returns every internal AssetChain address used by the wallet up to now.
      */
     getInternalAddressesX(): Promise<string[]>;
     /**
-     * Returns every internal X chain address used by the wallet up to now.
+     * Returns every internal AssetChain address used by the wallet up to now.
      */
     getInternalAddressesXSync(): string[];
     /**
-     * Returns every X chain address used by the wallet up to now (internal + external).
+     * Returns every AssetChain address used by the wallet up to now (internal + external).
      */
     getAllAddressesX(): Promise<string[]>;
     /**
-     * Returns every X chain address used by the wallet up to now (internal + external).
+     * Returns every AssetChain address used by the wallet up to now (internal + external).
      */
     getAllAddressesXSync(): string[];
     getExternalAddressesP(): Promise<string[]>;
@@ -69,7 +69,7 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
      */
     getAllAddressesPSync(): string[];
     /**
-     * Scans the network and initializes internal and external addresses on P and X chains.
+     * Scans the network and initializes internal and external addresses on P and AssetChains.
      * - Heavy operation
      * - MUST use the explorer api to find the last used address
      * - If explorer is not available it will use the connected node. This may result in invalid balances.
@@ -81,7 +81,7 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
      * @protected
      */
     protected emitHdReady(): void;
-    updateUtxosX(): Promise<AVMUTXOSet>;
+    updateUtxosX(): Promise<AXVMUTXOSet>;
     private incrementExternal;
     private incrementInternal;
     updateUtxosP(): Promise<PlatformUTXOSet>;

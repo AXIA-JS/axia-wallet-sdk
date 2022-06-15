@@ -4,9 +4,9 @@ import EvmWallet from './EvmWallet';
 import { UnsafeWallet, WalletNameType } from './types';
 import { Buffer } from '@zee-ava/avajs';
 import { FeeMarketEIP1559Transaction, Transaction } from '@ethereumjs/tx';
-import { Tx as AVMTx, UnsignedTx as AVMUnsignedTx } from '@zee-ava/avajs/dist/apis/avm';
+import { Tx as AXVMTx, UnsignedTx as AXVMUnsignedTx } from '@zee-ava/avajs/dist/apis/axvm';
 import { Tx as PlatformTx, UnsignedTx as PlatformUnsignedTx } from '@zee-ava/avajs/dist/apis/platformvm';
-import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from '@zee-ava/avajs/dist/apis/avm/keychain';
+import { KeyPair as AXVMKeyPair, KeyChain as AXVMKeyChain } from '@zee-ava/avajs/dist/apis/axvm/keychain';
 import { KeyChain as PlatformKeyChain } from '@zee-ava/avajs/dist/apis/platformvm';
 import { UnsignedTx as EVMUnsignedTx, Tx as EVMTx, KeyPair as EVMKeyPair } from '@zee-ava/avajs/dist/apis/evm';
 import { axia } from '@/Network/network';
@@ -98,10 +98,10 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
     }
 
     /**
-     * Signs an AVM transaction.
+     * Signs an AXVM transaction.
      * @param tx The unsigned transaction
      */
-    async signX(tx: AVMUnsignedTx): Promise<AVMTx> {
+    async signX(tx: AXVMUnsignedTx): Promise<AXVMTx> {
         return tx.sign(this.getKeyChainX());
     }
 
@@ -124,10 +124,10 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
     }
 
     /**
-     * Returns a keychain with the keys of every derived X chain address.
+     * Returns a keychain with the keys of every derived AssetChain address.
      * @private
      */
-    private getKeyChainX(): AVMKeyChain {
+    private getKeyChainX(): AXVMKeyChain {
         let internal = this.internalScan.getKeyChainX();
         let external = this.externalScan.getKeyChainX();
         return internal.union(external);
@@ -152,7 +152,7 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
 
     // TODO: Support internal address as well
     signMessage(msgStr: string, index: number): string {
-        let key = this.externalScan.getKeyForIndexX(index) as AVMKeyPair;
+        let key = this.externalScan.getKeyForIndexX(index) as AXVMKeyPair;
         let digest = digestMessage(msgStr);
 
         // Convert to the other Buffer and sign

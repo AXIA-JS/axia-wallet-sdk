@@ -9,7 +9,7 @@ import {
     ITransactionDataEVM,
 } from '@/History';
 import { findSourceChain, getEvmAssetBalanceFromUTXOs, parseMemo } from '@/History/history_helpers';
-import { activeNetwork, xChain } from '@/Network/network';
+import { activeNetwork, assetChain } from '@/Network/network';
 import { bnToAxcC, bnToAxcP, bnToAxcX } from '@/utils';
 import { BN } from '@zee-ava/avajs';
 import { getBaseTxSummary } from '@/History/base_tx_parser';
@@ -113,7 +113,7 @@ function getImportSummaryC(tx: ITransactionData, ownerAddr: string) {
     let amtOut = getEvmAssetBalanceFromUTXOs(outs, ownerAddr, axcID, tx.chainID);
 
     let time = new Date(tx.timestamp);
-    let fee = xChain.getTxFee();
+    let fee = assetChain.getTxFee();
 
     let res: iHistoryImportExport = {
         id: tx.id,
