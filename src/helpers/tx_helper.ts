@@ -1,4 +1,4 @@
-import { appChain, coreChain, web3, assetChain } from '@/Network/network';
+import { axChain, coreChain, web3, swapChain } from '@/Network/network';
 
 import { BN, Buffer } from '@zee-ava/avajs';
 import {
@@ -48,7 +48,7 @@ export async function buildCreateNftFamilyTx(
         minterSets.push(minterSet);
     }
 
-    let unsignedTx: AVMUnsignedTx = await assetChain.buildCreateNFTAssetTx(
+    let unsignedTx: AVMUnsignedTx = await swapChain.buildCreateNFTAssetTx(
         utxoSet,
         fromAddresses,
         [changeAddress],
@@ -80,7 +80,7 @@ export async function buildMintNftTx(
 
     let groupID = (mintUtxo.getOutput() as NFTMintOutput).getGroupID();
 
-    let mintTx = await assetChain.buildCreateNFTMintTx(
+    let mintTx = await swapChain.buildCreateNFTMintTx(
         utxoSet,
         owners,
         sourceAddresses,
@@ -102,7 +102,7 @@ export async function buildAvmExportTransaction(
 ) {
     let destinationChainId = chainIdFromAlias(destinationChain);
 
-    return await assetChain.buildExportTx(utxoSet as AVMUTXOSet, amount, destinationChainId, [toAddress], fromAddresses, [
+    return await swapChain.buildExportTx(utxoSet as AVMUTXOSet, amount, destinationChainId, [toAddress], fromAddresses, [
         sourceChangeAddress,
     ]);
 }
@@ -142,12 +142,12 @@ export async function buildEvmExportTransaction(
     let destinationChainId = chainIdFromAlias(destinationChain);
 
     const nonce = await web3.eth.getTransactionCount(fromAddresses[0]);
-    const axcAssetIDBuf: Buffer = await assetChain.getAXCAssetID();
+    const axcAssetIDBuf: Buffer = await swapChain.getAXCAssetID();
     const axcAssetIDStr: string = bintools.cb58Encode(axcAssetIDBuf);
 
     let fromAddressHex = fromAddresses[0];
 
-    return await appChain.buildExportTx(
+    return await axChain.buildExportTx(
         amount,
         axcAssetIDStr,
         destinationChainId,

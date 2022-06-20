@@ -5,7 +5,7 @@ import { ExportChainsC, ExportChainsP, ExportChainsX } from "../Wallet/types";
 import { GetStakeResponse } from '@zee-ava/avajs/dist/apis/platformvm/interfaces';
 /**
  *
- * @param addrs an array of AssetChain addresses to get the atomic utxos of
+ * @param addrs an array of SwapChain addresses to get the atomic utxos of
  * @param sourceChain Which chain to check against, either `P` or `C`
  */
 export declare function avmGetAtomicUTXOs(addrs: string[], sourceChain: ExportChainsX): Promise<AVMUTXOSet>;

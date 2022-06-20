@@ -24,7 +24,7 @@ import {
     KeyFileV6,
     KeystoreFileKeyType,
 } from './types';
-import { assetChain } from '@/Network/network';
+import { swapChain } from '@/Network/network';
 import { Buffer } from 'buffer/';
 import MnemonicWallet from '@/Wallet/MnemonicWallet';
 import Crypto from './Crypto';
@@ -273,14 +273,14 @@ async function readKeyFile(data: AllKeyFileTypes, pass: string): Promise<AllKeyF
 function extractKeysV2(
     file: KeyFileDecryptedV2 | KeyFileDecryptedV3 | KeyFileDecryptedV4
 ): AccessWalletMultipleInput[] {
-    let chainID = assetChain.getBlockchainAlias();
+    let chainID = swapChain.getBlockchainAlias();
     let keys = (file as KeyFileDecryptedV2 | KeyFileDecryptedV3 | KeyFileDecryptedV4).keys;
 
     return keys.map((key) => {
         // Private keys from the keystore file do not have the PrivateKey- prefix
         let pk = 'PrivateKey-' + key.key;
         // let keypair = keyToKeypair(pk, chainID)
-        let keypair = assetChain.newKeyChain().importKey(pk);
+        let keypair = swapChain.newKeyChain().importKey(pk);
 
         let keyBuf = keypair.getPrivateKey();
         let keyHex: string = keyBuf.toString('hex');

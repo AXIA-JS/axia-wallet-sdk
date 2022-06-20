@@ -21,13 +21,13 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
      */
     getInternalIndex(): number;
     /**
-     * Gets the active external address on the AssetChain
+     * Gets the active external address on the SwapChain
      * - The X address will change after every deposit.
      */
     getAddressX(): string;
     /**
-     * Gets the active change address on the AssetChain
-     * - The change address will change after every transaction on the AssetChain.
+     * Gets the active change address on the SwapChain
+     * - The change address will change after every transaction on the SwapChain.
      */
     getChangeAddressX(): string;
     /**
@@ -35,27 +35,27 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
      */
     getAddressP(): string;
     /**
-     * Returns every external AssetChain address used by the wallet up to now.
+     * Returns every external SwapChain address used by the wallet up to now.
      */
     getExternalAddressesX(): Promise<string[]>;
     /**
-     * Returns every external AssetChain address used by the wallet up to now.
+     * Returns every external SwapChain address used by the wallet up to now.
      */
     getExternalAddressesXSync(): string[];
     /**
-     * Returns every internal AssetChain address used by the wallet up to now.
+     * Returns every internal SwapChain address used by the wallet up to now.
      */
     getInternalAddressesX(): Promise<string[]>;
     /**
-     * Returns every internal AssetChain address used by the wallet up to now.
+     * Returns every internal SwapChain address used by the wallet up to now.
      */
     getInternalAddressesXSync(): string[];
     /**
-     * Returns every AssetChain address used by the wallet up to now (internal + external).
+     * Returns every SwapChain address used by the wallet up to now (internal + external).
      */
     getAllAddressesX(): Promise<string[]>;
     /**
-     * Returns every AssetChain address used by the wallet up to now (internal + external).
+     * Returns every SwapChain address used by the wallet up to now (internal + external).
      */
     getAllAddressesXSync(): string[];
     getExternalAddressesP(): Promise<string[]>;
@@ -69,7 +69,7 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
      */
     getAllAddressesPSync(): string[];
     /**
-     * Scans the network and initializes internal and external addresses on P and AssetChains.
+     * Scans the network and initializes internal and external addresses on P and SwapChains.
      * - Heavy operation
      * - MUST use the explorer api to find the last used address
      * - If explorer is not available it will use the connected node. This may result in invalid balances.

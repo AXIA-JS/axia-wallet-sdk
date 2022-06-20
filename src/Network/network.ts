@@ -18,8 +18,8 @@ import {
 
 export const axia: Axia = createAxiaProvider(DefaultConfig);
 
-export const assetChain: AVMAPI = axia.AssetChain();
-export const appChain: EVMAPI = axia.AppChain();
+export const swapChain: AVMAPI = axia.SwapChain();
+export const axChain: EVMAPI = axia.AXChain();
 export const coreChain = axia.CoreChain();
 export const infoApi: InfoAPI = axia.Info();
 
@@ -68,18 +68,18 @@ export function setRpcNetwork(conf: NetworkConfig, credentials = true): void {
         axia.removeRequestConfig('withCredentials');
     }
 
-    assetChain.refreshBlockchainID(conf.assetChainID);
-    assetChain.setBlockchainAlias('X');
+    swapChain.refreshBlockchainID(conf.swapChainID);
+    swapChain.setBlockchainAlias('X');
 
     coreChain.refreshBlockchainID(conf.coreChainID);
     coreChain.setBlockchainAlias('P');
 
-    appChain.refreshBlockchainID(conf.appChainID);
-    appChain.setBlockchainAlias('C');
+    axChain.refreshBlockchainID(conf.axChainID);
+    axChain.setBlockchainAlias('C');
 
-    assetChain.setAXCAssetID(conf.axcID);
+    swapChain.setAXCAssetID(conf.axcID);
     coreChain.setAXCAssetID(conf.axcID);
-    appChain.setAXCAssetID(conf.axcID);
+    axChain.setAXCAssetID(conf.axcID);
 
     if (conf.explorerURL) {
         explorer_api = createExplorerApi(conf);
@@ -116,7 +116,7 @@ export async function getConfigFromUrl(url: string): Promise<NetworkConfig> {
     let connectionEvm = new Web3(urlObj.href + 'ext/bc/C/rpc');
 
     let infoApi = connection.Info();
-    let xApi = connection.AssetChain();
+    let xApi = connection.SwapChain();
 
     let fetchIdX = infoApi.getBlockchainID('X');
     let fetchIdP = infoApi.getBlockchainID('P');
@@ -138,9 +138,9 @@ export async function getConfigFromUrl(url: string): Promise<NetworkConfig> {
         apiIp: urlObj.hostname,
         apiPort: parseInt(portStr),
         networkID: netID,
-        assetChainID: idX,
+        swapChainID: idX,
         coreChainID: idP,
-        appChainID: idC,
+        axChainID: idC,
         axcID: axcId,
         evmChainID: evmChainId,
         get rpcUrl(): NetworkConfigRpc {

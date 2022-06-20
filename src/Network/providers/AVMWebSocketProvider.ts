@@ -76,7 +76,7 @@ export default class AVMWebSocketProvider {
         });
     }
 
-    // Clears the filter listening to AssetChain transactions
+    // Clears the filter listening to SwapChain transactions
     clearFilter(): void {
         let pubsub = new PubSub();
         let bloom = pubsub.newBloom(FILTER_ADDRESS_SIZE);

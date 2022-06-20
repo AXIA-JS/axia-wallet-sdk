@@ -2,7 +2,7 @@ import { ITransactionData } from '@/History/raw_types';
 import { iHistoryImportExport } from '@/History/parsed_types';
 import { findDestinationChain, findSourceChain, getAssetBalanceFromUTXOs, parseMemo } from '@/History/history_helpers';
 import { idToChainAlias } from '@/Network/helpers/aliasFromNetworkID';
-import { activeNetwork, assetChain } from '@/Network/network';
+import { activeNetwork, swapChain } from '@/Network/network';
 import { bnToAxcX } from '@/utils';
 import { getOutputsOfChain, getOutputTotals, getOwnedOutputs } from '@/History/utxo_helpers';
 
@@ -16,7 +16,7 @@ export function getImportSummary(tx: ITransactionData, addresses: string[]): iHi
     let amtOut = getOutputTotals(myOuts);
 
     let time = new Date(tx.timestamp);
-    let fee = assetChain.getTxFee();
+    let fee = swapChain.getTxFee();
 
     let res: iHistoryImportExport = {
         id: tx.id,
@@ -46,7 +46,7 @@ export function getExportSummary(tx: ITransactionData, addresses: string[]): iHi
     let amtOut = getOutputTotals(chainOuts);
 
     let time = new Date(tx.timestamp);
-    let fee = assetChain.getTxFee();
+    let fee = swapChain.getTxFee();
 
     let res: iHistoryImportExport = {
         id: tx.id,

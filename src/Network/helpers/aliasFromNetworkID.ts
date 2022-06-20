@@ -6,11 +6,11 @@ import { activeNetwork } from '@/Network/network';
  * @param id Chain id
  */
 export function idToChainAlias(id: string): ChainIdType {
-    if (id === activeNetwork.assetChainID) {
+    if (id === activeNetwork.swapChainID) {
         return 'X';
     } else if (id === activeNetwork.coreChainID) {
         return 'P';
-    } else if (id === activeNetwork.appChainID) {
+    } else if (id === activeNetwork.axChainID) {
         return 'C';
     }
     throw new Error('Unknown chain ID.');

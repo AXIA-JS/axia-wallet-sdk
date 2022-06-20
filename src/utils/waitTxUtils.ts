@@ -6,10 +6,10 @@ import {
     PlatformStatusResponseType,
     PlatformStatusType,
 } from '@/utils/types';
-import { appChain, coreChain, web3, assetChain } from '@/Network/network';
+import { axChain, coreChain, web3, swapChain } from '@/Network/network';
 
 /**
- * Waits until the given tx id is accepted on AssetChain
+ * Waits until the given tx id is accepted on SwapChain
  * @param txId Tx ID to wait for
  * @param tryCount Number of attempts until timeout
  */
@@ -20,7 +20,7 @@ export async function waitTxX(txId: string, tryCount = 10): Promise<string> {
     let resp: AvmStatusResponseType;
 
     try {
-        resp = (await assetChain.getTxStatus(txId)) as AvmStatusResponseType;
+        resp = (await swapChain.getTxStatus(txId)) as AvmStatusResponseType;
     } catch (e) {
         throw new Error('Unable to get transaction status.');
     }
@@ -122,7 +122,7 @@ export async function waitTxC(txId: string, tryCount = 10): Promise<string> {
 
     let resp: ChainStatusResponseTypeC;
     try {
-        resp = (await appChain.getAtomicTxStatus(txId)) as ChainStatusResponseTypeC;
+        resp = (await axChain.getAtomicTxStatus(txId)) as ChainStatusResponseTypeC;
     } catch (e) {
         throw new Error('Unable to get transaction status.');
     }

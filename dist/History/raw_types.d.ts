@@ -1,5 +1,5 @@
 /**
- * Data coming from explorer for AppChain
+ * Data coming from explorer for AXChain
  */
 export interface ITransactionDataEVM {
     block: string;

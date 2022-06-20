@@ -1,5 +1,5 @@
 /**
- * Data coming from explorer for AppChain
+ * Data coming from explorer for AXChain
  */
 export interface ITransactionDataEVM {
     block: string;
@@ -106,7 +106,7 @@ export type TransactionType =
     | 'create_subnet'
     | 'pvm_import'
     | 'pvm_export'
-    | 'atomic_import_tx' // for AppChain imports?
-    | 'atomic_export_tx' // for AppChain exports?
+    | 'atomic_import_tx' // for AXChain imports?
+    | 'atomic_export_tx' // for AXChain exports?
     | 'advance_time'
     | 'reward_validator';

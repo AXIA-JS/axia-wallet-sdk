@@ -87,7 +87,7 @@ export async function getAddressHistory(
 }
 
 /**
- * Returns the Axtract data from the given tx id.
+ * Returns the Magellan data from the given tx id.
  * @param txID
  */
 export async function getTx(txID: string): Promise<ITransactionData> {
@@ -101,7 +101,7 @@ export async function getTx(txID: string): Promise<ITransactionData> {
 }
 
 /**
- * Returns Axtract data for a transaction hash on AppChain EVM,
+ * Returns Magellan data for a transaction hash on AXChain EVM,
  * @param txHash
  */
 export async function getTxEvm(txHash: string): Promise<ITransactionDataEVM> {

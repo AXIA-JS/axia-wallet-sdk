@@ -39,8 +39,8 @@ export default class LedgerWallet extends HDWalletAbstract {
      */
     static getEvmAccount(eth: Eth, accountIndex?: number): Promise<HDKey>;
     /**
-     * Returns the extended public key used by AppChain for address derivation.
-     * @remarks Returns the extended public key for path `m/44'/60'/0'`. This key can be used to derive AppChain accounts.
+     * Returns the extended public key used by AXChain for address derivation.
+     * @remarks Returns the extended public key for path `m/44'/60'/0'`. This key can be used to derive AXChain accounts.
      * @param transport
      */
     static getExtendedPublicKeyEth(transport: any): Promise<string>;

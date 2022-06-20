@@ -3,9 +3,9 @@
 -   This library is under development and there might be frequent breaking changes.
 -   Audit pending.
 
-# Axwallet SDK (Beta)
+# AXIA wallet SDK (Beta)
 
-Axwallet SDK is a typescript library for creating and managing decentralized wallets.
+AXIA wallet SDK is a typescript library for creating and managing decentralized wallets.
 
 It provides high level methods to transact on Axia's primary networks: X, P and C.
 
@@ -23,7 +23,7 @@ Using the axia-wallet-sdk developers can:
 -   Validation & Delegation
 -   Create keystore files from wallet instances
 -   Get transaction history of wallets
--   Mint NFTs on the AssetChain
+-   Mint NFTs on the SwapChain
 
 ## Installation
 

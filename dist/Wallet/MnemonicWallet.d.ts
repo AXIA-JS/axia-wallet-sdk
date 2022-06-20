@@ -13,7 +13,7 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
     private ethAccountKey;
     constructor(mnemonic: string, account?: number);
     /**
-     * Gets the active address on the AppChain in Bech32 encoding
+     * Gets the active address on the AXChain in Bech32 encoding
      * @return
      * Bech32 representation of the EVM address.
      */
@@ -37,7 +37,7 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
      */
     static fromMnemonic(mnemonic: string): MnemonicWallet;
     /**
-     * Signs an EVM transaction on the AppChain.
+     * Signs an EVM transaction on the AXChain.
      * @param tx The unsigned transaction
      */
     signEvm(tx: Transaction | FeeMarketEIP1559Transaction): Promise<Transaction | FeeMarketEIP1559Transaction>;
@@ -52,14 +52,14 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
      */
     signP(tx: PlatformUnsignedTx): Promise<PlatformTx>;
     /**
-     * Signs a AppChain transaction
+     * Signs a AXChain transaction
      * @remarks
-     * Used for Import and Export transactions on the AppChain. For everything else, use `this.signEvm()`
+     * Used for Import and Export transactions on the AXChain. For everything else, use `this.signEvm()`
      * @param tx The unsigned transaction
      */
     signC(tx: EVMUnsignedTx): Promise<EVMTx>;
     /**
-     * Returns a keychain with the keys of every derived AssetChain address.
+     * Returns a keychain with the keys of every derived SwapChain address.
      * @private
      */
     private getKeyChainX;
@@ -69,7 +69,7 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
      */
     private getKeyChainP;
     /**
-     * Gets the active address on the AppChain
+     * Gets the active address on the AXChain
      * @return
      * Hex representation of the EVM address.
      */

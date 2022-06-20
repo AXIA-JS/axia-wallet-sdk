@@ -70,7 +70,7 @@ export function isHistoryStakingTx(tx: HistoryItemType): tx is iHistoryStaking {
 }
 
 /**
- * Interface for parsed AssetChain base transactions.
+ * Interface for parsed SwapChain base transactions.
  */
 export interface iHistoryBaseTx extends iHistoryItem {
     tokens: iHistoryBaseTxToken[];

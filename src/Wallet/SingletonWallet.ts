@@ -7,7 +7,7 @@ import {
     UnsignedTx as PlatformUnsignedTx,
     Tx as PlatformTx,
 } from '@zee-ava/avajs/dist/apis/platformvm';
-import { axia, coreChain, assetChain } from '@/Network/network';
+import { axia, coreChain, swapChain } from '@/Network/network';
 import { Buffer as BufferAxia } from '@zee-ava/avajs';
 import EvmWallet from '@/Wallet/EvmWallet';
 import { UnsignedTx, Tx, KeyPair as EVMKeyPair } from '@zee-ava/avajs/dist/apis/evm';
@@ -50,7 +50,7 @@ export default class SingletonWallet extends WalletProvider implements UnsafeWal
     }
 
     private getKeyChainX(): AVMKeyChain {
-        let keyChain = assetChain.newKeyChain();
+        let keyChain = swapChain.newKeyChain();
         keyChain.importKey(this.key);
         return keyChain;
     }

@@ -1,6 +1,6 @@
 import * as bip32 from 'bip32';
 import { getPreferredHRP } from '@zee-ava/avajs/dist/utils';
-import { activeNetwork, axia, coreChain, assetChain } from '@/Network/network';
+import { activeNetwork, axia, coreChain, swapChain } from '@/Network/network';
 import { KeyPair as AVMKeyPair, KeyChain as AVMKeyChain } from '@zee-ava/avajs/dist/apis/avm/keychain';
 import { KeyChain as PlatformKeyChain, KeyPair as PlatformKeyPair } from '@zee-ava/avajs/dist/apis/platformvm';
 import { HdChainType } from './types';
@@ -121,7 +121,7 @@ export default class HdScanner {
     }
 
     getKeyChainX(): AVMKeyChain {
-        let keychain = assetChain.newKeyChain();
+        let keychain = swapChain.newKeyChain();
         for (let i = 0; i <= this.index; i++) {
             let key = this.getKeyForIndexX(i);
             keychain.addKey(key);
@@ -147,7 +147,7 @@ export default class HdScanner {
 
         let pkBuf: Buffer = new Buffer(pkHex, 'hex');
 
-        let keychain = assetChain.newKeyChain();
+        let keychain = swapChain.newKeyChain();
         let keypair = keychain.importKey(pkBuf);
 
         this.keyCacheX[index] = keypair;
@@ -258,7 +258,7 @@ export default class HdScanner {
             addrsP.push(addressP);
         }
 
-        let utxoSetX = (await assetChain.getUTXOs(addrsX)).utxos;
+        let utxoSetX = (await swapChain.getUTXOs(addrsX)).utxos;
         let utxoSetP = (await coreChain.getUTXOs(addrsP)).utxos;
 
         // Scan UTXOs of these indexes and try to find a gap of HD_SCAN_GAP_SIZE

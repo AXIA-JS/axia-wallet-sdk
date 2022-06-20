@@ -70,7 +70,7 @@ export function canHaveBalanceOnP(
 }
 
 /**
- * Will return true if `targetAmount` can exist on AppChain
+ * Will return true if `targetAmount` can exist on AXChain
  */
 export function canHaveBalanceOnC(
     balX: BN,

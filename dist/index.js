@@ -105,11 +105,11 @@ const MainnetConfig = {
     explorerSiteURL: 'https://explorer.avax.network',
     networkID: 1,
     // @ts-ignore
-    assetChainID: utils.Defaults.network[1]['X']['blockchainID'],
+    swapChainID: utils.Defaults.network[1]['X']['blockchainID'],
     // @ts-ignore
     coreChainID: utils.Defaults.network[1]['P']['blockchainID'],
     // @ts-ignore
-    appChainID: utils.Defaults.network[1]['C']['blockchainID'],
+    axChainID: utils.Defaults.network[1]['C']['blockchainID'],
     // @ts-ignore
     evmChainID: utils.Defaults.network[1]['C']['chainID'],
     // @ts-ignore
@@ -129,17 +129,17 @@ const TestnetConfig = {
     apiPort: 9650,
     explorerURL: 'https://explorerapi.avax-test.network',
     explorerSiteURL: 'https://explorer.avax-test.network',
-    networkID: 5,
+    networkID: 5678,
     // @ts-ignore
-    assetChainID: utils.Defaults.network[5]['X']['blockchainID'],
+    swapChainID: utils.Defaults.network[5678]['X']['blockchainID'],
     // @ts-ignore
-    coreChainID: utils.Defaults.network[5]['P']['blockchainID'],
+    coreChainID: utils.Defaults.network[5678]['P']['blockchainID'],
     // @ts-ignore
-    appChainID: utils.Defaults.network[5]['C']['blockchainID'],
+    axChainID: utils.Defaults.network[5678]['C']['blockchainID'],
     // @ts-ignore
-    evmChainID: utils.Defaults.network[5]['C']['chainID'],
+    evmChainID: utils.Defaults.network[5678]['C']['chainID'],
     // @ts-ignore
-    axcID: utils.Defaults.network[5]['X']['axcAssetID'],
+    axcID: utils.Defaults.network[5678]['X']['axcAssetID'],
     get rpcUrl() {
         return {
             c: getRpcC(this),
@@ -155,11 +155,11 @@ const LocalnetConfig = {
     apiPort: 9650,
     networkID: 12345,
     // @ts-ignore
-    assetChainID: utils.Defaults.network[12345]['X']['blockchainID'],
+    swapChainID: utils.Defaults.network[12345]['X']['blockchainID'],
     // @ts-ignore
     coreChainID: utils.Defaults.network[12345]['P']['blockchainID'],
     // @ts-ignore
-    appChainID: utils.Defaults.network[12345]['C']['blockchainID'],
+    axChainID: utils.Defaults.network[12345]['C']['blockchainID'],
     // @ts-ignore
     evmChainID: utils.Defaults.network[12345]['C']['chainID'],
     // @ts-ignore
@@ -1631,8 +1631,8 @@ var network_helper = /*#__PURE__*/Object.freeze({
 });
 
 const axia = createAxiaProvider(DefaultConfig);
-const assetChain = axia.AssetChain();
-const appChain = axia.AppChain();
+const swapChain = axia.SwapChain();
+const axChain = axia.AXChain();
 const coreChain = axia.CoreChain();
 axia.Info();
 function getProviderFromUrl(url, credentials = false) {
@@ -1676,15 +1676,15 @@ function setRpcNetwork(conf, credentials = true) {
     else {
         axia.removeRequestConfig('withCredentials');
     }
-    assetChain.refreshBlockchainID(conf.assetChainID);
-    assetChain.setBlockchainAlias('X');
+    swapChain.refreshBlockchainID(conf.swapChainID);
+    swapChain.setBlockchainAlias('X');
     coreChain.refreshBlockchainID(conf.coreChainID);
     coreChain.setBlockchainAlias('P');
-    appChain.refreshBlockchainID(conf.appChainID);
-    appChain.setBlockchainAlias('C');
-    assetChain.setAXCAssetID(conf.axcID);
+    axChain.refreshBlockchainID(conf.axChainID);
+    axChain.setBlockchainAlias('C');
+    swapChain.setAXCAssetID(conf.axcID);
     coreChain.setAXCAssetID(conf.axcID);
-    appChain.setAXCAssetID(conf.axcID);
+    axChain.setAXCAssetID(conf.axcID);
     if (conf.explorerURL) {
         explorer_api = createExplorerApi(conf);
     }
@@ -1715,7 +1715,7 @@ function getConfigFromUrl(url$1) {
         // TODO: Use a helper for this
         let connectionEvm = new Web3__default["default"](urlObj.href + 'ext/bc/C/rpc');
         let infoApi = connection.Info();
-        let xApi = connection.AssetChain();
+        let xApi = connection.SwapChain();
         let fetchIdX = infoApi.getBlockchainID('X');
         let fetchIdP = infoApi.getBlockchainID('P');
         let fetchIdC = infoApi.getBlockchainID('C');
@@ -1733,9 +1733,9 @@ function getConfigFromUrl(url$1) {
             apiIp: urlObj.hostname,
             apiPort: parseInt(portStr),
             networkID: netID,
-            assetChainID: idX,
+            swapChainID: idX,
             coreChainID: idP,
-            appChainID: idC,
+            axChainID: idC,
             axcID: axcId,
             evmChainID: evmChainId,
             get rpcUrl() {
@@ -1811,7 +1811,7 @@ class AVMWebSocketProvider {
             },
         });
     }
-    // Clears the filter listening to AssetChain transactions
+    // Clears the filter listening to SwapChain transactions
     clearFilter() {
         let pubsub = new avajs.PubSub();
         let bloom = pubsub.newBloom(FILTER_ADDRESS_SIZE);
@@ -2881,13 +2881,13 @@ const networkEvents = new EventEmitter$1();
  * @param id Chain id
  */
 function idToChainAlias(id) {
-    if (id === activeNetwork.assetChainID) {
+    if (id === activeNetwork.swapChainID) {
         return 'X';
     }
     else if (id === activeNetwork.coreChainID) {
         return 'P';
     }
-    else if (id === activeNetwork.appChainID) {
+    else if (id === activeNetwork.axChainID) {
         return 'C';
     }
     throw new Error('Unknown chain ID.');
@@ -2899,13 +2899,13 @@ function idToChainAlias(id) {
  */
 function chainIdFromAlias(alias) {
     if (alias === 'X') {
-        return assetChain.getBlockchainID();
+        return swapChain.getBlockchainID();
     }
     else if (alias === 'P') {
         return coreChain.getBlockchainID();
     }
     else if (alias === 'C') {
-        return appChain.getBlockchainID();
+        return axChain.getBlockchainID();
     }
     throw new Error('Unknown chain alias.');
 }
@@ -2980,7 +2980,7 @@ function getAssetDescription(assetId) {
             return cache;
         }
         try {
-            let res = yield assetChain.getAssetDescription(assetId);
+            let res = yield swapChain.getAssetDescription(assetId);
             let clean = Object.assign(Object.assign({}, res), { assetID: assetId, name: xss__default["default"](res.name), symbol: xss__default["default"](res.symbol) });
             assetCache[assetId] = clean;
             return clean;
@@ -3068,7 +3068,7 @@ function getAddressHistory(addrs, limit = 20, chainID, endTime) {
     });
 }
 /**
- * Returns the Axtract data from the given tx id.
+ * Returns the Magellan data from the given tx id.
  * @param txID
  */
 function getTx(txID) {
@@ -3082,7 +3082,7 @@ function getTx(txID) {
     });
 }
 /**
- * Returns Axtract data for a transaction hash on AppChain EVM,
+ * Returns Magellan data for a transaction hash on AXChain EVM,
  * @param txHash
  */
 function getTxEvm(txHash) {
@@ -3356,10 +3356,10 @@ function bigToBN(val, denom) {
 }
 
 /**
- * Returns the transaction fee for AssetChain.
+ * Returns the transaction fee for SwapChain.
  */
 function getTxFeeX() {
-    return assetChain.getTxFee();
+    return swapChain.getTxFee();
 }
 /**
  * Returns the transaction fee for CoreChain.
@@ -3385,7 +3385,7 @@ function getAxcPrice() {
 }
 
 /**
- * Waits until the given tx id is accepted on AssetChain
+ * Waits until the given tx id is accepted on SwapChain
  * @param txId Tx ID to wait for
  * @param tryCount Number of attempts until timeout
  */
@@ -3396,7 +3396,7 @@ function waitTxX(txId, tryCount = 10) {
         }
         let resp;
         try {
-            resp = (yield assetChain.getTxStatus(txId));
+            resp = (yield swapChain.getTxStatus(txId));
         }
         catch (e) {
             throw new Error('Unable to get transaction status.');
@@ -3503,7 +3503,7 @@ function waitTxC(txId, tryCount = 10) {
         }
         let resp;
         try {
-            resp = (yield appChain.getAtomicTxStatus(txId));
+            resp = (yield axChain.getAtomicTxStatus(txId));
         }
         catch (e) {
             throw new Error('Unable to get transaction status.');
@@ -3950,7 +3950,7 @@ function getImportSummary(tx, addresses) {
     let myOuts = getOwnedOutputs(outs, addresses);
     let amtOut = getOutputTotals(myOuts);
     let time = new Date(tx.timestamp);
-    let fee = assetChain.getTxFee();
+    let fee = swapChain.getTxFee();
     let res = {
         id: tx.id,
         memo: parseMemo(tx.memo),
@@ -3974,7 +3974,7 @@ function getExportSummary(tx, addresses) {
     let chainOuts = getOutputsOfChain(myOuts, destinationChain);
     let amtOut = getOutputTotals(chainOuts);
     let time = new Date(tx.timestamp);
-    let fee = assetChain.getTxFee();
+    let fee = swapChain.getTxFee();
     let res = {
         id: tx.id,
         memo: parseMemo(tx.memo),
@@ -4063,7 +4063,7 @@ function getStakingSummary(tx, ownerAddrs) {
         rewardAmountDisplayValue: rewardAmountClean,
     };
 }
-// Returns the summary for a AppChain import TX
+// Returns the summary for a AXChain import TX
 function getImportSummaryC(tx, ownerAddr) {
     let sourceChain = findSourceChain(tx);
     let chainAliasFrom = idToChainAlias(sourceChain);
@@ -4072,7 +4072,7 @@ function getImportSummaryC(tx, ownerAddr) {
     let outs = tx.outputs || [];
     let amtOut = getEvmAssetBalanceFromUTXOs(outs, ownerAddr, axcID, tx.chainID);
     let time = new Date(tx.timestamp);
-    let fee = assetChain.getTxFee();
+    let fee = swapChain.getTxFee();
     let res = {
         id: tx.id,
         source: chainAliasFrom,
@@ -4604,7 +4604,7 @@ function buildCreateNftFamilyTx(name, symbol, groupNum, fromAddrs, minterAddr, c
             const minterSet = new avm.MinterSet(1, [minterAddress]);
             minterSets.push(minterSet);
         }
-        let unsignedTx = yield assetChain.buildCreateNFTAssetTx(utxoSet, fromAddresses, [changeAddress], minterSets, name, symbol);
+        let unsignedTx = yield swapChain.buildCreateNFTAssetTx(utxoSet, fromAddresses, [changeAddress], minterSets, name, symbol);
         return unsignedTx;
     });
 }
@@ -4618,7 +4618,7 @@ function buildMintNftTx(mintUtxo, payload, quantity, ownerAddress, changeAddress
             owners.push(owner);
         }
         let groupID = mintUtxo.getOutput().getGroupID();
-        let mintTx = yield assetChain.buildCreateNFTMintTx(utxoSet, owners, sourceAddresses, [changeAddress], mintUtxo.getUTXOID(), groupID, payload);
+        let mintTx = yield swapChain.buildCreateNFTMintTx(utxoSet, owners, sourceAddresses, [changeAddress], mintUtxo.getUTXOID(), groupID, payload);
         return mintTx;
     });
 }
@@ -4626,7 +4626,7 @@ function buildAvmExportTransaction(destinationChain, utxoSet, fromAddresses, toA
 sourceChangeAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         let destinationChainId = chainIdFromAlias(destinationChain);
-        return yield assetChain.buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [
+        return yield swapChain.buildExportTx(utxoSet, amount, destinationChainId, [toAddress], fromAddresses, [
             sourceChangeAddress,
         ]);
     });
@@ -4654,10 +4654,10 @@ fromAddressBech, destinationChain, fee) {
     return __awaiter(this, void 0, void 0, function* () {
         let destinationChainId = chainIdFromAlias(destinationChain);
         const nonce = yield web3.eth.getTransactionCount(fromAddresses[0]);
-        const axcAssetIDBuf = yield assetChain.getAXCAssetID();
+        const axcAssetIDBuf = yield swapChain.getAXCAssetID();
         const axcAssetIDStr = bintools.cb58Encode(axcAssetIDBuf);
         let fromAddressHex = fromAddresses[0];
-        return yield appChain.buildExportTx(amount, axcAssetIDStr, destinationChainId, fromAddressHex, fromAddressBech, [toAddress], nonce, undefined, undefined, fee);
+        return yield axChain.buildExportTx(amount, axcAssetIDStr, destinationChainId, fromAddressHex, fromAddressBech, [toAddress], nonce, undefined, undefined, fee);
     });
 }
 function buildEvmTransferEIP1559Tx(from, to, amount, // in wei
@@ -4858,7 +4858,7 @@ var tx_helper = /*#__PURE__*/Object.freeze({
 
 /**
  *
- * @param addrs an array of AssetChain addresses to get the atomic utxos of
+ * @param addrs an array of SwapChain addresses to get the atomic utxos of
  * @param sourceChain Which chain to check against, either `P` or `C`
  */
 function avmGetAtomicUTXOs(addrs, sourceChain) {
@@ -4866,7 +4866,7 @@ function avmGetAtomicUTXOs(addrs, sourceChain) {
         const selection = addrs.slice(0, 1024);
         const remaining = addrs.slice(1024);
         const sourceChainId = chainIdFromAlias(sourceChain);
-        let utxoSet = (yield assetChain.getUTXOs(selection, sourceChainId)).utxos;
+        let utxoSet = (yield swapChain.getUTXOs(selection, sourceChainId)).utxos;
         if (remaining.length > 0) {
             const nextSet = yield avmGetAtomicUTXOs(remaining, sourceChain);
             utxoSet = utxoSet.merge(nextSet);
@@ -4895,7 +4895,7 @@ function evmGetAtomicUTXOs(addrs, sourceChain) {
             throw new Error('Number of addresses can not be greater than 1024.');
         }
         const sourceChainId = chainIdFromAlias(sourceChain);
-        let result = (yield appChain.getUTXOs(addrs, sourceChainId)).utxos;
+        let result = (yield axChain.getUTXOs(addrs, sourceChainId)).utxos;
         return result;
     });
 }
@@ -4941,10 +4941,10 @@ function avmGetAllUTXOsForAddresses(addrs, endIndex) {
             throw new Error('Maximum length of addresses is 1024');
         let response;
         if (!endIndex) {
-            response = yield assetChain.getUTXOs(addrs);
+            response = yield swapChain.getUTXOs(addrs);
         }
         else {
-            response = yield assetChain.getUTXOs(addrs, undefined, 0, endIndex);
+            response = yield swapChain.getUTXOs(addrs, undefined, 0, endIndex);
         }
         let utxoSet = response.utxos;
         let nextEndIndex = response.endIndex;
@@ -5228,7 +5228,7 @@ function canHaveBalanceOnP(balX, balP, balC, targetAmount, atomicFeeXP, atomicFe
     return startNode.reduceTotalBalanceFromParents().gte(targetAmount);
 }
 /**
- * Will return true if `targetAmount` can exist on AppChain
+ * Will return true if `targetAmount` can exist on AXChain
  */
 function canHaveBalanceOnC(balX, balP, balC, targetAmount, atomicFeeXP, atomicFeeC) {
     let startNode = createGraphForC(balX, balP, balC, atomicFeeXP, atomicFeeC);
@@ -5289,7 +5289,7 @@ function adjustValue(val, perc) {
  */
 function getBaseFee() {
     return __awaiter(this, void 0, void 0, function* () {
-        const rawHex = (yield appChain.getBaseFee()).substring(2);
+        const rawHex = (yield axChain.getBaseFee()).substring(2);
         return new avajs.BN(rawHex, 'hex');
     });
 }
@@ -5307,7 +5307,7 @@ function getBaseFeeRecommended() {
  */
 function getMaxPriorityFee() {
     return __awaiter(this, void 0, void 0, function* () {
-        const rawHex = (yield appChain.getMaxPriorityFeePerGas()).substring(2);
+        const rawHex = (yield axChain.getMaxPriorityFeePerGas()).substring(2);
         return new avajs.BN(rawHex, 'hex');
     });
 }
@@ -5332,7 +5332,7 @@ function estimateImportGasFeeFromMockTx(numIns = 1, numSigs // number of signatu
     const BASE_TX_SIZE = 78;
     const SINGLE_OWNER_INPUT_SIZE = 90; // in bytes
     const OUTPUT_SIZE = 60; // in bytes
-    // AppChain imports consolidate inputs to one output
+    // AXChain imports consolidate inputs to one output
     const numOutputs = 1;
     // Assuming each input has 1 owner
     const baseSize = BASE_TX_SIZE + numIns * SINGLE_OWNER_INPUT_SIZE + numOutputs * OUTPUT_SIZE;
@@ -5343,7 +5343,7 @@ function estimateImportGasFeeFromMockTx(numIns = 1, numSigs // number of signatu
  * Estimates the gas fee using a mock ExportTx built from the passed values.
  * @param destinationChain `X` or `P`
  * @param amount in nAXC
- * @param from The AppChain hex address exported from
+ * @param from The AXChain hex address exported from
  * @param to The destination X or P address
  */
 function estimateExportGasFeeFromMockTx(destinationChain, amount, from, to) {
@@ -5351,7 +5351,7 @@ function estimateExportGasFeeFromMockTx(destinationChain, amount, from, to) {
     const destChainIdBuff = bintools.cb58Decode(destChainId);
     const toBuff = bintools.stringToAddress(to);
     const netID = activeNetwork.networkID;
-    const chainID = activeNetwork.appChainID;
+    const chainID = activeNetwork.axChainID;
     const AXC_ID = activeNetwork.axcID;
     const axcIDBuff = bintools.cb58Decode(AXC_ID);
     const txIn = new evm.EVMInput(from, amount, axcIDBuff);
@@ -5367,8 +5367,8 @@ function estimateExportGasFeeFromMockTx(destinationChain, amount, from, to) {
  * Returns the estimated gas for the export transaction.
  * @param destinationChain Either `X` or `P`
  * @param amount The amount to export. In nAXC.
- * @param from The AppChain hex address exporting the asset
- * @param fromBech The AppChain bech32 address exporting the asset
+ * @param from The AXChain hex address exporting the asset
+ * @param fromBech The AXChain bech32 address exporting the asset
  * @param to The destination address on the destination chain
  */
 function estimateExportGasFee(destinationChain, from, fromBech, to, amount) {
@@ -5395,7 +5395,7 @@ var gas_helper = /*#__PURE__*/Object.freeze({
 class WalletProvider {
     constructor() {
         /**
-         * The AssetChain UTXOs of the wallet's current state
+         * The SwapChain UTXOs of the wallet's current state
          */
         this.utxosX = new avm.UTXOSet();
         /**
@@ -5465,9 +5465,9 @@ class WalletProvider {
             let froms = yield this.getAllAddressesX();
             let changeAddress = this.getChangeAddressX();
             let utxoSet = this.utxosX;
-            let tx = yield assetChain.buildBaseTx(utxoSet, amount, activeNetwork.axcID, [to], froms, [changeAddress], memoBuff);
+            let tx = yield swapChain.buildBaseTx(utxoSet, amount, activeNetwork.axcID, [to], froms, [changeAddress], memoBuff);
             let signedTx = yield this.signX(tx);
-            let txId = yield assetChain.issueTx(signedTx);
+            let txId = yield swapChain.issueTx(signedTx);
             yield waitTxX(txId);
             // Update UTXOs
             this.updateUtxosX();
@@ -5475,7 +5475,7 @@ class WalletProvider {
         });
     }
     /**
-     * Sends AXC to another address on the AppChain using legacy transaction format.
+     * Sends AXC to another address on the AXChain using legacy transaction format.
      * @param to Hex address to send AXC to.
      * @param amount Amount of AXC to send, represented in WEI format.
      * @param gasPrice Gas price in WEI format
@@ -5493,19 +5493,19 @@ class WalletProvider {
         });
     }
     /**
-     * Send Axia Native Tokens on AssetChain
+     * Send Axia Native Tokens on SwapChain
      * @param assetID ID of the token to send
      * @param amount How many units of the token to send. Based on smallest divisible unit.
-     * @param to AssetChain address to send tokens to
+     * @param to SwapChain address to send tokens to
      */
     sendANT(assetID, amount, to) {
         return __awaiter(this, void 0, void 0, function* () {
             let utxoSet = this.getUtxosX();
             let fromAddrs = yield this.getAllAddressesX();
             let changeAddr = this.getChangeAddressX();
-            let tx = yield assetChain.buildBaseTx(utxoSet, amount, assetID, [to], fromAddrs, [changeAddr]);
+            let tx = yield swapChain.buildBaseTx(utxoSet, amount, assetID, [to], fromAddrs, [changeAddr]);
             let signed = yield this.signX(tx);
-            let txId = yield assetChain.issueTx(signed);
+            let txId = yield swapChain.issueTx(signed);
             yield waitTxX(txId);
             this.updateUtxosX();
             return txId;
@@ -5568,7 +5568,7 @@ class WalletProvider {
         });
     }
     /**
-     * Estimate the gas needed for a AXC send transaction on the AppChain.
+     * Estimate the gas needed for a AXC send transaction on the AXChain.
      * @param to Destination address.
      * @param amount Amount of AXC to send, in WEI.
      */
@@ -5662,7 +5662,7 @@ class WalletProvider {
         });
     }
     /**
-     * Returns the AppChain AXC balance of the wallet in WEI format.
+     * Returns the AXChain AXC balance of the wallet in WEI format.
      */
     updateAxcBalanceC() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -5675,7 +5675,7 @@ class WalletProvider {
         });
     }
     /**
-     *  Returns UTXOs on the AssetChain that belong to this wallet.
+     *  Returns UTXOs on the SwapChain that belong to this wallet.
      *  - Makes network request.
      *  - Updates `this.utxosX` with new UTXOs
      *  - Calls `this.updateBalanceX()` after success.
@@ -5690,7 +5690,7 @@ class WalletProvider {
         });
     }
     /**
-     *  Returns the fetched UTXOs on the AssetChain that belong to this wallet.
+     *  Returns the fetched UTXOs on the SwapChain that belong to this wallet.
      */
     getUtxosX() {
         return this.utxosX;
@@ -5763,7 +5763,7 @@ class WalletProvider {
         });
     }
     /**
-     * Uses the AssetChain UTXOs owned by this wallet, gets asset description for unknown assets,
+     * Uses the SwapChain UTXOs owned by this wallet, gets asset description for unknown assets,
      * and returns a dictionary of Asset IDs to balance amounts.
      * - Updates `this.balanceX`
      * - Expensive operation if there are unknown assets
@@ -5822,7 +5822,7 @@ class WalletProvider {
         return this.balanceX;
     }
     /**
-     * A helpful method that returns the AXC balance on X, P, AppChains.
+     * A helpful method that returns the AXC balance on X, P, AXChains.
      * Internally calls chain specific getAxcBalance methods.
      */
     getAxcBalance() {
@@ -5836,7 +5836,7 @@ class WalletProvider {
         };
     }
     /**
-     * Returns the AssetChain AXC balance of the current wallet state.
+     * Returns the SwapChain AXC balance of the current wallet state.
      * - Does not make a network request.
      * - Does not refresh wallet balance.
      */
@@ -5894,7 +5894,7 @@ class WalletProvider {
         };
     }
     /**
-     * Exports AXC from CoreChain to AssetChain
+     * Exports AXC from CoreChain to SwapChain
      * @remarks
      * The export fee is added automatically to the amount. Make sure the exported amount includes the import fee for the destination chain.
      *
@@ -5917,10 +5917,10 @@ class WalletProvider {
         });
     }
     /***
-     * Estimates the required fee for a AppChain export transaction
+     * Estimates the required fee for a AXChain export transaction
      * @param destinationChain Either `X` or `P`
      * @param baseFee Current base fee of the network, use a padded amount.
-     * @return BN AppChain atomic export transaction fee in nAXC.
+     * @return BN AXChain atomic export transaction fee in nAXC.
      */
     estimateAtomicFeeExportC(destinationChain, baseFee) {
         let destinationAddr = destinationChain === 'X' ? this.getAddressX() : this.getAddressP();
@@ -5931,7 +5931,7 @@ class WalletProvider {
         return axcCtoX(baseFee.mul(new avajs.BN(gas)));
     }
     /**
-     * Exports AXC from AppChain to AssetChain
+     * Exports AXC from AXChain to SwapChain
      * @remarks
      * Make sure the exported `amt` includes the import fee for the destination chain.
      *
@@ -5940,7 +5940,7 @@ class WalletProvider {
      * @param exportFee Export fee in nAXC
      * @return returns the transaction id.
      */
-    exportAppChain(amt, destinationChain, exportFee) {
+    exportAXChain(amt, destinationChain, exportFee) {
         return __awaiter(this, void 0, void 0, function* () {
             let hexAddr = this.getAddressC();
             let bechAddr = this.getEvmAddressBech();
@@ -5954,14 +5954,14 @@ class WalletProvider {
             }
             let exportTx = yield buildEvmExportTransaction(fromAddresses, destinationAddr, amt, bechAddr, destinationChain, exportFee);
             let tx = yield this.signC(exportTx);
-            let txId = yield appChain.issueTx(tx);
+            let txId = yield axChain.issueTx(tx);
             yield waitTxC(txId);
             yield this.updateAxcBalanceC();
             return txId;
         });
     }
     /**
-     * Exports AXC from AssetChain to either P or AppChain
+     * Exports AXC from SwapChain to either P or AXChain
      * @remarks
      * The export fee will be added to the amount automatically. Make sure the exported amount has the import fee for the destination chain.
      *
@@ -5969,7 +5969,7 @@ class WalletProvider {
      * @param destinationChain Which chain to export to.
      * @return returns the transaction id.
      */
-    exportAssetChain(amt, destinationChain) {
+    exportSwapChain(amt, destinationChain) {
         return __awaiter(this, void 0, void 0, function* () {
             let destinationAddr = destinationChain === 'P' ? this.getAddressP() : this.getEvmAddressBech();
             let fromAddresses = yield this.getAllAddressesX();
@@ -5977,7 +5977,7 @@ class WalletProvider {
             let utxos = this.utxosX;
             let exportTx = yield buildAvmExportTransaction(destinationChain, utxos, fromAddresses, destinationAddr, amt, changeAddress);
             let tx = yield this.signX(exportTx);
-            let txId = yield assetChain.issueTx(tx);
+            let txId = yield swapChain.issueTx(tx);
             yield waitTxX(txId);
             // Update UTXOs
             yield this.updateUtxosX();
@@ -6004,7 +6004,7 @@ class WalletProvider {
         });
     }
     /**
-     * Imports atomic AssetChain UTXOs to the current active AssetChain address
+     * Imports atomic SwapChain UTXOs to the current active SwapChain address
      * @param sourceChain The chain to import from, either `P` or `C`
      */
     importX(sourceChain) {
@@ -6020,11 +6020,11 @@ class WalletProvider {
             let ownerAddrs = utxoAddrs;
             const sourceChainId = chainIdFromAlias(sourceChain);
             // Owner addresses, the addresses we exported to
-            const unsignedTx = yield assetChain.buildImportTx(utxoSet, ownerAddrs, sourceChainId, [xToAddr], fromAddrs, [
+            const unsignedTx = yield swapChain.buildImportTx(utxoSet, ownerAddrs, sourceChainId, [xToAddr], fromAddrs, [
                 xToAddr,
             ]);
             const tx = yield this.signX(unsignedTx);
-            const txId = yield assetChain.issueTx(tx);
+            const txId = yield swapChain.issueTx(tx);
             yield waitTxX(txId);
             // Update UTXOs
             yield this.updateUtxosX();
@@ -6090,9 +6090,9 @@ class WalletProvider {
                 const baseFee = yield getBaseFeeRecommended();
                 fee = axcCtoX(baseFee.mul(new avajs.BN(importGas)));
             }
-            const unsignedTx = yield appChain.buildImportTx(utxoSet, toAddress, ownerAddresses, sourceChainId, fromAddresses, fee);
+            const unsignedTx = yield axChain.buildImportTx(utxoSet, toAddress, ownerAddresses, sourceChainId, fromAddresses, fee);
             let tx = yield this.signC(unsignedTx);
-            let id = yield appChain.issueTx(tx);
+            let id = yield axChain.issueTx(tx);
             yield waitTxC(id);
             yield this.updateAxcBalanceC();
             return id;
@@ -6106,7 +6106,7 @@ class WalletProvider {
             let utxoSet = this.utxosX;
             let unsignedTx = yield buildCreateNftFamilyTx(name, symbol, groupNum, fromAddresses, minterAddress, changeAddress, utxoSet);
             let signed = yield this.signX(unsignedTx);
-            const txId = yield assetChain.issueTx(signed);
+            const txId = yield swapChain.issueTx(signed);
             return yield waitTxX(txId);
         });
     }
@@ -6118,7 +6118,7 @@ class WalletProvider {
             let utxoSet = this.utxosX;
             let tx = yield buildMintNftTx(mintUtxo, payload, quantity, ownerAddress, changeAddress, sourceAddresses, utxoSet);
             let signed = yield this.signX(tx);
-            const txId = yield assetChain.issueTx(signed);
+            const txId = yield swapChain.issueTx(signed);
             return yield waitTxX(txId);
         });
     }
@@ -6202,19 +6202,19 @@ class WalletProvider {
         return __awaiter(this, void 0, void 0, function* () {
             switch (tx.action) {
                 case 'export_x_c':
-                    return yield this.exportAssetChain(tx.amount, 'C');
+                    return yield this.exportSwapChain(tx.amount, 'C');
                 case 'import_x_c':
                     return yield this.importC('X', tx.fee);
                 case 'export_x_p':
-                    return yield this.exportAssetChain(tx.amount, 'P');
+                    return yield this.exportSwapChain(tx.amount, 'P');
                 case 'import_x_p':
                     return yield this.importP('X');
                 case 'export_c_x':
-                    return yield this.exportAppChain(tx.amount, 'X', tx.fee);
+                    return yield this.exportAXChain(tx.amount, 'X', tx.fee);
                 case 'import_c_x':
                     return yield this.importX('C');
                 case 'export_c_p':
-                    return yield this.exportAppChain(tx.amount, 'P', tx.fee);
+                    return yield this.exportAXChain(tx.amount, 'P', tx.fee);
                 case 'import_c_p':
                     return yield this.importP('C');
                 case 'export_p_x':
@@ -6233,7 +6233,7 @@ class WalletProvider {
     getHistoryX(limit = 0) {
         return __awaiter(this, void 0, void 0, function* () {
             let addrs = yield this.getAllAddressesX();
-            return yield getAddressHistory(addrs, limit, assetChain.getBlockchainID());
+            return yield getAddressHistory(addrs, limit, swapChain.getBlockchainID());
         });
     }
     getHistoryP(limit = 0) {
@@ -6245,7 +6245,7 @@ class WalletProvider {
     getHistoryC(limit = 0) {
         return __awaiter(this, void 0, void 0, function* () {
             let addrs = [this.getEvmAddressBech(), ...(yield this.getAllAddressesX())];
-            return yield getAddressHistory(addrs, limit, appChain.getBlockchainID());
+            return yield getAddressHistory(addrs, limit, axChain.getBlockchainID());
         });
     }
     getHistoryEVM() {
@@ -6437,7 +6437,7 @@ class HdScanner {
         return res;
     }
     getKeyChainX() {
-        let keychain = assetChain.newKeyChain();
+        let keychain = swapChain.newKeyChain();
         for (let i = 0; i <= this.index; i++) {
             let key = this.getKeyForIndexX(i);
             keychain.addKey(key);
@@ -6459,7 +6459,7 @@ class HdScanner {
         let hdKey = this.getHdKeyForIndex(index);
         let pkHex = hdKey.privateKey.toString('hex');
         let pkBuf = new avajs.Buffer(pkHex, 'hex');
-        let keychain = assetChain.newKeyChain();
+        let keychain = swapChain.newKeyChain();
         let keypair = keychain.importKey(pkBuf);
         this.keyCacheX[index] = keypair;
         return keypair;
@@ -6556,7 +6556,7 @@ class HdScanner {
                 addrsX.push(addressX);
                 addrsP.push(addressP);
             }
-            let utxoSetX = (yield assetChain.getUTXOs(addrsX)).utxos;
+            let utxoSetX = (yield swapChain.getUTXOs(addrsX)).utxos;
             let utxoSetP = (yield coreChain.getUTXOs(addrsP)).utxos;
             // Scan UTXOs of these indexes and try to find a gap of HD_SCAN_GAP_SIZE
             for (let i = 0; i < addrsX.length - HD_SCAN_GAP_SIZE; i++) {
@@ -6612,15 +6612,15 @@ class HDWalletAbstract extends WalletProvider {
         return this.internalScan.getIndex();
     }
     /**
-     * Gets the active external address on the AssetChain
+     * Gets the active external address on the SwapChain
      * - The X address will change after every deposit.
      */
     getAddressX() {
         return this.externalScan.getAddressX();
     }
     /**
-     * Gets the active change address on the AssetChain
-     * - The change address will change after every transaction on the AssetChain.
+     * Gets the active change address on the SwapChain
+     * - The change address will change after every transaction on the SwapChain.
      */
     getChangeAddressX() {
         return this.internalScan.getAddressX();
@@ -6632,7 +6632,7 @@ class HDWalletAbstract extends WalletProvider {
         return this.externalScan.getAddressP();
     }
     /**
-     * Returns every external AssetChain address used by the wallet up to now.
+     * Returns every external SwapChain address used by the wallet up to now.
      */
     getExternalAddressesX() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -6640,13 +6640,13 @@ class HDWalletAbstract extends WalletProvider {
         });
     }
     /**
-     * Returns every external AssetChain address used by the wallet up to now.
+     * Returns every external SwapChain address used by the wallet up to now.
      */
     getExternalAddressesXSync() {
         return this.externalScan.getAllAddressesSync('X');
     }
     /**
-     * Returns every internal AssetChain address used by the wallet up to now.
+     * Returns every internal SwapChain address used by the wallet up to now.
      */
     getInternalAddressesX() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -6654,13 +6654,13 @@ class HDWalletAbstract extends WalletProvider {
         });
     }
     /**
-     * Returns every internal AssetChain address used by the wallet up to now.
+     * Returns every internal SwapChain address used by the wallet up to now.
      */
     getInternalAddressesXSync() {
         return this.internalScan.getAllAddressesSync('X');
     }
     /**
-     * Returns every AssetChain address used by the wallet up to now (internal + external).
+     * Returns every SwapChain address used by the wallet up to now (internal + external).
      */
     getAllAddressesX() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -6668,7 +6668,7 @@ class HDWalletAbstract extends WalletProvider {
         });
     }
     /**
-     * Returns every AssetChain address used by the wallet up to now (internal + external).
+     * Returns every SwapChain address used by the wallet up to now (internal + external).
      */
     getAllAddressesXSync() {
         return [...this.getExternalAddressesXSync(), ...this.getInternalAddressesXSync()];
@@ -6694,7 +6694,7 @@ class HDWalletAbstract extends WalletProvider {
         return this.getExternalAddressesPSync();
     }
     /**
-     * Scans the network and initializes internal and external addresses on P and AssetChains.
+     * Scans the network and initializes internal and external addresses on P and SwapChains.
      * - Heavy operation
      * - MUST use the explorer api to find the last used address
      * - If explorer is not available it will use the connected node. This may result in invalid balances.
@@ -6836,7 +6836,7 @@ class MnemonicWallet extends HDWalletAbstract {
         this.evmWallet = evmWallet;
     }
     /**
-     * Gets the active address on the AppChain in Bech32 encoding
+     * Gets the active address on the AXChain in Bech32 encoding
      * @return
      * Bech32 representation of the EVM address.
      */
@@ -6874,7 +6874,7 @@ class MnemonicWallet extends HDWalletAbstract {
         return new MnemonicWallet(mnemonic);
     }
     /**
-     * Signs an EVM transaction on the AppChain.
+     * Signs an EVM transaction on the AXChain.
      * @param tx The unsigned transaction
      */
     signEvm(tx) {
@@ -6901,9 +6901,9 @@ class MnemonicWallet extends HDWalletAbstract {
         });
     }
     /**
-     * Signs a AppChain transaction
+     * Signs a AXChain transaction
      * @remarks
-     * Used for Import and Export transactions on the AppChain. For everything else, use `this.signEvm()`
+     * Used for Import and Export transactions on the AXChain. For everything else, use `this.signEvm()`
      * @param tx The unsigned transaction
      */
     signC(tx) {
@@ -6912,7 +6912,7 @@ class MnemonicWallet extends HDWalletAbstract {
         });
     }
     /**
-     * Returns a keychain with the keys of every derived AssetChain address.
+     * Returns a keychain with the keys of every derived SwapChain address.
      * @private
      */
     getKeyChainX() {
@@ -6928,7 +6928,7 @@ class MnemonicWallet extends HDWalletAbstract {
         return this.externalScan.getKeyChainP();
     }
     /**
-     * Gets the active address on the AppChain
+     * Gets the active address on the AXChain
      * @return
      * Hex representation of the EVM address.
      */
@@ -6973,7 +6973,7 @@ class SingletonWallet extends WalletProvider {
         return new SingletonWallet(avmKeyStr);
     }
     getKeyChainX() {
-        let keyChain = assetChain.newKeyChain();
+        let keyChain = swapChain.newKeyChain();
         keyChain.importKey(this.key);
         return keyChain;
     }
@@ -7240,8 +7240,8 @@ class LedgerWallet extends HDWalletAbstract {
         });
     }
     /**
-     * Returns the extended public key used by AppChain for address derivation.
-     * @remarks Returns the extended public key for path `m/44'/60'/0'`. This key can be used to derive AppChain accounts.
+     * Returns the extended public key used by AXChain for address derivation.
+     * @remarks Returns the extended public key for path `m/44'/60'/0'`. This key can be used to derive AXChain accounts.
      * @param transport
      */
     static getExtendedPublicKeyEth(transport) {
@@ -7658,7 +7658,7 @@ class LedgerWallet extends HDWalletAbstract {
             // Ledger is not able to parse P/C atomic transactions
             if (txType === platformvm.PlatformVMConstants.EXPORTTX) {
                 const destChainBuff = tx.getDestinationChain();
-                // If destination chain is AppChain, sign hash
+                // If destination chain is AXChain, sign hash
                 const destChain = idToChainAlias(bintools.cb58Encode(destChainBuff));
                 if (destChain === 'C') {
                     canLedgerParse = false;
@@ -7668,7 +7668,7 @@ class LedgerWallet extends HDWalletAbstract {
             // Ledger is not able to parse P/C atomic transactions
             if (txType === platformvm.PlatformVMConstants.IMPORTTX) {
                 const sourceChainBuff = tx.getSourceChain();
-                // If destination chain is AppChain, sign hash
+                // If destination chain is AXChain, sign hash
                 const sourceChain = idToChainAlias(bintools.cb58Encode(sourceChainBuff));
                 if (sourceChain === 'C') {
                     canLedgerParse = false;
@@ -7704,7 +7704,7 @@ class LedgerWallet extends HDWalletAbstract {
             // Ledger is not able to parse P/C atomic transactions
             if (typeId === evm.EVMConstants.EXPORTTX) {
                 const destChainBuff = tx.getDestinationChain();
-                // If destination chain is AppChain, sign hash
+                // If destination chain is AXChain, sign hash
                 const destChain = idToChainAlias(bintools.cb58Encode(destChainBuff));
                 if (destChain === 'P') {
                     canLedgerParse = false;
@@ -7713,7 +7713,7 @@ class LedgerWallet extends HDWalletAbstract {
             // TODO: Remove after ledger update
             if (typeId === evm.EVMConstants.IMPORTTX) {
                 const sourceChainBuff = tx.getSourceChain();
-                // If destination chain is AppChain, sign hash
+                // If destination chain is AXChain, sign hash
                 const sourceChain = idToChainAlias(bintools.cb58Encode(sourceChainBuff));
                 if (sourceChain === 'P') {
                     canLedgerParse = false;
@@ -8122,13 +8122,13 @@ function readKeyFile(data, pass) {
     });
 }
 function extractKeysV2(file) {
-    assetChain.getBlockchainAlias();
+    swapChain.getBlockchainAlias();
     let keys = file.keys;
     return keys.map((key) => {
         // Private keys from the keystore file do not have the PrivateKey- prefix
         let pk = 'PrivateKey-' + key.key;
         // let keypair = keyToKeypair(pk, chainID)
-        let keypair = assetChain.newKeyChain().importKey(pk);
+        let keypair = swapChain.newKeyChain().importKey(pk);
         let keyBuf = keypair.getPrivateKey();
         let keyHex = keyBuf.toString('hex');
         let paddedKeyHex = keyHex.padStart(64, '0');

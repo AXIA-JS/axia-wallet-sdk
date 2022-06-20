@@ -44,7 +44,7 @@ export declare function estimateImportGasFeeFromMockTx(numIns: number | undefine
  * Estimates the gas fee using a mock ExportTx built from the passed values.
  * @param destinationChain `X` or `P`
  * @param amount in nAXC
- * @param from The AppChain hex address exported from
+ * @param from The AXChain hex address exported from
  * @param to The destination X or P address
  */
 export declare function estimateExportGasFeeFromMockTx(destinationChain: ExportChainsC, amount: BN, from: string, to: string): number;
@@ -52,8 +52,8 @@ export declare function estimateExportGasFeeFromMockTx(destinationChain: ExportC
  * Returns the estimated gas for the export transaction.
  * @param destinationChain Either `X` or `P`
  * @param amount The amount to export. In nAXC.
- * @param from The AppChain hex address exporting the asset
- * @param fromBech The AppChain bech32 address exporting the asset
+ * @param from The AXChain hex address exporting the asset
+ * @param fromBech The AXChain bech32 address exporting the asset
  * @param to The destination address on the destination chain
  */
 export declare function estimateExportGasFee(destinationChain: ExportChainsC, from: string, fromBech: string, to: string, amount: BN): Promise<number>;

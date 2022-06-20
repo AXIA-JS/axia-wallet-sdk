@@ -11,11 +11,11 @@ export const MainnetConfig: NetworkConfig = {
     explorerSiteURL: 'https://explorer.avax.network',
     networkID: 1,
     // @ts-ignore
-    assetChainID: Defaults.network[1]['X']['blockchainID'],
+    swapChainID: Defaults.network[1]['X']['blockchainID'],
     // @ts-ignore
     coreChainID: Defaults.network[1]['P']['blockchainID'],
     // @ts-ignore
-    appChainID: Defaults.network[1]['C']['blockchainID'],
+    axChainID: Defaults.network[1]['C']['blockchainID'],
     // @ts-ignore
     evmChainID: Defaults.network[1]['C']['chainID'],
     // @ts-ignore
@@ -36,17 +36,17 @@ export const TestnetConfig: NetworkConfig = {
     apiPort: 9650,
     explorerURL: 'https://explorerapi.avax-test.network',
     explorerSiteURL: 'https://explorer.avax-test.network',
-    networkID: 5,
+    networkID: 5678,
     // @ts-ignore
-    assetChainID: Defaults.network[5]['X']['blockchainID'],
+    swapChainID: Defaults.network[5678]['X']['blockchainID'],
     // @ts-ignore
-    coreChainID: Defaults.network[5]['P']['blockchainID'],
+    coreChainID: Defaults.network[5678]['P']['blockchainID'],
     // @ts-ignore
-    appChainID: Defaults.network[5]['C']['blockchainID'],
+    axChainID: Defaults.network[5678]['C']['blockchainID'],
     // @ts-ignore
-    evmChainID: Defaults.network[5]['C']['chainID'],
+    evmChainID: Defaults.network[5678]['C']['chainID'],
     // @ts-ignore
-    axcID: Defaults.network[5]['X']['axcAssetID'],
+    axcID: Defaults.network[5678]['X']['axcAssetID'],
     get rpcUrl() {
         return {
             c: getRpcC(this),
@@ -63,11 +63,11 @@ export const LocalnetConfig: NetworkConfig = {
     apiPort: 9650,
     networkID: 12345,
     // @ts-ignore
-    assetChainID: Defaults.network[12345]['X']['blockchainID'],
+    swapChainID: Defaults.network[12345]['X']['blockchainID'],
     // @ts-ignore
     coreChainID: Defaults.network[12345]['P']['blockchainID'],
     // @ts-ignore
-    appChainID: Defaults.network[12345]['C']['blockchainID'],
+    axChainID: Defaults.network[12345]['C']['blockchainID'],
     // @ts-ignore
     evmChainID: Defaults.network[12345]['C']['chainID'],
     // @ts-ignore

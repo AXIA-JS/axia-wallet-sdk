@@ -1,7 +1,7 @@
 /// <reference types="bn.js" />
 import { BN } from '@zee-ava/avajs';
 /**
- * Returns the transaction fee for AssetChain.
+ * Returns the transaction fee for SwapChain.
  */
 export declare function getTxFeeX(): BN;
 /**
