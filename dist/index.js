@@ -131,15 +131,15 @@ const TestnetConfig = {
     explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5678,
     // @ts-ignore
-    swapChainID: utils.Defaults.network[5678]['X']['blockchainID'],
+    swapChainID: utils.Defaults.network[5]['X']['blockchainID'],
     // @ts-ignore
-    coreChainID: utils.Defaults.network[5678]['P']['blockchainID'],
+    coreChainID: utils.Defaults.network[5]['P']['blockchainID'],
     // @ts-ignore
-    axChainID: utils.Defaults.network[5678]['C']['blockchainID'],
+    axChainID: utils.Defaults.network[5]['C']['blockchainID'],
     // @ts-ignore
-    evmChainID: utils.Defaults.network[5678]['C']['chainID'],
+    evmChainID: 4000,
     // @ts-ignore
-    axcID: utils.Defaults.network[5678]['X']['axcAssetID'],
+    axcID: utils.Defaults.network[5]['X']['axcAssetID'],
     get rpcUrl() {
         return {
             c: getRpcC(this),
