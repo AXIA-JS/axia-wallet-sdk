@@ -30,10 +30,10 @@ export const MainnetConfig: NetworkConfig = {
 };
 
 export const TestnetConfig: NetworkConfig = {
-    rawUrl: 'http://rpc-v2.canarytest.axiacoin.network:9650',
+    rawUrl: 'http://rpc-v2.canarytest.axiacoin.network',
     apiProtocol: 'http',
     apiIp: 'rpc-v2.canarytest.axiacoin.network',
-    apiPort: 9650,
+    apiPort: 80,
     explorerURL: 'https://explorerapi.avax-test.network',
     explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5678,
