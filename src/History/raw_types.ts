@@ -34,7 +34,7 @@ export interface ITransactionDataEVM {
 }
 
 /**
- * Data coming from the explorer for X,CoreChain
+ * Data coming from the explorer for Swap,CoreChain
  */
 export interface ITransactionData {
     chainID: string;

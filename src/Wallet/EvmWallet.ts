@@ -26,13 +26,13 @@ export default class EvmWallet extends EvmWalletReadonly {
     }
 
     getKeyChain(): EVMKeyChain {
-        let keychain = new EVMKeyChain(axia.getHRP(), 'C');
+        let keychain = new EVMKeyChain(axia.getHRP(), 'AX');
         keychain.importKey(this.getPrivateKeyBech());
         return keychain;
     }
 
     getKeyPair(): EVMKeyPair {
-        let keychain = new EVMKeyChain(axia.getHRP(), 'C');
+        let keychain = new EVMKeyChain(axia.getHRP(), 'AX');
         return keychain.importKey(this.getPrivateKeyBech());
     }
 

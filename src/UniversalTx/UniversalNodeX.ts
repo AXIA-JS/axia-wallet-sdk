@@ -10,7 +10,7 @@ import { BN } from '@zee-ava/avajs';
 
 export default class UniversalNodeX extends UniversalNodeAbstract {
     constructor(balance: BN, feeExport: BN, feeImport: BN) {
-        super(balance, 'X', feeExport, feeImport);
+        super(balance, 'Swap', feeExport, feeImport);
     }
 
     buildExportTx(destChain: ExportChainsX, amount: BN): UniversalTxExportX {
@@ -22,7 +22,7 @@ export default class UniversalNodeX extends UniversalNodeAbstract {
     }
 
     getExportMethod(to: ExportChainsX): UniversalTxActionExportX {
-        if (to === 'P') {
+        if (to === 'Core') {
             return 'export_x_p';
         } else {
             return 'export_x_c';
@@ -30,7 +30,7 @@ export default class UniversalNodeX extends UniversalNodeAbstract {
     }
 
     getImportMethod(from: ExportChainsX): UniversalTxActionImportX {
-        if (from === 'P') {
+        if (from === 'Core') {
             return 'import_p_x';
         } else {
             return 'import_c_x';

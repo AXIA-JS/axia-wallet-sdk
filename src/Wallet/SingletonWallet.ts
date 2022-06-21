@@ -103,7 +103,7 @@ export default class SingletonWallet extends WalletProvider implements UnsafeWal
     }
 
     getEvmAddressBech(): string {
-        let keypair = new EVMKeyPair(axia.getHRP(), 'C');
+        let keypair = new EVMKeyPair(axia.getHRP(), 'AX');
         keypair.importKey(this.keyBuff);
         return keypair.getAddressString();
     }

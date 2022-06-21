@@ -41,7 +41,7 @@ export function bnToBig(val: BN, denomination = 0): Big {
 
 /**
  * Converts a BN amount of 18 decimals to 9.
- * Used for AXC C <-> X,P conversions
+ * Used for AXC AX <-> Swap,Core conversions
  * @param amount
  */
 export function axcCtoX(amount: BN) {

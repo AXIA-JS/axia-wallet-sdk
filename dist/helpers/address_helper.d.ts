@@ -4,7 +4,7 @@ export declare function validateAddressX(address: string): boolean;
 export declare function validateAddressP(address: string): boolean;
 export declare function validateAddressEVM(address: string): boolean;
 /**
- * Returns the human readable part of a X or P bech32 address.
+ * Returns the human readable part of a Swap or Core bech32 address.
  * @param address
  */
 export declare function getAddressHRP(address: string): string;

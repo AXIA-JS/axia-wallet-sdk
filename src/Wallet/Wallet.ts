@@ -158,7 +158,7 @@ export abstract class WalletProvider {
 
     /***
      * Used to get an identifier string that is consistent across different network connections.
-     * Currently returns the C address of this wallet.
+     * Currently returns the AX address of this wallet.
      */
     public getBaseAddress(): string {
         return this.getAddressC();
@@ -180,9 +180,9 @@ export abstract class WalletProvider {
 
     protected emitAddressChange(): void {
         this.emit('addressChanged', {
-            X: this.getAddressX(),
+            Swap: this.getAddressX(),
             changeX: this.getChangeAddressX(),
-            P: this.getAddressP(),
+            Core: this.getAddressP(),
         });
     }
 
@@ -352,7 +352,7 @@ export abstract class WalletProvider {
     /**
      * Returns the maximum spendable AXC balance for the given chain.
      * Scans all chains and take cross over fees into account
-     * @param chainType X, P or C
+     * @param chainType Swap, Core or AX
      */
     public getUsableAxcBalanceForChain(chainType: ChainIdType, atomicFeeXP: BN, atomicFeeC: BN): BN {
         return this.createUniversalNode(chainType, atomicFeeXP, atomicFeeC).reduceTotalBalanceFromParents();
@@ -369,18 +369,18 @@ export abstract class WalletProvider {
         let cBal = axcCtoX(this.getAxcBalanceC()); // need to use 9 decimal places
 
         switch (chain) {
-            case 'X':
+            case 'Swap':
                 return createGraphForX(xBal, pBal, cBal, atomicFeeXP, atomicFeeC);
-            case 'P':
+            case 'Core':
                 return createGraphForP(xBal, pBal, cBal, atomicFeeXP, atomicFeeC);
-            case 'C':
+            case 'AX':
                 return createGraphForC(xBal, pBal, cBal, atomicFeeXP, atomicFeeC);
         }
     }
 
     /**
      * Can this wallet have the given amount on the given chain after a series of internal transactions (if required).
-     * @param chain X/P/C
+     * @param chain Swap/Core/AX
      * @param amount The amount to check against
      */
     public canHaveBalanceOnChain(chain: ChainIdType, amount: BN, atomicFeeXP: BN, atomicFeeC: BN): boolean {
@@ -391,7 +391,7 @@ export abstract class WalletProvider {
 
     /**
      * Returns an array of transaction to do in order to have the target amount on the given chain
-     * @param chain The chain (X/P/C) to have the desired amount on
+     * @param chain The chain (Swap/Core/AX) to have the desired amount on
      * @param amount The desired amount
      */
     public getTransactionsForBalance(chain: ChainIdType, amount: BN, atomicFeeXP: BN, atomicFeeC: BN): UniversalTx[] {
@@ -400,11 +400,11 @@ export abstract class WalletProvider {
         let cBal = axcCtoX(this.getAxcBalanceC()); // need to use 9 decimal places
 
         switch (chain) {
-            case 'P':
+            case 'Core':
                 return getStepsForBalanceP(xBal, pBal, cBal, amount, atomicFeeXP, atomicFeeC);
-            case 'C':
+            case 'AX':
                 return getStepsForBalanceC(xBal, pBal, cBal, amount, atomicFeeXP, atomicFeeC);
-            case 'X':
+            case 'Swap':
                 return getStepsForBalanceX(xBal, pBal, cBal, amount, atomicFeeXP, atomicFeeC);
         }
     }
@@ -597,18 +597,18 @@ export abstract class WalletProvider {
     }
 
     /**
-     * A helpful method that returns the AXC balance on X, P, AXChains.
+     * A helpful method that returns the AXC balance on Swap, Core, AXChains.
      * Internally calls chain specific getAxcBalance methods.
      */
     public getAxcBalance(): iAxcBalance {
-        let X = this.getAxcBalanceX();
-        let P = this.getAxcBalanceP();
-        let C = this.getAxcBalanceC();
+        let Swap = this.getAxcBalanceX();
+        let Core = this.getAxcBalanceP();
+        let AX = this.getAxcBalanceC();
 
         return {
-            X,
-            P,
-            C,
+            Swap,
+            Core,
+            AX,
         };
     }
 
@@ -683,14 +683,14 @@ export abstract class WalletProvider {
      * The export fee is added automatically to the amount. Make sure the exported amount includes the import fee for the destination chain.
      *
      * @param amt amount of nAXC to transfer. Fees excluded.
-     * @param destinationChain Either `X` or `C`
+     * @param destinationChain Either `Swap` or `AX`
      * @return returns the transaction id.
      */
     async exportCoreChain(amt: BN, destinationChain: ExportChainsP) {
         let pChangeAddr = this.getAddressP();
         let fromAddrs = await this.getAllAddressesP();
 
-        const destinationAddr = destinationChain === 'X' ? this.getAddressX() : this.getEvmAddressBech();
+        const destinationAddr = destinationChain === 'Swap' ? this.getAddressX() : this.getEvmAddressBech();
 
         let utxoSet = this.utxosP;
 
@@ -714,12 +714,12 @@ export abstract class WalletProvider {
 
     /***
      * Estimates the required fee for a AXChain export transaction
-     * @param destinationChain Either `X` or `P`
+     * @param destinationChain Either `Swap` or `Core`
      * @param baseFee Current base fee of the network, use a padded amount.
      * @return BN AXChain atomic export transaction fee in nAXC.
      */
     estimateAtomicFeeExportC(destinationChain: ExportChainsC, baseFee: BN): BN {
-        let destinationAddr = destinationChain === 'X' ? this.getAddressX() : this.getAddressP();
+        let destinationAddr = destinationChain === 'Swap' ? this.getAddressX() : this.getAddressP();
         const hexAddr = this.getAddressC();
         // The amount does not effect the fee that much
         const amt = new BN(0);
@@ -733,7 +733,7 @@ export abstract class WalletProvider {
      * Make sure the exported `amt` includes the import fee for the destination chain.
      *
      * @param amt amount of nAXC to transfer
-     * @param destinationChain either `X` or `P`
+     * @param destinationChain either `Swap` or `Core`
      * @param exportFee Export fee in nAXC
      * @return returns the transaction id.
      */
@@ -742,7 +742,7 @@ export abstract class WalletProvider {
         let bechAddr = this.getEvmAddressBech();
 
         let fromAddresses = [hexAddr];
-        let destinationAddr = destinationChain === 'X' ? this.getAddressX() : this.getAddressP();
+        let destinationAddr = destinationChain === 'Swap' ? this.getAddressX() : this.getAddressP();
 
         // Calculate export fee if it's not given.
         if (!exportFee) {
@@ -771,7 +771,7 @@ export abstract class WalletProvider {
     }
 
     /**
-     * Exports AXC from SwapChain to either P or AXChain
+     * Exports AXC from SwapChain to either Core or AXChain
      * @remarks
      * The export fee will be added to the amount automatically. Make sure the exported amount has the import fee for the destination chain.
      *
@@ -780,7 +780,7 @@ export abstract class WalletProvider {
      * @return returns the transaction id.
      */
     async exportSwapChain(amt: BN, destinationChain: ExportChainsX) {
-        let destinationAddr = destinationChain === 'P' ? this.getAddressP() : this.getEvmAddressBech();
+        let destinationAddr = destinationChain === 'Core' ? this.getAddressP() : this.getEvmAddressBech();
 
         let fromAddresses = await this.getAllAddressesX();
         let changeAddress = this.getChangeAddressX();
@@ -823,7 +823,7 @@ export abstract class WalletProvider {
 
     /**
      * Imports atomic SwapChain UTXOs to the current active SwapChain address
-     * @param sourceChain The chain to import from, either `P` or `C`
+     * @param sourceChain The chain to import from, either `Core` or `AX`
      */
     async importX(sourceChain: ExportChainsX) {
         const utxoSet = await this.getAtomicUTXOsX(sourceChain);
@@ -835,7 +835,7 @@ export abstract class WalletProvider {
         let xToAddr = this.getAddressX();
 
         let hrp = axia.getHRP();
-        let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'X', addr));
+        let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'Swap', addr));
 
         let fromAddrs = utxoAddrs;
         let ownerAddrs = utxoAddrs;
@@ -860,7 +860,7 @@ export abstract class WalletProvider {
 
     /**
      * Import utxos in atomic memory to the CoreChain.
-     * @param sourceChain Either `X` or `C`
+     * @param sourceChain Either `Swap` or `AX`
      * @param [toAddress] The destination CoreChain address assets will get imported to. Defaults to the CoreChain address of the wallet.
      */
     async importP(sourceChain: ExportChainsP, toAddress?: string): Promise<string> {
@@ -874,7 +874,7 @@ export abstract class WalletProvider {
         let walletAddrP = this.getAddressP();
 
         let hrp = axia.getHRP();
-        let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'P', addr));
+        let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'Core', addr));
 
         let ownerAddrs = utxoAddrs;
 
@@ -906,7 +906,7 @@ export abstract class WalletProvider {
 
     /**
      *
-     * @param sourceChain Which chain to import from. `X` or `P`
+     * @param sourceChain Which chain to import from. `Swap` or `Core`
      * @param [fee] The import fee to use in the transactions. If omitted the SDK will try to calculate the fee. For deterministic transactions you should always pre calculate and provide this value.
      * @param [utxoSet] If omitted imports all atomic UTXOs.
      */
@@ -1091,7 +1091,7 @@ export abstract class WalletProvider {
             utxoSet.addArray(utxos);
         }
 
-        // If reward address isn't given use current P address
+        // If reward address isn't given use current Core address
         if (!rewardAddress) {
             rewardAddress = this.getAddressP();
         }
@@ -1132,29 +1132,29 @@ export abstract class WalletProvider {
     public async issueUniversalTx(tx: UniversalTx): Promise<string> {
         switch (tx.action) {
             case 'export_x_c':
-                return await this.exportSwapChain(tx.amount, 'C');
+                return await this.exportSwapChain(tx.amount, 'AX');
             case 'import_x_c':
-                return await this.importC('X', tx.fee);
+                return await this.importC('Swap', tx.fee);
             case 'export_x_p':
-                return await this.exportSwapChain(tx.amount, 'P');
+                return await this.exportSwapChain(tx.amount, 'Core');
             case 'import_x_p':
-                return await this.importP('X');
+                return await this.importP('Swap');
             case 'export_c_x':
-                return await this.exportAXChain(tx.amount, 'X', tx.fee);
+                return await this.exportAXChain(tx.amount, 'Swap', tx.fee);
             case 'import_c_x':
-                return await this.importX('C');
+                return await this.importX('AX');
             case 'export_c_p':
-                return await this.exportAXChain(tx.amount, 'P', tx.fee);
+                return await this.exportAXChain(tx.amount, 'Core', tx.fee);
             case 'import_c_p':
-                return await this.importP('C');
+                return await this.importP('AX');
             case 'export_p_x':
-                return await this.exportCoreChain(tx.amount, 'X');
+                return await this.exportCoreChain(tx.amount, 'Swap');
             case 'import_p_x':
-                return await this.importX('P');
+                return await this.importX('Core');
             case 'export_p_c':
-                return await this.exportCoreChain(tx.amount, 'C');
+                return await this.exportCoreChain(tx.amount, 'AX');
             case 'import_p_c':
-                return await this.importC('P', tx.fee);
+                return await this.importC('Core', tx.fee);
             default:
                 throw new Error('Method not supported.');
         }
@@ -1197,7 +1197,7 @@ export abstract class WalletProvider {
 
         let addrC = this.getAddressC();
 
-        // Parse X,P,C transactions
+        // Parse Swap,Core,AX transactions
         // Have to loop because of the asynchronous call
         let parsedXPC = [];
         for (let i = 0; i < txsXPC.length; i++) {
@@ -1213,7 +1213,7 @@ export abstract class WalletProvider {
         // Parse EVM Transactions
         let parsedEVM = txsEVM.map((tx) => getTransactionSummaryEVM(tx, addrC));
 
-        // Sort and join X,P,C transactions
+        // Sort and join Swap,Core,AX transactions
         let parsedAll = [...parsedXPC, ...parsedEVM];
         let txsSorted = parsedAll.sort((x, y) => (x.timestamp.getTime() < y.timestamp.getTime() ? 1 : -1));
 

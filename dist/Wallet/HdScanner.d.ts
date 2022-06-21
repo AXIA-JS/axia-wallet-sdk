@@ -27,26 +27,26 @@ export default class HdScanner {
     getAddressP(): string;
     /**
      * Returns every address up to and including the current index.
-     * @param chainId Either X or P
+     * @param chainId Either Swap or Core
      */
     getAllAddresses(chainId?: HdChainType): Promise<string[]>;
     /**
      * Returns every address up to and including the current index synchronously.
-     * @param chainId Either X or P
+     * @param chainId Either Swap or Core
      */
     getAllAddressesSync(chainId?: HdChainType): string[];
     /**
      * Returns addresses in the given range
      * @param start Start index
      * @param end End index, exclusive
-     * @param chainId  `X` or `P` optional, returns X by default
+     * @param chainId  `Swap` or `Core` optional, returns Swap by default
      */
     getAddressesInRange(start: number, end: number, chainId?: HdChainType): Promise<string[]>;
     /**
      * Returns addresses in the given range
      * @param start Start index
      * @param end End index, exclusive
-     * @param chainId  `X` or `P` optional, returns X by default
+     * @param chainId  `Swap` or `Core` optional, returns Swap by default
      */
     getAddressesInRangeSync(start: number, end: number, chainId?: HdChainType): string[];
     getKeyChainX(): AVMKeyChain;

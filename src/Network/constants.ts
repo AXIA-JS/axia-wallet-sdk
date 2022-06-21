@@ -11,20 +11,20 @@ export const MainnetConfig: NetworkConfig = {
     explorerSiteURL: 'https://explorer.avax.network',
     networkID: 1,
     // @ts-ignore
-    swapChainID: Defaults.network[1]['X']['blockchainID'],
+    swapChainID: Defaults.network[1]['Swap']['blockchainID'],
     // @ts-ignore
-    coreChainID: Defaults.network[1]['P']['blockchainID'],
+    coreChainID: Defaults.network[1]['Core']['blockchainID'],
     // @ts-ignore
-    axChainID: Defaults.network[1]['C']['blockchainID'],
+    axChainID: Defaults.network[1]['AX']['blockchainID'],
     // @ts-ignore
-    evmChainID: Defaults.network[1]['C']['chainID'],
+    evmChainID: Defaults.network[1]['AX']['chainID'],
     // @ts-ignore
-    axcID: Defaults.network[1]['X']['axcAssetID'],
+    axcID: Defaults.network[1]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
-            c: getRpcC(this),
-            p: getRpcP(this),
-            x: getRpcX(this),
+            ax: getRpcC(this),
+            core: getRpcP(this),
+            swap: getRpcX(this),
         };
     },
 };
@@ -38,20 +38,20 @@ export const TestnetConfig: NetworkConfig = {
     explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5678,
     // @ts-ignore
-    swapChainID: Defaults.network[5678]['X']['blockchainID'],
+    swapChainID: Defaults.network[5678]['Swap']['blockchainID'],
     // @ts-ignore
-    coreChainID: Defaults.network[5678]['P']['blockchainID'],
+    coreChainID: Defaults.network[5678]['Core']['blockchainID'],
     // @ts-ignore
-    axChainID: Defaults.network[5678]['C']['blockchainID'],
+    axChainID: Defaults.network[5678]['AX']['blockchainID'],
     // @ts-ignore
-    evmChainID: Defaults.network[5678]['C']['chainID'],
+    evmChainID: Defaults.network[5678]['AX']['chainID'],
     // @ts-ignore
-    axcID: Defaults.network[5678]['X']['axcAssetID'],
+    axcID: Defaults.network[5678]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
-            c: getRpcC(this),
-            p: getRpcP(this),
-            x: getRpcX(this),
+            ax: getRpcC(this),
+            core: getRpcP(this),
+            swap: getRpcX(this),
         };
     },
 };
@@ -63,20 +63,20 @@ export const LocalnetConfig: NetworkConfig = {
     apiPort: 9650,
     networkID: 12345,
     // @ts-ignore
-    swapChainID: Defaults.network[12345]['X']['blockchainID'],
+    swapChainID: Defaults.network[12345]['Swap']['blockchainID'],
     // @ts-ignore
-    coreChainID: Defaults.network[12345]['P']['blockchainID'],
+    coreChainID: Defaults.network[12345]['Core']['blockchainID'],
     // @ts-ignore
-    axChainID: Defaults.network[12345]['C']['blockchainID'],
+    axChainID: Defaults.network[12345]['AX']['blockchainID'],
     // @ts-ignore
-    evmChainID: Defaults.network[12345]['C']['chainID'],
+    evmChainID: Defaults.network[12345]['AX']['chainID'],
     // @ts-ignore
-    axcID: Defaults.network[12345]['X']['axcAssetID'],
+    axcID: Defaults.network[12345]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
-            c: getRpcC(this),
-            p: getRpcP(this),
-            x: getRpcX(this),
+            ax: getRpcC(this),
+            core: getRpcP(this),
+            swap: getRpcX(this),
         };
     },
 };

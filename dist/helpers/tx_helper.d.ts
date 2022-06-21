@@ -17,7 +17,7 @@ sourceChangeAddress: string, destinationChain: ExportChainsP): Promise<import("@
  * @param toAddress
  * @param amount
  * @param fromAddressBech
- * @param destinationChain Either `X` or `P`
+ * @param destinationChain Either `Swap` or `Core`
  * @param fee Export fee in nAXC
  */
 export declare function buildEvmExportTransaction(fromAddresses: string[], toAddress: string, amount: BN, // export amount + fee

@@ -59,7 +59,7 @@ export declare abstract class WalletProvider {
     protected onNetworkChange(config: NetworkConfig): void;
     /***
      * Used to get an identifier string that is consistent across different network connections.
-     * Currently returns the C address of this wallet.
+     * Currently returns the AX address of this wallet.
      */
     getBaseAddress(): string;
     protected emitter: EventEmitter;
@@ -135,7 +135,7 @@ export declare abstract class WalletProvider {
     /**
      * Returns the maximum spendable AXC balance for the given chain.
      * Scans all chains and take cross over fees into account
-     * @param chainType X, P or C
+     * @param chainType Swap, Core or AX
      */
     getUsableAxcBalanceForChain(chainType: ChainIdType, atomicFeeXP: BN, atomicFeeC: BN): BN;
     /**
@@ -146,13 +146,13 @@ export declare abstract class WalletProvider {
     private createUniversalNode;
     /**
      * Can this wallet have the given amount on the given chain after a series of internal transactions (if required).
-     * @param chain X/P/C
+     * @param chain Swap/Core/AX
      * @param amount The amount to check against
      */
     canHaveBalanceOnChain(chain: ChainIdType, amount: BN, atomicFeeXP: BN, atomicFeeC: BN): boolean;
     /**
      * Returns an array of transaction to do in order to have the target amount on the given chain
-     * @param chain The chain (X/P/C) to have the desired amount on
+     * @param chain The chain (Swap/Core/AX) to have the desired amount on
      * @param amount The desired amount
      */
     getTransactionsForBalance(chain: ChainIdType, amount: BN, atomicFeeXP: BN, atomicFeeC: BN): UniversalTx[];
@@ -207,7 +207,7 @@ export declare abstract class WalletProvider {
     private updateBalanceX;
     getBalanceX(): WalletBalanceX;
     /**
-     * A helpful method that returns the AXC balance on X, P, AXChains.
+     * A helpful method that returns the AXC balance on Swap, Core, AXChains.
      * Internally calls chain specific getAxcBalance methods.
      */
     getAxcBalance(): iAxcBalance;
@@ -230,13 +230,13 @@ export declare abstract class WalletProvider {
      * The export fee is added automatically to the amount. Make sure the exported amount includes the import fee for the destination chain.
      *
      * @param amt amount of nAXC to transfer. Fees excluded.
-     * @param destinationChain Either `X` or `C`
+     * @param destinationChain Either `Swap` or `AX`
      * @return returns the transaction id.
      */
     exportCoreChain(amt: BN, destinationChain: ExportChainsP): Promise<string>;
     /***
      * Estimates the required fee for a AXChain export transaction
-     * @param destinationChain Either `X` or `P`
+     * @param destinationChain Either `Swap` or `Core`
      * @param baseFee Current base fee of the network, use a padded amount.
      * @return BN AXChain atomic export transaction fee in nAXC.
      */
@@ -247,13 +247,13 @@ export declare abstract class WalletProvider {
      * Make sure the exported `amt` includes the import fee for the destination chain.
      *
      * @param amt amount of nAXC to transfer
-     * @param destinationChain either `X` or `P`
+     * @param destinationChain either `Swap` or `Core`
      * @param exportFee Export fee in nAXC
      * @return returns the transaction id.
      */
     exportAXChain(amt: BN, destinationChain: ExportChainsC, exportFee?: BN): Promise<string>;
     /**
-     * Exports AXC from SwapChain to either P or AXChain
+     * Exports AXC from SwapChain to either Core or AXChain
      * @remarks
      * The export fee will be added to the amount automatically. Make sure the exported amount has the import fee for the destination chain.
      *
@@ -267,18 +267,18 @@ export declare abstract class WalletProvider {
     getAtomicUTXOsC(sourceChain: ExportChainsC): Promise<EVMUTXOSet>;
     /**
      * Imports atomic SwapChain UTXOs to the current active SwapChain address
-     * @param sourceChain The chain to import from, either `P` or `C`
+     * @param sourceChain The chain to import from, either `Core` or `AX`
      */
     importX(sourceChain: ExportChainsX): Promise<string>;
     /**
      * Import utxos in atomic memory to the CoreChain.
-     * @param sourceChain Either `X` or `C`
+     * @param sourceChain Either `Swap` or `AX`
      * @param [toAddress] The destination CoreChain address assets will get imported to. Defaults to the CoreChain address of the wallet.
      */
     importP(sourceChain: ExportChainsP, toAddress?: string): Promise<string>;
     /**
      *
-     * @param sourceChain Which chain to import from. `X` or `P`
+     * @param sourceChain Which chain to import from. `Swap` or `Core`
      * @param [fee] The import fee to use in the transactions. If omitted the SDK will try to calculate the fee. For deterministic transactions you should always pre calculate and provide this value.
      * @param [utxoSet] If omitted imports all atomic UTXOs.
      */

@@ -1,1 +1,1 @@
-export type ChainIdType = 'X' | 'P' | 'C';
+export type ChainIdType = 'Swap' | 'Core' | 'AX';

@@ -68,7 +68,7 @@ export async function buildMintNftTx(
     fromAddresses: string[],
     utxoSet: UTXOSet
 ): Promise<AVMUnsignedTx> {
-    let addrBuf = bintools.parseAddress(ownerAddress, 'X');
+    let addrBuf = bintools.parseAddress(ownerAddress, 'Swap');
     let owners = [];
 
     let sourceAddresses = fromAddresses;
@@ -128,7 +128,7 @@ export async function buildPlatformExportTransaction(
  * @param toAddress
  * @param amount
  * @param fromAddressBech
- * @param destinationChain Either `X` or `P`
+ * @param destinationChain Either `Swap` or `Core`
  * @param fee Export fee in nAXC
  */
 export async function buildEvmExportTransaction(

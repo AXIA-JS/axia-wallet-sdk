@@ -168,7 +168,7 @@ export default class LedgerWallet extends HDWalletAbstract {
     }
 
     /**
-     * Returns the extended public key used by X and CoreChains for address derivation.
+     * Returns the extended public key used by Swap and CoreChains for address derivation.
      * @remarks Returns the extended public key for path `m/44'/90000'/n'` where `n` is the account index.
      * @param transport
      * @param accountIndex Which account's public key to derive
@@ -212,10 +212,10 @@ export default class LedgerWallet extends HDWalletAbstract {
     }
 
     getEvmAddressBech(): string {
-        let keypair = new EVMKeyPair(axia.getHRP(), 'C');
+        let keypair = new EVMKeyPair(axia.getHRP(), 'AX');
         //@ts-ignore
         let addr = keypair.addressFromPublicKey(Buffer.from(this.evmAccount.publicKey));
-        return bintools.addressToString(axia.getHRP(), 'C', addr);
+        return bintools.addressToString(axia.getHRP(), 'AX', addr);
     }
 
     async signEvm(tx: Transaction): Promise<Transaction> {
@@ -284,8 +284,8 @@ export default class LedgerWallet extends HDWalletAbstract {
 
         let items = ins;
         if (
-            (txType === AVMConstants.IMPORTTX && chainId === 'X') ||
-            (txType === PlatformVMConstants.IMPORTTX && chainId === 'P')
+            (txType === AVMConstants.IMPORTTX && chainId === 'Swap') ||
+            (txType === PlatformVMConstants.IMPORTTX && chainId === 'Core')
         ) {
             items = ((tx as AVMImportTx) || PlatformImportTx).getImportInputs();
         }
@@ -342,7 +342,7 @@ export default class LedgerWallet extends HDWalletAbstract {
     async getPathFromAddress(address: string) {
         let externalAddrs = await this.externalScan.getAllAddresses();
         let internalAddrs = await this.internalScan.getAllAddresses();
-        let platformAddrs = await this.externalScan.getAllAddresses('P');
+        let platformAddrs = await this.externalScan.getAllAddresses('Core');
 
         let extIndex = externalAddrs.indexOf(address);
         let intIndex = internalAddrs.indexOf(address);
@@ -354,7 +354,7 @@ export default class LedgerWallet extends HDWalletAbstract {
             return `1/${intIndex}`;
         } else if (platformIndex >= 0) {
             return `0/${platformIndex}`;
-        } else if (address[0] === 'C') {
+        } else if (address[0] === 'AX') {
             return '0/0';
         } else {
             throw new Error('Unable to find source address.');
@@ -364,7 +364,7 @@ export default class LedgerWallet extends HDWalletAbstract {
     async signX(unsignedTx: AVMUnsignedTx): Promise<AVMTx> {
         let tx = unsignedTx.getTransaction();
         let txType = tx.getTxType();
-        let chainId: ChainIdType = 'X';
+        let chainId: ChainIdType = 'Swap';
 
         let parseableTxs = ParseableAvmTxEnum;
         let { paths, isAxcOnly } = await this.getTransactionPaths<AVMUnsignedTx>(unsignedTx, chainId);
@@ -385,9 +385,9 @@ export default class LedgerWallet extends HDWalletAbstract {
 
     getChangePath(chainId?: ChainAlias): string {
         switch (chainId) {
-            case 'P':
+            case 'Core':
                 return 'm/0';
-            case 'X':
+            case 'Swap':
             default:
                 return 'm/1';
         }
@@ -395,10 +395,10 @@ export default class LedgerWallet extends HDWalletAbstract {
 
     getChangeIndex(chainId?: ChainAlias): number {
         switch (chainId) {
-            case 'P':
+            case 'Core':
                 // return this.platformHelper.hdIndex
                 return this.externalScan.getIndex();
-            case 'X':
+            case 'Swap':
             default:
                 // return this.internalHelper.hdIndex
                 return this.internalScan.getIndex();
@@ -409,7 +409,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         unsignedTx: UnsignedTx,
         chainId: ChainIdType
     ) {
-        if (chainId === 'C') {
+        if (chainId === 'AX') {
             return null;
         }
 
@@ -443,9 +443,9 @@ export default class LedgerWallet extends HDWalletAbstract {
         let tx = unsignedTx.getTransaction();
         let txType = tx.getTxType();
         let parseableTxs = {
-            X: ParseableAvmTxEnum,
-            P: ParseablePlatformEnum,
-            C: ParseableEvmTxEnum,
+            Swap: ParseableAvmTxEnum,
+            Core: ParseablePlatformEnum,
+            AX: ParseableEvmTxEnum,
         }[chainId];
 
         let title = `Sign ${parseableTxs[txType]}`;
@@ -453,7 +453,7 @@ export default class LedgerWallet extends HDWalletAbstract {
         let bip32Paths = this.pathsToUniqueBipPaths(paths);
 
         const accountPath =
-            chainId === 'C' ? bippath.fromString(`${ETH_ACCOUNT_PATH}`) : bippath.fromString(`${AXC_ACCOUNT_PATH}`);
+            chainId === 'AX' ? bippath.fromString(`${ETH_ACCOUNT_PATH}`) : bippath.fromString(`${AXC_ACCOUNT_PATH}`);
         let txbuff = unsignedTx.toBuffer();
         let changePath = this.getChangeBipPath(unsignedTx, chainId);
         //@ts-ignore
@@ -464,13 +464,13 @@ export default class LedgerWallet extends HDWalletAbstract {
 
         let signedTx;
         switch (chainId) {
-            case 'X':
+            case 'Swap':
                 signedTx = new AVMTx(unsignedTx as AVMUnsignedTx, creds);
                 break;
-            case 'P':
+            case 'Core':
                 signedTx = new PlatformTx(unsignedTx as PlatformUnsignedTx, creds);
                 break;
-            case 'C':
+            case 'AX':
                 signedTx = new EVMTx(unsignedTx as EVMUnsignedTx, creds);
                 break;
         }
@@ -491,7 +491,7 @@ export default class LedgerWallet extends HDWalletAbstract {
 
         // Sign the msg with ledger
         //TODO: Update when ledger supports Accounts
-        const accountPathSource = chainId === 'C' ? ETH_ACCOUNT_PATH : AXC_ACCOUNT_PATH;
+        const accountPathSource = chainId === 'AX' ? ETH_ACCOUNT_PATH : AXC_ACCOUNT_PATH;
         const accountPath = bippath.fromString(accountPathSource);
         //@ts-ignore
         let sigMap = await this.appAxc.signHash(accountPath, bip32Paths, msg);
@@ -500,13 +500,13 @@ export default class LedgerWallet extends HDWalletAbstract {
 
         let signedTx;
         switch (chainId) {
-            case 'X':
+            case 'Swap':
                 signedTx = new AVMTx(unsignedTx as AVMUnsignedTx, creds);
                 break;
-            case 'P':
+            case 'Core':
                 signedTx = new PlatformTx(unsignedTx as PlatformUnsignedTx, creds);
                 break;
-            case 'C':
+            case 'AX':
                 signedTx = new EVMTx(unsignedTx as EVMUnsignedTx, creds);
                 break;
         }
@@ -543,9 +543,9 @@ export default class LedgerWallet extends HDWalletAbstract {
 
         let items = ins;
         if (
-            (txType === AVMConstants.IMPORTTX && chainId === 'X') ||
-            (txType === PlatformVMConstants.IMPORTTX && chainId === 'P') ||
-            (txType === EVMConstants.IMPORTTX && chainId === 'C')
+            (txType === AVMConstants.IMPORTTX && chainId === 'Swap') ||
+            (txType === PlatformVMConstants.IMPORTTX && chainId === 'Core') ||
+            (txType === EVMConstants.IMPORTTX && chainId === 'AX')
         ) {
             items = ((tx as AVMImportTx) || PlatformImportTx || EVMImportTx).getImportInputs();
         }
@@ -558,9 +558,9 @@ export default class LedgerWallet extends HDWalletAbstract {
         }
 
         let CredentialClass;
-        if (chainId === 'X') {
+        if (chainId === 'Swap') {
             CredentialClass = AVMSelectCredentialClass;
-        } else if (chainId === 'P') {
+        } else if (chainId === 'Core') {
             CredentialClass = PlatformSelectCredentialClass;
         } else {
             CredentialClass = EVMSelectCredentialClass;
@@ -632,7 +632,7 @@ export default class LedgerWallet extends HDWalletAbstract {
     async signP(unsignedTx: PlatformUnsignedTx): Promise<PlatformTx> {
         let tx = unsignedTx.getTransaction();
         let txType = tx.getTxType();
-        let chainId: ChainIdType = 'P';
+        let chainId: ChainIdType = 'Core';
         let parseableTxs = ParseablePlatformEnum;
 
         let { paths, isAxcOnly } = await this.getTransactionPaths<PlatformUnsignedTx>(unsignedTx, chainId);
@@ -652,22 +652,22 @@ export default class LedgerWallet extends HDWalletAbstract {
         }
 
         // TODO: Remove after ledger update
-        // Ledger is not able to parse P/C atomic transactions
+        // Ledger is not able to parse Core/AX atomic transactions
         if (txType === PlatformVMConstants.EXPORTTX) {
             const destChainBuff = (tx as PlatformExportTx).getDestinationChain();
             // If destination chain is AXChain, sign hash
             const destChain = idToChainAlias(bintools.cb58Encode(destChainBuff));
-            if (destChain === 'C') {
+            if (destChain === 'AX') {
                 canLedgerParse = false;
             }
         }
         // TODO: Remove after ledger update
-        // Ledger is not able to parse P/C atomic transactions
+        // Ledger is not able to parse Core/AX atomic transactions
         if (txType === PlatformVMConstants.IMPORTTX) {
             const sourceChainBuff = (tx as PlatformImportTx).getSourceChain();
             // If destination chain is AXChain, sign hash
             const sourceChain = idToChainAlias(bintools.cb58Encode(sourceChainBuff));
-            if (sourceChain === 'C') {
+            if (sourceChain === 'AX') {
                 canLedgerParse = false;
             }
         }
@@ -699,12 +699,12 @@ export default class LedgerWallet extends HDWalletAbstract {
         let canLedgerParse = true;
 
         // TODO: Remove after ledger update
-        // Ledger is not able to parse P/C atomic transactions
+        // Ledger is not able to parse Core/AX atomic transactions
         if (typeId === EVMConstants.EXPORTTX) {
             const destChainBuff = (tx as EVMExportTx).getDestinationChain();
             // If destination chain is AXChain, sign hash
             const destChain = idToChainAlias(bintools.cb58Encode(destChainBuff));
-            if (destChain === 'P') {
+            if (destChain === 'Core') {
                 canLedgerParse = false;
             }
         }
@@ -713,16 +713,16 @@ export default class LedgerWallet extends HDWalletAbstract {
             const sourceChainBuff = (tx as EVMImportTx).getSourceChain();
             // If destination chain is AXChain, sign hash
             const sourceChain = idToChainAlias(bintools.cb58Encode(sourceChainBuff));
-            if (sourceChain === 'P') {
+            if (sourceChain === 'Core') {
                 canLedgerParse = false;
             }
         }
 
         let txSigned;
         if (canLedgerParse) {
-            txSigned = (await this.signTransactionParsable(unsignedTx, paths, 'C')) as EVMTx;
+            txSigned = (await this.signTransactionParsable(unsignedTx, paths, 'AX')) as EVMTx;
         } else {
-            txSigned = (await this.signTransactionHash(unsignedTx, paths, 'C')) as EVMTx;
+            txSigned = (await this.signTransactionHash(unsignedTx, paths, 'AX')) as EVMTx;
         }
 
         return txSigned;

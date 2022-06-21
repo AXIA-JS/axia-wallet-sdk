@@ -1,11 +1,11 @@
 import { NetworkConfig } from '../types';
 
 export function getRpcC(conf: NetworkConfig) {
-    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/C/rpc`;
+    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/AX/rpc`;
 }
 export function getRpcX(conf: NetworkConfig) {
-    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/X`;
+    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/Swap`;
 }
 export function getRpcP(conf: NetworkConfig) {
-    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/P`;
+    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/Core`;
 }

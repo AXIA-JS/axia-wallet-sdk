@@ -45,7 +45,7 @@ export default class LedgerWallet extends HDWalletAbstract {
      */
     static getExtendedPublicKeyEth(transport: any): Promise<string>;
     /**
-     * Returns the extended public key used by X and CoreChains for address derivation.
+     * Returns the extended public key used by Swap and CoreChains for address derivation.
      * @remarks Returns the extended public key for path `m/44'/90000'/n'` where `n` is the account index.
      * @param transport
      * @param accountIndex Which account's public key to derive

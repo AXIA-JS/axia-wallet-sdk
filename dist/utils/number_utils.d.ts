@@ -13,7 +13,7 @@ declare module 'big.js' {
 export declare function bnToBig(val: BN, denomination?: number): Big;
 /**
  * Converts a BN amount of 18 decimals to 9.
- * Used for AXC C <-> X,P conversions
+ * Used for AXC AX <-> Swap,Core conversions
  * @param amount
  */
 export declare function axcCtoX(amount: BN): BN;

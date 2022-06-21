@@ -1,8 +1,8 @@
 export declare type NetworkProtocolType = 'http' | 'https';
 export interface NetworkConfigRpc {
-    c: string;
-    x: string;
-    p: string;
+    ax: string;
+    swap: string;
+    core: string;
 }
 export interface NetworkConfig {
     rawUrl: string;

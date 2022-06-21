@@ -69,13 +69,13 @@ export function setRpcNetwork(conf: NetworkConfig, credentials = true): void {
     }
 
     swapChain.refreshBlockchainID(conf.swapChainID);
-    swapChain.setBlockchainAlias('X');
+    swapChain.setBlockchainAlias('Swap');
 
     coreChain.refreshBlockchainID(conf.coreChainID);
-    coreChain.setBlockchainAlias('P');
+    coreChain.setBlockchainAlias('Core');
 
     axChain.refreshBlockchainID(conf.axChainID);
-    axChain.setBlockchainAlias('C');
+    axChain.setBlockchainAlias('AX');
 
     swapChain.setAXCAssetID(conf.axcID);
     coreChain.setAXCAssetID(conf.axcID);
@@ -113,14 +113,14 @@ export async function getConfigFromUrl(url: string): Promise<NetworkConfig> {
 
     let connection = new Axia(urlObj.hostname, parseInt(portStr), protocol, netID);
     // TODO: Use a helper for this
-    let connectionEvm = new Web3(urlObj.href + 'ext/bc/C/rpc');
+    let connectionEvm = new Web3(urlObj.href + 'ext/bc/AX/rpc');
 
     let infoApi = connection.Info();
     let xApi = connection.SwapChain();
 
-    let fetchIdX = infoApi.getBlockchainID('X');
-    let fetchIdP = infoApi.getBlockchainID('P');
-    let fetchIdC = infoApi.getBlockchainID('C');
+    let fetchIdX = infoApi.getBlockchainID('Swap');
+    let fetchIdP = infoApi.getBlockchainID('Core');
+    let fetchIdC = infoApi.getBlockchainID('AX');
     let fetchEvmChainID = connectionEvm.eth.getChainId();
     let fetchAxcId = await xApi.getAXCAssetID();
 
@@ -145,9 +145,9 @@ export async function getConfigFromUrl(url: string): Promise<NetworkConfig> {
         evmChainID: evmChainId,
         get rpcUrl(): NetworkConfigRpc {
             return {
-                c: getRpcC(this),
-                p: getRpcP(this),
-                x: getRpcX(this),
+                ax: getRpcC(this),
+                core: getRpcP(this),
+                swap: getRpcX(this),
             };
         },
     };

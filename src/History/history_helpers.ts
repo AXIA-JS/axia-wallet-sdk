@@ -84,7 +84,7 @@ export function filterDuplicateTransactions(txs: ITransactionData[]) {
 }
 
 /**
- * Returns the total amount of `assetID` in the given `utxos` owned by `address`. Checks for X/P addresses.
+ * Returns the total amount of `assetID` in the given `utxos` owned by `address`. Checks for Swap/Core addresses.
  * @param utxos UTXOs to calculate balance from.
  * @param addresses The wallet's  addresses.
  * @param assetID Only count outputs of this asset ID.

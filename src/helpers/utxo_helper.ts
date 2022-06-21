@@ -9,7 +9,7 @@ import { GetStakeResponse } from '@zee-ava/avajs/dist/apis/platformvm/interfaces
 /**
  *
  * @param addrs an array of SwapChain addresses to get the atomic utxos of
- * @param sourceChain Which chain to check against, either `P` or `C`
+ * @param sourceChain Which chain to check against, either `Core` or `AX`
  */
 export async function avmGetAtomicUTXOs(addrs: string[], sourceChain: ExportChainsX): Promise<AVMUTXOSet> {
     const selection = addrs.slice(0, 1024);

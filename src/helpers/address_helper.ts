@@ -8,7 +8,7 @@ export const validateAddress = (address: string): boolean | string => {
 
 export function validateAddressX(address: string) {
     try {
-        let buff = bintools.parseAddress(address, 'X');
+        let buff = bintools.parseAddress(address, 'Swap');
         if (!buff) return false;
         return true;
     } catch (error) {
@@ -18,7 +18,7 @@ export function validateAddressX(address: string) {
 
 export function validateAddressP(address: string) {
     try {
-        let buff = bintools.parseAddress(address, 'P');
+        let buff = bintools.parseAddress(address, 'Core');
         if (!buff) return false;
         return true;
     } catch (error) {
@@ -31,12 +31,12 @@ export function validateAddressEVM(address: string) {
 }
 
 /**
- * Returns the human readable part of a X or P bech32 address.
+ * Returns the human readable part of a Swap or Core bech32 address.
  * @param address
  */
 export function getAddressHRP(address: string): string {
     if (!validateAddress(address)) {
-        throw new Error('Invalid X or P address.');
+        throw new Error('Invalid Swap or Core address.');
     }
     return address.split('-')[1].split('1')[0];
 }
@@ -51,7 +51,7 @@ export function getAddressChain(address: string): ChainIdType {
     }
 
     if (Web3.utils.isAddress(address)) {
-        return 'C';
+        return 'AX';
     } else {
         return address[0] as ChainIdType;
     }

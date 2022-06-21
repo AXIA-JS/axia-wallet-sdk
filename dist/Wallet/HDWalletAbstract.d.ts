@@ -22,7 +22,7 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
     getInternalIndex(): number;
     /**
      * Gets the active external address on the SwapChain
-     * - The X address will change after every deposit.
+     * - The Swap address will change after every deposit.
      */
     getAddressX(): string;
     /**
@@ -69,7 +69,7 @@ export declare abstract class HDWalletAbstract extends WalletProvider {
      */
     getAllAddressesPSync(): string[];
     /**
-     * Scans the network and initializes internal and external addresses on P and SwapChains.
+     * Scans the network and initializes internal and external addresses on Core and SwapChains.
      * - Heavy operation
      * - MUST use the explorer api to find the last used address
      * - If explorer is not available it will use the connected node. This may result in invalid balances.

@@ -52,10 +52,10 @@ export default class MnemonicWallet extends HDWalletAbstract implements UnsafeWa
      * Bech32 representation of the EVM address.
      */
     public getEvmAddressBech(): string {
-        let keypair = new EVMKeyPair(axia.getHRP(), 'C');
+        let keypair = new EVMKeyPair(axia.getHRP(), 'AX');
         //@ts-ignore
         let addr = keypair.addressFromPublicKey(Buffer.from(this.ethAccountKey.publicKey));
-        return bintools.addressToString(axia.getHRP(), 'C', addr);
+        return bintools.addressToString(axia.getHRP(), 'AX', addr);
     }
 
     /**

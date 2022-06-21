@@ -44,7 +44,7 @@ export abstract class HDWalletAbstract extends WalletProvider {
 
     /**
      * Gets the active external address on the SwapChain
-     * - The X address will change after every deposit.
+     * - The Swap address will change after every deposit.
      */
     public getAddressX(): string {
         return this.externalScan.getAddressX();
@@ -69,28 +69,28 @@ export abstract class HDWalletAbstract extends WalletProvider {
      * Returns every external SwapChain address used by the wallet up to now.
      */
     public async getExternalAddressesX(): Promise<string[]> {
-        return await this.externalScan.getAllAddresses('X');
+        return await this.externalScan.getAllAddresses('Swap');
     }
 
     /**
      * Returns every external SwapChain address used by the wallet up to now.
      */
     public getExternalAddressesXSync(): string[] {
-        return this.externalScan.getAllAddressesSync('X');
+        return this.externalScan.getAllAddressesSync('Swap');
     }
 
     /**
      * Returns every internal SwapChain address used by the wallet up to now.
      */
     public async getInternalAddressesX(): Promise<string[]> {
-        return await this.internalScan.getAllAddresses('X');
+        return await this.internalScan.getAllAddresses('Swap');
     }
 
     /**
      * Returns every internal SwapChain address used by the wallet up to now.
      */
     public getInternalAddressesXSync(): string[] {
-        return this.internalScan.getAllAddressesSync('X');
+        return this.internalScan.getAllAddressesSync('Swap');
     }
 
     /**
@@ -108,11 +108,11 @@ export abstract class HDWalletAbstract extends WalletProvider {
     }
 
     public async getExternalAddressesP(): Promise<string[]> {
-        return this.externalScan.getAllAddresses('P');
+        return this.externalScan.getAllAddresses('Core');
     }
 
     public getExternalAddressesPSync(): string[] {
-        return this.externalScan.getAllAddressesSync('P');
+        return this.externalScan.getAllAddressesSync('Core');
     }
 
     /**
@@ -130,7 +130,7 @@ export abstract class HDWalletAbstract extends WalletProvider {
     }
 
     /**
-     * Scans the network and initializes internal and external addresses on P and SwapChains.
+     * Scans the network and initializes internal and external addresses on Core and SwapChains.
      * - Heavy operation
      * - MUST use the explorer api to find the last used address
      * - If explorer is not available it will use the connected node. This may result in invalid balances.
@@ -174,10 +174,10 @@ export abstract class HDWalletAbstract extends WalletProvider {
     public async updateUtxosX(): Promise<AVMUTXOSet> {
         let utxosX = await super.updateUtxosX();
 
-        // If the current internal or external X address is in the utxo set, increment hd index
+        // If the current internal or external Swap address is in the utxo set, increment hd index
         let utxoAddrs = utxosX.getAddresses();
         let utxoAddrsStr = utxoAddrs.map((addr) => {
-            return bintools.addressToString(axia.getHRP(), 'X', addr);
+            return bintools.addressToString(axia.getHRP(), 'Swap', addr);
         });
 
         let addrExternalX = this.getAddressX();
@@ -212,10 +212,10 @@ export abstract class HDWalletAbstract extends WalletProvider {
     public async updateUtxosP(): Promise<PlatformUTXOSet> {
         let utxosP = await super.updateUtxosP();
 
-        // If the current P address is in the utxo set, increment hd index
+        // If the current Core address is in the utxo set, increment hd index
         let utxoAddrs = utxosP.getAddresses();
         let utxoAddrsStr = utxoAddrs.map((addr) => {
-            return bintools.addressToString(axia.getHRP(), 'P', addr);
+            return bintools.addressToString(axia.getHRP(), 'Core', addr);
         });
 
         let addrExternalP = this.getAddressP();

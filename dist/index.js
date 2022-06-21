@@ -87,13 +87,13 @@ function __awaiter(thisArg, _arguments, P, generator) {
 }
 
 function getRpcC(conf) {
-    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/C/rpc`;
+    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/AX/rpc`;
 }
 function getRpcX(conf) {
-    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/X`;
+    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/Swap`;
 }
 function getRpcP(conf) {
-    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/P`;
+    return `${conf.apiProtocol}://${conf.apiIp}:${conf.apiPort}/ext/bc/Core`;
 }
 
 const MainnetConfig = {
@@ -105,20 +105,20 @@ const MainnetConfig = {
     explorerSiteURL: 'https://explorer.avax.network',
     networkID: 1,
     // @ts-ignore
-    swapChainID: utils.Defaults.network[1]['X']['blockchainID'],
+    swapChainID: utils.Defaults.network[1]['Swap']['blockchainID'],
     // @ts-ignore
-    coreChainID: utils.Defaults.network[1]['P']['blockchainID'],
+    coreChainID: utils.Defaults.network[1]['Core']['blockchainID'],
     // @ts-ignore
-    axChainID: utils.Defaults.network[1]['C']['blockchainID'],
+    axChainID: utils.Defaults.network[1]['AX']['blockchainID'],
     // @ts-ignore
-    evmChainID: utils.Defaults.network[1]['C']['chainID'],
+    evmChainID: utils.Defaults.network[1]['AX']['chainID'],
     // @ts-ignore
-    axcID: utils.Defaults.network[1]['X']['axcAssetID'],
+    axcID: utils.Defaults.network[1]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
-            c: getRpcC(this),
-            p: getRpcP(this),
-            x: getRpcX(this),
+            ax: getRpcC(this),
+            core: getRpcP(this),
+            swap: getRpcX(this),
         };
     },
 };
@@ -131,20 +131,20 @@ const TestnetConfig = {
     explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5678,
     // @ts-ignore
-    swapChainID: utils.Defaults.network[5678]['X']['blockchainID'],
+    swapChainID: utils.Defaults.network[5678]['Swap']['blockchainID'],
     // @ts-ignore
-    coreChainID: utils.Defaults.network[5678]['P']['blockchainID'],
+    coreChainID: utils.Defaults.network[5678]['Core']['blockchainID'],
     // @ts-ignore
-    axChainID: utils.Defaults.network[5678]['C']['blockchainID'],
+    axChainID: utils.Defaults.network[5678]['AX']['blockchainID'],
     // @ts-ignore
-    evmChainID: utils.Defaults.network[5678]['C']['chainID'],
+    evmChainID: utils.Defaults.network[5678]['AX']['chainID'],
     // @ts-ignore
-    axcID: utils.Defaults.network[5678]['X']['axcAssetID'],
+    axcID: utils.Defaults.network[5678]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
-            c: getRpcC(this),
-            p: getRpcP(this),
-            x: getRpcX(this),
+            ax: getRpcC(this),
+            core: getRpcP(this),
+            swap: getRpcX(this),
         };
     },
 };
@@ -155,20 +155,20 @@ const LocalnetConfig = {
     apiPort: 9650,
     networkID: 12345,
     // @ts-ignore
-    swapChainID: utils.Defaults.network[12345]['X']['blockchainID'],
+    swapChainID: utils.Defaults.network[12345]['Swap']['blockchainID'],
     // @ts-ignore
-    coreChainID: utils.Defaults.network[12345]['P']['blockchainID'],
+    coreChainID: utils.Defaults.network[12345]['Core']['blockchainID'],
     // @ts-ignore
-    axChainID: utils.Defaults.network[12345]['C']['blockchainID'],
+    axChainID: utils.Defaults.network[12345]['AX']['blockchainID'],
     // @ts-ignore
-    evmChainID: utils.Defaults.network[12345]['C']['chainID'],
+    evmChainID: utils.Defaults.network[12345]['AX']['chainID'],
     // @ts-ignore
-    axcID: utils.Defaults.network[12345]['X']['axcAssetID'],
+    axcID: utils.Defaults.network[12345]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
-            c: getRpcC(this),
-            p: getRpcP(this),
-            x: getRpcX(this),
+            ax: getRpcC(this),
+            core: getRpcP(this),
+            swap: getRpcX(this),
         };
     },
 };
@@ -1554,11 +1554,11 @@ var common = /*#__PURE__*/Object.freeze({
 
 function wsUrlFromConfigX(config) {
     let protocol = config.apiProtocol === 'http' ? 'ws' : 'wss';
-    return `${protocol}://${config.apiIp}:${config.apiPort}/ext/bc/X/events`;
+    return `${protocol}://${config.apiIp}:${config.apiPort}/ext/bc/Swap/events`;
 }
 function wsUrlFromConfigEVM(config) {
     let protocol = config.apiProtocol === 'http' ? 'ws' : 'wss';
-    return `${protocol}://${config.apiIp}:${config.apiPort}/ext/bc/C/ws`;
+    return `${protocol}://${config.apiIp}:${config.apiPort}/ext/bc/AX/ws`;
 }
 /**
  * Given the base url of an Axia API, requests the Network ID
@@ -1677,11 +1677,11 @@ function setRpcNetwork(conf, credentials = true) {
         axia.removeRequestConfig('withCredentials');
     }
     swapChain.refreshBlockchainID(conf.swapChainID);
-    swapChain.setBlockchainAlias('X');
+    swapChain.setBlockchainAlias('Swap');
     coreChain.refreshBlockchainID(conf.coreChainID);
-    coreChain.setBlockchainAlias('P');
+    coreChain.setBlockchainAlias('Core');
     axChain.refreshBlockchainID(conf.axChainID);
-    axChain.setBlockchainAlias('C');
+    axChain.setBlockchainAlias('AX');
     swapChain.setAXCAssetID(conf.axcID);
     coreChain.setAXCAssetID(conf.axcID);
     axChain.setAXCAssetID(conf.axcID);
@@ -1713,12 +1713,12 @@ function getConfigFromUrl(url$1) {
         let protocol = urlObj.protocol === 'http:' ? 'http' : 'https';
         let connection = new dist.Axia(urlObj.hostname, parseInt(portStr), protocol, netID);
         // TODO: Use a helper for this
-        let connectionEvm = new Web3__default["default"](urlObj.href + 'ext/bc/C/rpc');
+        let connectionEvm = new Web3__default["default"](urlObj.href + 'ext/bc/AX/rpc');
         let infoApi = connection.Info();
         let xApi = connection.SwapChain();
-        let fetchIdX = infoApi.getBlockchainID('X');
-        let fetchIdP = infoApi.getBlockchainID('P');
-        let fetchIdC = infoApi.getBlockchainID('C');
+        let fetchIdX = infoApi.getBlockchainID('Swap');
+        let fetchIdP = infoApi.getBlockchainID('Core');
+        let fetchIdC = infoApi.getBlockchainID('AX');
         let fetchEvmChainID = connectionEvm.eth.getChainId();
         let fetchAxcId = yield xApi.getAXCAssetID();
         let values = yield Promise.all([fetchIdX, fetchIdP, fetchIdC, fetchAxcId, fetchEvmChainID]);
@@ -1740,9 +1740,9 @@ function getConfigFromUrl(url$1) {
             evmChainID: evmChainId,
             get rpcUrl() {
                 return {
-                    c: getRpcC(this),
-                    p: getRpcP(this),
-                    x: getRpcX(this),
+                    ax: getRpcC(this),
+                    core: getRpcP(this),
+                    swap: getRpcX(this),
                 };
             },
         };
@@ -2882,29 +2882,29 @@ const networkEvents = new EventEmitter$1();
  */
 function idToChainAlias(id) {
     if (id === activeNetwork.swapChainID) {
-        return 'X';
+        return 'Swap';
     }
     else if (id === activeNetwork.coreChainID) {
-        return 'P';
+        return 'Core';
     }
     else if (id === activeNetwork.axChainID) {
-        return 'C';
+        return 'AX';
     }
     throw new Error('Unknown chain ID.');
 }
 
 /**
  * Given a chain alias, returns the chain id.
- * @param alias `X`, `P` or `C`
+ * @param alias `Swap`, `Core` or `AX`
  */
 function chainIdFromAlias(alias) {
-    if (alias === 'X') {
+    if (alias === 'Swap') {
         return swapChain.getBlockchainID();
     }
-    else if (alias === 'P') {
+    else if (alias === 'Core') {
         return coreChain.getBlockchainID();
     }
-    else if (alias === 'C') {
+    else if (alias === 'AX') {
         return axChain.getBlockchainID();
     }
     throw new Error('Unknown chain alias.');
@@ -3101,7 +3101,7 @@ const validateAddress = (address) => {
 };
 function validateAddressX(address) {
     try {
-        let buff = bintools.parseAddress(address, 'X');
+        let buff = bintools.parseAddress(address, 'Swap');
         if (!buff)
             return false;
         return true;
@@ -3112,7 +3112,7 @@ function validateAddressX(address) {
 }
 function validateAddressP(address) {
     try {
-        let buff = bintools.parseAddress(address, 'P');
+        let buff = bintools.parseAddress(address, 'Core');
         if (!buff)
             return false;
         return true;
@@ -3125,12 +3125,12 @@ function validateAddressEVM(address) {
     return Web3__default["default"].utils.isAddress(address);
 }
 /**
- * Returns the human readable part of a X or P bech32 address.
+ * Returns the human readable part of a Swap or Core bech32 address.
  * @param address
  */
 function getAddressHRP(address) {
     if (!validateAddress(address)) {
-        throw new Error('Invalid X or P address.');
+        throw new Error('Invalid Swap or Core address.');
     }
     return address.split('-')[1].split('1')[0];
 }
@@ -3143,7 +3143,7 @@ function getAddressChain(address) {
         throw new Error('Invalid address.');
     }
     if (Web3__default["default"].utils.isAddress(address)) {
-        return 'C';
+        return 'AX';
     }
     else {
         return address[0];
@@ -3217,7 +3217,7 @@ function bnToBig(val, denomination = 0) {
 }
 /**
  * Converts a BN amount of 18 decimals to 9.
- * Used for AXC C <-> X,P conversions
+ * Used for AXC AX <-> Swap,Core conversions
  * @param amount
  */
 function axcCtoX(amount) {
@@ -3653,7 +3653,7 @@ function filterDuplicateTransactions(txs) {
     return filtered;
 }
 /**
- * Returns the total amount of `assetID` in the given `utxos` owned by `address`. Checks for X/P addresses.
+ * Returns the total amount of `assetID` in the given `utxos` owned by `address`. Checks for Swap/Core addresses.
  * @param utxos UTXOs to calculate balance from.
  * @param addresses The wallet's  addresses.
  * @param assetID Only count outputs of this asset ID.
@@ -4175,10 +4175,10 @@ class EvmWalletReadonly {
         return ethers.ethers.utils.getAddress(this.address);
     }
     getAddressBech32() {
-        let keypair = new keychain.KeyPair(axia.getHRP(), 'C');
+        let keypair = new keychain.KeyPair(axia.getHRP(), 'AX');
         //@ts-ignore
         let addr = keypair.addressFromPublicKey(avajs.Buffer.from(this.publicKey));
-        return bintools.addressToString(axia.getHRP(), 'C', addr);
+        return bintools.addressToString(axia.getHRP(), 'AX', addr);
     }
     updateBalance() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -4199,12 +4199,12 @@ class EvmWallet extends EvmWalletReadonly {
         return `PrivateKey-` + bintools.cb58Encode(avajs.Buffer.from(this.privateKey));
     }
     getKeyChain() {
-        let keychain = new evm.KeyChain(axia.getHRP(), 'C');
+        let keychain = new evm.KeyChain(axia.getHRP(), 'AX');
         keychain.importKey(this.getPrivateKeyBech());
         return keychain;
     }
     getKeyPair() {
-        let keychain = new evm.KeyChain(axia.getHRP(), 'C');
+        let keychain = new evm.KeyChain(axia.getHRP(), 'AX');
         return keychain.importKey(this.getPrivateKeyBech());
     }
     signEVM(tx) {
@@ -4610,7 +4610,7 @@ function buildCreateNftFamilyTx(name, symbol, groupNum, fromAddrs, minterAddr, c
 }
 function buildMintNftTx(mintUtxo, payload, quantity, ownerAddress, changeAddress, fromAddresses, utxoSet) {
     return __awaiter(this, void 0, void 0, function* () {
-        let addrBuf = bintools.parseAddress(ownerAddress, 'X');
+        let addrBuf = bintools.parseAddress(ownerAddress, 'Swap');
         let owners = [];
         let sourceAddresses = fromAddresses;
         for (let i = 0; i < quantity; i++) {
@@ -4646,7 +4646,7 @@ sourceChangeAddress, destinationChain) {
  * @param toAddress
  * @param amount
  * @param fromAddressBech
- * @param destinationChain Either `X` or `P`
+ * @param destinationChain Either `Swap` or `Core`
  * @param fee Export fee in nAXC
  */
 function buildEvmExportTransaction(fromAddresses, toAddress, amount, // export amount + fee
@@ -4859,7 +4859,7 @@ var tx_helper = /*#__PURE__*/Object.freeze({
 /**
  *
  * @param addrs an array of SwapChain addresses to get the atomic utxos of
- * @param sourceChain Which chain to check against, either `P` or `C`
+ * @param sourceChain Which chain to check against, either `Core` or `AX`
  */
 function avmGetAtomicUTXOs(addrs, sourceChain) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -5107,7 +5107,7 @@ class UniversalNodeAbstract {
 
 class UniversalNodeX extends UniversalNodeAbstract {
     constructor(balance, feeExport, feeImport) {
-        super(balance, 'X', feeExport, feeImport);
+        super(balance, 'Swap', feeExport, feeImport);
     }
     buildExportTx(destChain, amount) {
         return super.buildExportTx(destChain, amount);
@@ -5116,7 +5116,7 @@ class UniversalNodeX extends UniversalNodeAbstract {
         return super.buildImportTx(sourceChain);
     }
     getExportMethod(to) {
-        if (to === 'P') {
+        if (to === 'Core') {
             return 'export_x_p';
         }
         else {
@@ -5124,7 +5124,7 @@ class UniversalNodeX extends UniversalNodeAbstract {
         }
     }
     getImportMethod(from) {
-        if (from === 'P') {
+        if (from === 'Core') {
             return 'import_p_x';
         }
         else {
@@ -5135,7 +5135,7 @@ class UniversalNodeX extends UniversalNodeAbstract {
 
 class UniversalNodeP extends UniversalNodeAbstract {
     constructor(balance, feeExport, feeImport) {
-        super(balance, 'P', feeExport, feeImport);
+        super(balance, 'Core', feeExport, feeImport);
     }
     buildExportTx(destChain, amount) {
         return super.buildExportTx(destChain, amount);
@@ -5144,7 +5144,7 @@ class UniversalNodeP extends UniversalNodeAbstract {
         return super.buildImportTx(sourceChain);
     }
     getExportMethod(to) {
-        if (to === 'X') {
+        if (to === 'Swap') {
             return 'export_p_x';
         }
         else {
@@ -5152,7 +5152,7 @@ class UniversalNodeP extends UniversalNodeAbstract {
         }
     }
     getImportMethod(from) {
-        if (from === 'X') {
+        if (from === 'Swap') {
             return 'import_x_p';
         }
         else {
@@ -5163,7 +5163,7 @@ class UniversalNodeP extends UniversalNodeAbstract {
 
 class UniversalNodeC extends UniversalNodeAbstract {
     constructor(balance, feeExport, feeImport) {
-        super(balance, 'C', feeExport, feeImport);
+        super(balance, 'AX', feeExport, feeImport);
     }
     buildExportTx(destChain, amount) {
         return super.buildExportTx(destChain, amount);
@@ -5172,7 +5172,7 @@ class UniversalNodeC extends UniversalNodeAbstract {
         return super.buildImportTx(sourceChain);
     }
     getExportMethod(to) {
-        if (to === 'X') {
+        if (to === 'Swap') {
             return 'export_c_x';
         }
         else {
@@ -5180,7 +5180,7 @@ class UniversalNodeC extends UniversalNodeAbstract {
         }
     }
     getImportMethod(from) {
-        if (from === 'X') {
+        if (from === 'Swap') {
             return 'import_x_c';
         }
         else {
@@ -5341,10 +5341,10 @@ function estimateImportGasFeeFromMockTx(numIns = 1, numSigs // number of signatu
 }
 /**
  * Estimates the gas fee using a mock ExportTx built from the passed values.
- * @param destinationChain `X` or `P`
+ * @param destinationChain `Swap` or `Core`
  * @param amount in nAXC
  * @param from The AXChain hex address exported from
- * @param to The destination X or P address
+ * @param to The destination Swap or Core address
  */
 function estimateExportGasFeeFromMockTx(destinationChain, amount, from, to) {
     const destChainId = chainIdFromAlias(destinationChain);
@@ -5365,7 +5365,7 @@ function estimateExportGasFeeFromMockTx(destinationChain, amount, from, to) {
 }
 /**
  * Returns the estimated gas for the export transaction.
- * @param destinationChain Either `X` or `P`
+ * @param destinationChain Either `Swap` or `Core`
  * @param amount The amount to export. In nAXC.
  * @param from The AXChain hex address exporting the asset
  * @param fromBech The AXChain bech32 address exporting the asset
@@ -5421,7 +5421,7 @@ class WalletProvider {
     onNetworkChange(config) { }
     /***
      * Used to get an identifier string that is consistent across different network connections.
-     * Currently returns the C address of this wallet.
+     * Currently returns the AX address of this wallet.
      */
     getBaseAddress() {
         return this.getAddressC();
@@ -5437,9 +5437,9 @@ class WalletProvider {
     }
     emitAddressChange() {
         this.emit('addressChanged', {
-            X: this.getAddressX(),
+            Swap: this.getAddressX(),
             changeX: this.getChangeAddressX(),
-            P: this.getAddressP(),
+            Core: this.getAddressP(),
         });
     }
     emitBalanceChangeX() {
@@ -5597,7 +5597,7 @@ class WalletProvider {
     /**
      * Returns the maximum spendable AXC balance for the given chain.
      * Scans all chains and take cross over fees into account
-     * @param chainType X, P or C
+     * @param chainType Swap, Core or AX
      */
     getUsableAxcBalanceForChain(chainType, atomicFeeXP, atomicFeeC) {
         return this.createUniversalNode(chainType, atomicFeeXP, atomicFeeC).reduceTotalBalanceFromParents();
@@ -5612,17 +5612,17 @@ class WalletProvider {
         let pBal = this.getAxcBalanceP().unlocked;
         let cBal = axcCtoX(this.getAxcBalanceC()); // need to use 9 decimal places
         switch (chain) {
-            case 'X':
+            case 'Swap':
                 return createGraphForX(xBal, pBal, cBal, atomicFeeXP, atomicFeeC);
-            case 'P':
+            case 'Core':
                 return createGraphForP(xBal, pBal, cBal, atomicFeeXP, atomicFeeC);
-            case 'C':
+            case 'AX':
                 return createGraphForC(xBal, pBal, cBal, atomicFeeXP, atomicFeeC);
         }
     }
     /**
      * Can this wallet have the given amount on the given chain after a series of internal transactions (if required).
-     * @param chain X/P/C
+     * @param chain Swap/Core/AX
      * @param amount The amount to check against
      */
     canHaveBalanceOnChain(chain, amount, atomicFeeXP, atomicFeeC) {
@@ -5632,7 +5632,7 @@ class WalletProvider {
     }
     /**
      * Returns an array of transaction to do in order to have the target amount on the given chain
-     * @param chain The chain (X/P/C) to have the desired amount on
+     * @param chain The chain (Swap/Core/AX) to have the desired amount on
      * @param amount The desired amount
      */
     getTransactionsForBalance(chain, amount, atomicFeeXP, atomicFeeC) {
@@ -5640,11 +5640,11 @@ class WalletProvider {
         let pBal = this.getAxcBalanceP().unlocked;
         let cBal = axcCtoX(this.getAxcBalanceC()); // need to use 9 decimal places
         switch (chain) {
-            case 'P':
+            case 'Core':
                 return getStepsForBalanceP(xBal, pBal, cBal, amount, atomicFeeXP, atomicFeeC);
-            case 'C':
+            case 'AX':
                 return getStepsForBalanceC(xBal, pBal, cBal, amount, atomicFeeXP, atomicFeeC);
-            case 'X':
+            case 'Swap':
                 return getStepsForBalanceX(xBal, pBal, cBal, amount, atomicFeeXP, atomicFeeC);
         }
     }
@@ -5822,17 +5822,17 @@ class WalletProvider {
         return this.balanceX;
     }
     /**
-     * A helpful method that returns the AXC balance on X, P, AXChains.
+     * A helpful method that returns the AXC balance on Swap, Core, AXChains.
      * Internally calls chain specific getAxcBalance methods.
      */
     getAxcBalance() {
-        let X = this.getAxcBalanceX();
-        let P = this.getAxcBalanceP();
-        let C = this.getAxcBalanceC();
+        let Swap = this.getAxcBalanceX();
+        let Core = this.getAxcBalanceP();
+        let AX = this.getAxcBalanceC();
         return {
-            X,
-            P,
-            C,
+            Swap,
+            Core,
+            AX,
         };
     }
     /**
@@ -5899,14 +5899,14 @@ class WalletProvider {
      * The export fee is added automatically to the amount. Make sure the exported amount includes the import fee for the destination chain.
      *
      * @param amt amount of nAXC to transfer. Fees excluded.
-     * @param destinationChain Either `X` or `C`
+     * @param destinationChain Either `Swap` or `AX`
      * @return returns the transaction id.
      */
     exportCoreChain(amt, destinationChain) {
         return __awaiter(this, void 0, void 0, function* () {
             let pChangeAddr = this.getAddressP();
             let fromAddrs = yield this.getAllAddressesP();
-            const destinationAddr = destinationChain === 'X' ? this.getAddressX() : this.getEvmAddressBech();
+            const destinationAddr = destinationChain === 'Swap' ? this.getAddressX() : this.getEvmAddressBech();
             let utxoSet = this.utxosP;
             const exportTx = yield buildPlatformExportTransaction(utxoSet, fromAddrs, destinationAddr, amt, pChangeAddr, destinationChain);
             let tx = yield this.signP(exportTx);
@@ -5918,12 +5918,12 @@ class WalletProvider {
     }
     /***
      * Estimates the required fee for a AXChain export transaction
-     * @param destinationChain Either `X` or `P`
+     * @param destinationChain Either `Swap` or `Core`
      * @param baseFee Current base fee of the network, use a padded amount.
      * @return BN AXChain atomic export transaction fee in nAXC.
      */
     estimateAtomicFeeExportC(destinationChain, baseFee) {
-        let destinationAddr = destinationChain === 'X' ? this.getAddressX() : this.getAddressP();
+        let destinationAddr = destinationChain === 'Swap' ? this.getAddressX() : this.getAddressP();
         const hexAddr = this.getAddressC();
         // The amount does not effect the fee that much
         const amt = new avajs.BN(0);
@@ -5936,7 +5936,7 @@ class WalletProvider {
      * Make sure the exported `amt` includes the import fee for the destination chain.
      *
      * @param amt amount of nAXC to transfer
-     * @param destinationChain either `X` or `P`
+     * @param destinationChain either `Swap` or `Core`
      * @param exportFee Export fee in nAXC
      * @return returns the transaction id.
      */
@@ -5945,7 +5945,7 @@ class WalletProvider {
             let hexAddr = this.getAddressC();
             let bechAddr = this.getEvmAddressBech();
             let fromAddresses = [hexAddr];
-            let destinationAddr = destinationChain === 'X' ? this.getAddressX() : this.getAddressP();
+            let destinationAddr = destinationChain === 'Swap' ? this.getAddressX() : this.getAddressP();
             // Calculate export fee if it's not given.
             if (!exportFee) {
                 const gas = estimateExportGasFeeFromMockTx(destinationChain, amt, hexAddr, destinationAddr);
@@ -5961,7 +5961,7 @@ class WalletProvider {
         });
     }
     /**
-     * Exports AXC from SwapChain to either P or AXChain
+     * Exports AXC from SwapChain to either Core or AXChain
      * @remarks
      * The export fee will be added to the amount automatically. Make sure the exported amount has the import fee for the destination chain.
      *
@@ -5971,7 +5971,7 @@ class WalletProvider {
      */
     exportSwapChain(amt, destinationChain) {
         return __awaiter(this, void 0, void 0, function* () {
-            let destinationAddr = destinationChain === 'P' ? this.getAddressP() : this.getEvmAddressBech();
+            let destinationAddr = destinationChain === 'Core' ? this.getAddressP() : this.getEvmAddressBech();
             let fromAddresses = yield this.getAllAddressesX();
             let changeAddress = this.getChangeAddressX();
             let utxos = this.utxosX;
@@ -6005,7 +6005,7 @@ class WalletProvider {
     }
     /**
      * Imports atomic SwapChain UTXOs to the current active SwapChain address
-     * @param sourceChain The chain to import from, either `P` or `C`
+     * @param sourceChain The chain to import from, either `Core` or `AX`
      */
     importX(sourceChain) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -6015,7 +6015,7 @@ class WalletProvider {
             }
             let xToAddr = this.getAddressX();
             let hrp = axia.getHRP();
-            let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'X', addr));
+            let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'Swap', addr));
             let fromAddrs = utxoAddrs;
             let ownerAddrs = utxoAddrs;
             const sourceChainId = chainIdFromAlias(sourceChain);
@@ -6033,7 +6033,7 @@ class WalletProvider {
     }
     /**
      * Import utxos in atomic memory to the CoreChain.
-     * @param sourceChain Either `X` or `C`
+     * @param sourceChain Either `Swap` or `AX`
      * @param [toAddress] The destination CoreChain address assets will get imported to. Defaults to the CoreChain address of the wallet.
      */
     importP(sourceChain, toAddress) {
@@ -6045,7 +6045,7 @@ class WalletProvider {
             // Owner addresses, the addresses we exported to
             let walletAddrP = this.getAddressP();
             let hrp = axia.getHRP();
-            let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'P', addr));
+            let utxoAddrs = utxoSet.getAddresses().map((addr) => bintools.addressToString(hrp, 'Core', addr));
             let ownerAddrs = utxoAddrs;
             if (!toAddress) {
                 toAddress = walletAddrP;
@@ -6061,7 +6061,7 @@ class WalletProvider {
     }
     /**
      *
-     * @param sourceChain Which chain to import from. `X` or `P`
+     * @param sourceChain Which chain to import from. `Swap` or `Core`
      * @param [fee] The import fee to use in the transactions. If omitted the SDK will try to calculate the fee. For deterministic transactions you should always pre calculate and provide this value.
      * @param [utxoSet] If omitted imports all atomic UTXOs.
      */
@@ -6175,7 +6175,7 @@ class WalletProvider {
                 utxoSet = new platformvm.UTXOSet();
                 utxoSet.addArray(utxos);
             }
-            // If reward address isn't given use current P address
+            // If reward address isn't given use current Core address
             if (!rewardAddress) {
                 rewardAddress = this.getAddressP();
             }
@@ -6202,29 +6202,29 @@ class WalletProvider {
         return __awaiter(this, void 0, void 0, function* () {
             switch (tx.action) {
                 case 'export_x_c':
-                    return yield this.exportSwapChain(tx.amount, 'C');
+                    return yield this.exportSwapChain(tx.amount, 'AX');
                 case 'import_x_c':
-                    return yield this.importC('X', tx.fee);
+                    return yield this.importC('Swap', tx.fee);
                 case 'export_x_p':
-                    return yield this.exportSwapChain(tx.amount, 'P');
+                    return yield this.exportSwapChain(tx.amount, 'Core');
                 case 'import_x_p':
-                    return yield this.importP('X');
+                    return yield this.importP('Swap');
                 case 'export_c_x':
-                    return yield this.exportAXChain(tx.amount, 'X', tx.fee);
+                    return yield this.exportAXChain(tx.amount, 'Swap', tx.fee);
                 case 'import_c_x':
-                    return yield this.importX('C');
+                    return yield this.importX('AX');
                 case 'export_c_p':
-                    return yield this.exportAXChain(tx.amount, 'P', tx.fee);
+                    return yield this.exportAXChain(tx.amount, 'Core', tx.fee);
                 case 'import_c_p':
-                    return yield this.importP('C');
+                    return yield this.importP('AX');
                 case 'export_p_x':
-                    return yield this.exportCoreChain(tx.amount, 'X');
+                    return yield this.exportCoreChain(tx.amount, 'Swap');
                 case 'import_p_x':
-                    return yield this.importX('P');
+                    return yield this.importX('Core');
                 case 'export_p_c':
-                    return yield this.exportCoreChain(tx.amount, 'C');
+                    return yield this.exportCoreChain(tx.amount, 'AX');
                 case 'import_p_c':
-                    return yield this.importC('P', tx.fee);
+                    return yield this.importC('Core', tx.fee);
                 default:
                     throw new Error('Method not supported.');
             }
@@ -6267,7 +6267,7 @@ class WalletProvider {
             let addrBechC = this.getEvmAddressBech();
             let addrs = [...addrsX, addrBechC];
             let addrC = this.getAddressC();
-            // Parse X,P,C transactions
+            // Parse Swap,Core,AX transactions
             // Have to loop because of the asynchronous call
             let parsedXPC = [];
             for (let i = 0; i < txsXPC.length; i++) {
@@ -6282,7 +6282,7 @@ class WalletProvider {
             }
             // Parse EVM Transactions
             let parsedEVM = txsEVM.map((tx) => getTransactionSummaryEVM(tx, addrC));
-            // Sort and join X,P,C transactions
+            // Sort and join Swap,Core,AX transactions
             let parsedAll = [...parsedXPC, ...parsedEVM];
             let txsSorted = parsedAll.sort((x, y) => (x.timestamp.getTime() < y.timestamp.getTime() ? 1 : -1));
             // If there is a limit only return that much
@@ -6366,7 +6366,7 @@ class HdScanner {
         this.accountKey = accountKey;
         // We need an instance of an AVM key to generate adddresses from public keys
         let hrp = utils.getPreferredHRP(axia.getNetworkID());
-        this.avmAddrFactory = new keychain$1.KeyPair(hrp, 'X');
+        this.avmAddrFactory = new keychain$1.KeyPair(hrp, 'Swap');
     }
     getIndex() {
         return this.index;
@@ -6381,16 +6381,16 @@ class HdScanner {
         return this.index++;
     }
     getAddressX() {
-        return this.getAddressForIndex(this.index, 'X');
+        return this.getAddressForIndex(this.index, 'Swap');
     }
     getAddressP() {
-        return this.getAddressForIndex(this.index, 'P');
+        return this.getAddressForIndex(this.index, 'Core');
     }
     /**
      * Returns every address up to and including the current index.
-     * @param chainId Either X or P
+     * @param chainId Either Swap or Core
      */
-    getAllAddresses(chainId = 'X') {
+    getAllAddresses(chainId = 'Swap') {
         return __awaiter(this, void 0, void 0, function* () {
             let upTo = this.index;
             return yield this.getAddressesInRange(0, upTo + 1, chainId);
@@ -6398,9 +6398,9 @@ class HdScanner {
     }
     /**
      * Returns every address up to and including the current index synchronously.
-     * @param chainId Either X or P
+     * @param chainId Either Swap or Core
      */
-    getAllAddressesSync(chainId = 'X') {
+    getAllAddressesSync(chainId = 'Swap') {
         let upTo = this.index;
         return this.getAddressesInRangeSync(0, upTo + 1, chainId);
     }
@@ -6408,9 +6408,9 @@ class HdScanner {
      * Returns addresses in the given range
      * @param start Start index
      * @param end End index, exclusive
-     * @param chainId  `X` or `P` optional, returns X by default
+     * @param chainId  `Swap` or `Core` optional, returns Swap by default
      */
-    getAddressesInRange(start, end, chainId = 'X') {
+    getAddressesInRange(start, end, chainId = 'Swap') {
         return __awaiter(this, void 0, void 0, function* () {
             let res = [];
             for (let i = start; i < end; i++) {
@@ -6427,9 +6427,9 @@ class HdScanner {
      * Returns addresses in the given range
      * @param start Start index
      * @param end End index, exclusive
-     * @param chainId  `X` or `P` optional, returns X by default
+     * @param chainId  `Swap` or `Core` optional, returns Swap by default
      */
-    getAddressesInRangeSync(start, end, chainId = 'X') {
+    getAddressesInRangeSync(start, end, chainId = 'Swap') {
         let res = [];
         for (let i = start; i < end; i++) {
             res.push(this.getAddressForIndex(i, chainId));
@@ -6487,7 +6487,7 @@ class HdScanner {
         }
         return key;
     }
-    getAddressForIndex(index, chainId = 'X') {
+    getAddressForIndex(index, chainId = 'Swap') {
         let key = this.getHdKeyForIndex(index);
         let publicKey = key.publicKey.toString('hex');
         let publicKeyBuff = avajs.Buffer.from(publicKey, 'hex');
@@ -6551,8 +6551,8 @@ class HdScanner {
             let addrsP = [];
             // Get keys for indexes start to start+scan_size
             for (let i = start; i < start + SCAN_SIZE; i++) {
-                let addressX = this.getAddressForIndex(i, 'X');
-                let addressP = this.getAddressForIndex(i, 'P');
+                let addressX = this.getAddressForIndex(i, 'Swap');
+                let addressP = this.getAddressForIndex(i, 'Core');
                 addrsX.push(addressX);
                 addrsP.push(addressP);
             }
@@ -6564,7 +6564,7 @@ class HdScanner {
                 for (let n = 0; n < HD_SCAN_GAP_SIZE; n++) {
                     let scanIndex = i + n;
                     let addr = addrsX[scanIndex];
-                    let addrBuf = bintools.parseAddress(addr, 'X');
+                    let addrBuf = bintools.parseAddress(addr, 'Swap');
                     let addrUTXOsX = utxoSetX.getUTXOIDs([addrBuf]);
                     let addrUTXOsP = utxoSetP.getUTXOIDs([addrBuf]);
                     if (addrUTXOsX.length === 0 && addrUTXOsP.length === 0) {
@@ -6613,7 +6613,7 @@ class HDWalletAbstract extends WalletProvider {
     }
     /**
      * Gets the active external address on the SwapChain
-     * - The X address will change after every deposit.
+     * - The Swap address will change after every deposit.
      */
     getAddressX() {
         return this.externalScan.getAddressX();
@@ -6636,28 +6636,28 @@ class HDWalletAbstract extends WalletProvider {
      */
     getExternalAddressesX() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.externalScan.getAllAddresses('X');
+            return yield this.externalScan.getAllAddresses('Swap');
         });
     }
     /**
      * Returns every external SwapChain address used by the wallet up to now.
      */
     getExternalAddressesXSync() {
-        return this.externalScan.getAllAddressesSync('X');
+        return this.externalScan.getAllAddressesSync('Swap');
     }
     /**
      * Returns every internal SwapChain address used by the wallet up to now.
      */
     getInternalAddressesX() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.internalScan.getAllAddresses('X');
+            return yield this.internalScan.getAllAddresses('Swap');
         });
     }
     /**
      * Returns every internal SwapChain address used by the wallet up to now.
      */
     getInternalAddressesXSync() {
-        return this.internalScan.getAllAddressesSync('X');
+        return this.internalScan.getAllAddressesSync('Swap');
     }
     /**
      * Returns every SwapChain address used by the wallet up to now (internal + external).
@@ -6675,11 +6675,11 @@ class HDWalletAbstract extends WalletProvider {
     }
     getExternalAddressesP() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.externalScan.getAllAddresses('P');
+            return this.externalScan.getAllAddresses('Core');
         });
     }
     getExternalAddressesPSync() {
-        return this.externalScan.getAllAddressesSync('P');
+        return this.externalScan.getAllAddressesSync('Core');
     }
     /**
      * Returns every CoreChain address used by the wallet up to now.
@@ -6694,7 +6694,7 @@ class HDWalletAbstract extends WalletProvider {
         return this.getExternalAddressesPSync();
     }
     /**
-     * Scans the network and initializes internal and external addresses on P and SwapChains.
+     * Scans the network and initializes internal and external addresses on Core and SwapChains.
      * - Heavy operation
      * - MUST use the explorer api to find the last used address
      * - If explorer is not available it will use the connected node. This may result in invalid balances.
@@ -6736,10 +6736,10 @@ class HDWalletAbstract extends WalletProvider {
         });
         return __awaiter(this, void 0, void 0, function* () {
             let utxosX = yield _super.updateUtxosX.call(this);
-            // If the current internal or external X address is in the utxo set, increment hd index
+            // If the current internal or external Swap address is in the utxo set, increment hd index
             let utxoAddrs = utxosX.getAddresses();
             let utxoAddrsStr = utxoAddrs.map((addr) => {
-                return bintools.addressToString(axia.getHRP(), 'X', addr);
+                return bintools.addressToString(axia.getHRP(), 'Swap', addr);
             });
             let addrExternalX = this.getAddressX();
             let addrInternalX = this.getChangeAddressX();
@@ -6771,10 +6771,10 @@ class HDWalletAbstract extends WalletProvider {
         });
         return __awaiter(this, void 0, void 0, function* () {
             let utxosP = yield _super.updateUtxosP.call(this);
-            // If the current P address is in the utxo set, increment hd index
+            // If the current Core address is in the utxo set, increment hd index
             let utxoAddrs = utxosP.getAddresses();
             let utxoAddrsStr = utxoAddrs.map((addr) => {
-                return bintools.addressToString(axia.getHRP(), 'P', addr);
+                return bintools.addressToString(axia.getHRP(), 'Core', addr);
             });
             let addrExternalP = this.getAddressP();
             // Increment external index if the current address is in the utxo set
@@ -6841,10 +6841,10 @@ class MnemonicWallet extends HDWalletAbstract {
      * Bech32 representation of the EVM address.
      */
     getEvmAddressBech() {
-        let keypair = new evm.KeyPair(axia.getHRP(), 'C');
+        let keypair = new evm.KeyPair(axia.getHRP(), 'AX');
         //@ts-ignore
         let addr = keypair.addressFromPublicKey(avajs.Buffer.from(this.ethAccountKey.publicKey));
-        return bintools.addressToString(axia.getHRP(), 'C', addr);
+        return bintools.addressToString(axia.getHRP(), 'AX', addr);
     }
     /**
      * Returns the derived private key used by the EVM wallet.
@@ -7019,7 +7019,7 @@ class SingletonWallet extends WalletProvider {
         return this.getAddressX();
     }
     getEvmAddressBech() {
-        let keypair = new evm.KeyPair(axia.getHRP(), 'C');
+        let keypair = new evm.KeyPair(axia.getHRP(), 'AX');
         keypair.importKey(this.keyBuff);
         return keypair.getAddressString();
     }
@@ -7257,7 +7257,7 @@ class LedgerWallet extends HDWalletAbstract {
         });
     }
     /**
-     * Returns the extended public key used by X and CoreChains for address derivation.
+     * Returns the extended public key used by Swap and CoreChains for address derivation.
      * @remarks Returns the extended public key for path `m/44'/90000'/n'` where `n` is the account index.
      * @param transport
      * @param accountIndex Which account's public key to derive
@@ -7296,10 +7296,10 @@ class LedgerWallet extends HDWalletAbstract {
         return this.evmWallet.getAddress();
     }
     getEvmAddressBech() {
-        let keypair = new keychain.KeyPair(axia.getHRP(), 'C');
+        let keypair = new keychain.KeyPair(axia.getHRP(), 'AX');
         //@ts-ignore
         let addr = keypair.addressFromPublicKey(avajs.Buffer.from(this.evmAccount.publicKey));
-        return bintools.addressToString(axia.getHRP(), 'C', addr);
+        return bintools.addressToString(axia.getHRP(), 'AX', addr);
     }
     signEvm(tx$1) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -7348,8 +7348,8 @@ class LedgerWallet extends HDWalletAbstract {
                 console.log('Failed to get tx operations.');
             }
             let items = ins;
-            if ((txType === avm.AVMConstants.IMPORTTX && chainId === 'X') ||
-                (txType === platformvm.PlatformVMConstants.IMPORTTX && chainId === 'P')) {
+            if ((txType === avm.AVMConstants.IMPORTTX && chainId === 'Swap') ||
+                (txType === platformvm.PlatformVMConstants.IMPORTTX && chainId === 'Core')) {
                 items = (tx || platformvm.ImportTx).getImportInputs();
             }
             let hrp = axia.getHRP();
@@ -7396,7 +7396,7 @@ class LedgerWallet extends HDWalletAbstract {
         return __awaiter(this, void 0, void 0, function* () {
             let externalAddrs = yield this.externalScan.getAllAddresses();
             let internalAddrs = yield this.internalScan.getAllAddresses();
-            let platformAddrs = yield this.externalScan.getAllAddresses('P');
+            let platformAddrs = yield this.externalScan.getAllAddresses('Core');
             let extIndex = externalAddrs.indexOf(address);
             let intIndex = internalAddrs.indexOf(address);
             let platformIndex = platformAddrs.indexOf(address);
@@ -7409,7 +7409,7 @@ class LedgerWallet extends HDWalletAbstract {
             else if (platformIndex >= 0) {
                 return `0/${platformIndex}`;
             }
-            else if (address[0] === 'C') {
+            else if (address[0] === 'AX') {
                 return '0/0';
             }
             else {
@@ -7421,7 +7421,7 @@ class LedgerWallet extends HDWalletAbstract {
         return __awaiter(this, void 0, void 0, function* () {
             let tx = unsignedTx.getTransaction();
             let txType = tx.getTxType();
-            let chainId = 'X';
+            let chainId = 'Swap';
             let parseableTxs = ParseableAvmTxEnum;
             let { paths, isAxcOnly } = yield this.getTransactionPaths(unsignedTx, chainId);
             // If ledger doesnt support parsing, sign hash
@@ -7439,26 +7439,26 @@ class LedgerWallet extends HDWalletAbstract {
     }
     getChangePath(chainId) {
         switch (chainId) {
-            case 'P':
+            case 'Core':
                 return 'm/0';
-            case 'X':
+            case 'Swap':
             default:
                 return 'm/1';
         }
     }
     getChangeIndex(chainId) {
         switch (chainId) {
-            case 'P':
+            case 'Core':
                 // return this.platformHelper.hdIndex
                 return this.externalScan.getIndex();
-            case 'X':
+            case 'Swap':
             default:
                 // return this.internalHelper.hdIndex
                 return this.internalScan.getIndex();
         }
     }
     getChangeBipPath(unsignedTx, chainId) {
-        if (chainId === 'C') {
+        if (chainId === 'AX') {
             return null;
         }
         let tx = unsignedTx.getTransaction();
@@ -7484,13 +7484,13 @@ class LedgerWallet extends HDWalletAbstract {
             let tx = unsignedTx.getTransaction();
             let txType = tx.getTxType();
             let parseableTxs = {
-                X: ParseableAvmTxEnum,
-                P: ParseablePlatformEnum,
-                C: ParseableEvmTxEnum,
+                Swap: ParseableAvmTxEnum,
+                Core: ParseablePlatformEnum,
+                AX: ParseableEvmTxEnum,
             }[chainId];
             `Sign ${parseableTxs[txType]}`;
             let bip32Paths = this.pathsToUniqueBipPaths(paths);
-            const accountPath = chainId === 'C' ? bip32Path.fromString(`${ETH_ACCOUNT_PATH}`) : bip32Path.fromString(`${AXC_ACCOUNT_PATH}`);
+            const accountPath = chainId === 'AX' ? bip32Path.fromString(`${ETH_ACCOUNT_PATH}`) : bip32Path.fromString(`${AXC_ACCOUNT_PATH}`);
             let txbuff = unsignedTx.toBuffer();
             let changePath = this.getChangeBipPath(unsignedTx, chainId);
             //@ts-ignore
@@ -7499,13 +7499,13 @@ class LedgerWallet extends HDWalletAbstract {
             let creds = this.getCredentials(unsignedTx, paths, sigMap, chainId);
             let signedTx;
             switch (chainId) {
-                case 'X':
+                case 'Swap':
                     signedTx = new avm.Tx(unsignedTx, creds);
                     break;
-                case 'P':
+                case 'Core':
                     signedTx = new platformvm.Tx(unsignedTx, creds);
                     break;
-                case 'C':
+                case 'AX':
                     signedTx = new evm.Tx(unsignedTx, creds);
                     break;
             }
@@ -7521,20 +7521,20 @@ class LedgerWallet extends HDWalletAbstract {
             let bip32Paths = this.pathsToUniqueBipPaths(paths);
             // Sign the msg with ledger
             //TODO: Update when ledger supports Accounts
-            const accountPathSource = chainId === 'C' ? ETH_ACCOUNT_PATH : AXC_ACCOUNT_PATH;
+            const accountPathSource = chainId === 'AX' ? ETH_ACCOUNT_PATH : AXC_ACCOUNT_PATH;
             const accountPath = bip32Path.fromString(accountPathSource);
             //@ts-ignore
             let sigMap = yield this.appAxc.signHash(accountPath, bip32Paths, msg);
             let creds = this.getCredentials(unsignedTx, paths, sigMap, chainId);
             let signedTx;
             switch (chainId) {
-                case 'X':
+                case 'Swap':
                     signedTx = new avm.Tx(unsignedTx, creds);
                     break;
-                case 'P':
+                case 'Core':
                     signedTx = new platformvm.Tx(unsignedTx, creds);
                     break;
-                case 'C':
+                case 'AX':
                     signedTx = new evm.Tx(unsignedTx, creds);
                     break;
             }
@@ -7559,9 +7559,9 @@ class LedgerWallet extends HDWalletAbstract {
         let operations = [];
         let evmInputs = [];
         let items = ins;
-        if ((txType === avm.AVMConstants.IMPORTTX && chainId === 'X') ||
-            (txType === platformvm.PlatformVMConstants.IMPORTTX && chainId === 'P') ||
-            (txType === evm.EVMConstants.IMPORTTX && chainId === 'C')) {
+        if ((txType === avm.AVMConstants.IMPORTTX && chainId === 'Swap') ||
+            (txType === platformvm.PlatformVMConstants.IMPORTTX && chainId === 'Core') ||
+            (txType === evm.EVMConstants.IMPORTTX && chainId === 'AX')) {
             items = (tx || platformvm.ImportTx || evm.ImportTx).getImportInputs();
         }
         // Try to get operations, it will fail if there are none, ignore and continue
@@ -7572,10 +7572,10 @@ class LedgerWallet extends HDWalletAbstract {
             console.log('Failed to get tx operations.');
         }
         let CredentialClass;
-        if (chainId === 'X') {
+        if (chainId === 'Swap') {
             CredentialClass = avm.SelectCredentialClass;
         }
-        else if (chainId === 'P') {
+        else if (chainId === 'Core') {
             CredentialClass = platformvm.SelectCredentialClass;
         }
         else {
@@ -7638,7 +7638,7 @@ class LedgerWallet extends HDWalletAbstract {
         return __awaiter(this, void 0, void 0, function* () {
             let tx = unsignedTx.getTransaction();
             let txType = tx.getTxType();
-            let chainId = 'P';
+            let chainId = 'Core';
             let parseableTxs = ParseablePlatformEnum;
             let { paths, isAxcOnly } = yield this.getTransactionPaths(unsignedTx, chainId);
             // If ledger doesnt support parsing, sign hash
@@ -7655,22 +7655,22 @@ class LedgerWallet extends HDWalletAbstract {
                 }
             }
             // TODO: Remove after ledger update
-            // Ledger is not able to parse P/C atomic transactions
+            // Ledger is not able to parse Core/AX atomic transactions
             if (txType === platformvm.PlatformVMConstants.EXPORTTX) {
                 const destChainBuff = tx.getDestinationChain();
                 // If destination chain is AXChain, sign hash
                 const destChain = idToChainAlias(bintools.cb58Encode(destChainBuff));
-                if (destChain === 'C') {
+                if (destChain === 'AX') {
                     canLedgerParse = false;
                 }
             }
             // TODO: Remove after ledger update
-            // Ledger is not able to parse P/C atomic transactions
+            // Ledger is not able to parse Core/AX atomic transactions
             if (txType === platformvm.PlatformVMConstants.IMPORTTX) {
                 const sourceChainBuff = tx.getSourceChain();
                 // If destination chain is AXChain, sign hash
                 const sourceChain = idToChainAlias(bintools.cb58Encode(sourceChainBuff));
-                if (sourceChain === 'C') {
+                if (sourceChain === 'AX') {
                     canLedgerParse = false;
                 }
             }
@@ -7701,12 +7701,12 @@ class LedgerWallet extends HDWalletAbstract {
             }
             let canLedgerParse = true;
             // TODO: Remove after ledger update
-            // Ledger is not able to parse P/C atomic transactions
+            // Ledger is not able to parse Core/AX atomic transactions
             if (typeId === evm.EVMConstants.EXPORTTX) {
                 const destChainBuff = tx.getDestinationChain();
                 // If destination chain is AXChain, sign hash
                 const destChain = idToChainAlias(bintools.cb58Encode(destChainBuff));
-                if (destChain === 'P') {
+                if (destChain === 'Core') {
                     canLedgerParse = false;
                 }
             }
@@ -7715,16 +7715,16 @@ class LedgerWallet extends HDWalletAbstract {
                 const sourceChainBuff = tx.getSourceChain();
                 // If destination chain is AXChain, sign hash
                 const sourceChain = idToChainAlias(bintools.cb58Encode(sourceChainBuff));
-                if (sourceChain === 'P') {
+                if (sourceChain === 'Core') {
                     canLedgerParse = false;
                 }
             }
             let txSigned;
             if (canLedgerParse) {
-                txSigned = (yield this.signTransactionParsable(unsignedTx, paths, 'C'));
+                txSigned = (yield this.signTransactionParsable(unsignedTx, paths, 'AX'));
             }
             else {
-                txSigned = (yield this.signTransactionHash(unsignedTx, paths, 'C'));
+                txSigned = (yield this.signTransactionHash(unsignedTx, paths, 'AX'));
             }
             return txSigned;
         });

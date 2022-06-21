@@ -3,14 +3,14 @@ import { axChain, coreChain, swapChain } from '@/Network/network';
 
 /**
  * Given a chain alias, returns the chain id.
- * @param alias `X`, `P` or `C`
+ * @param alias `Swap`, `Core` or `AX`
  */
 export function chainIdFromAlias(alias: ChainIdType) {
-    if (alias === 'X') {
+    if (alias === 'Swap') {
         return swapChain.getBlockchainID();
-    } else if (alias === 'P') {
+    } else if (alias === 'Core') {
         return coreChain.getBlockchainID();
-    } else if (alias === 'C') {
+    } else if (alias === 'AX') {
         return axChain.getBlockchainID();
     }
     throw new Error('Unknown chain alias.');

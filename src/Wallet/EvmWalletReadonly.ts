@@ -24,10 +24,10 @@ export default class EvmWalletReadonly {
     }
 
     getAddressBech32(): string {
-        let keypair = new EVMKeyPair(axia.getHRP(), 'C');
+        let keypair = new EVMKeyPair(axia.getHRP(), 'AX');
         //@ts-ignore
         let addr = keypair.addressFromPublicKey(BufferAxia.from(this.publicKey));
-        return bintools.addressToString(axia.getHRP(), 'C', addr);
+        return bintools.addressToString(axia.getHRP(), 'AX', addr);
     }
 
     async updateBalance() {

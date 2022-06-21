@@ -95,10 +95,10 @@ export function estimateImportGasFeeFromMockTx(
 
 /**
  * Estimates the gas fee using a mock ExportTx built from the passed values.
- * @param destinationChain `X` or `P`
+ * @param destinationChain `Swap` or `Core`
  * @param amount in nAXC
  * @param from The AXChain hex address exported from
- * @param to The destination X or P address
+ * @param to The destination Swap or Core address
  */
 export function estimateExportGasFeeFromMockTx(
     destinationChain: ExportChainsC,
@@ -129,7 +129,7 @@ export function estimateExportGasFeeFromMockTx(
 
 /**
  * Returns the estimated gas for the export transaction.
- * @param destinationChain Either `X` or `P`
+ * @param destinationChain Either `Swap` or `Core`
  * @param amount The amount to export. In nAXC.
  * @param from The AXChain hex address exporting the asset
  * @param fromBech The AXChain bech32 address exporting the asset

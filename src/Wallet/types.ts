@@ -12,12 +12,12 @@ export interface IIndexKeyCache {
     [index: number]: AVMKeyPair;
 }
 
-export type ChainAlias = 'X' | 'P';
-export type ExportChainsX = 'P' | 'C';
-export type ExportChainsP = 'X' | 'C';
-export type ExportChainsC = 'X' | 'P';
+export type ChainAlias = 'Swap' | 'Core';
+export type ExportChainsX = 'Core' | 'AX';
+export type ExportChainsP = 'Swap' | 'AX';
+export type ExportChainsC = 'Swap' | 'Core';
 
-export type HdChainType = 'X' | 'P';
+export type HdChainType = 'Swap' | 'Core';
 
 export type WalletNameType = 'mnemonic' | 'ledger' | 'singleton' | 'xpub';
 export type WalletType = MnemonicWallet | SingletonWallet | LedgerWallet;
@@ -43,9 +43,9 @@ export interface WalletCollectiblesXGroup {
 }
 
 export interface iAxcBalance {
-    X: AssetBalanceRawX;
-    P: AssetBalanceP;
-    C: BN;
+    Swap: AssetBalanceRawX;
+    Core: AssetBalanceP;
+    AX: BN;
 }
 
 export interface AssetBalanceRawX {
@@ -86,8 +86,8 @@ export type WalletEventType = 'addressChanged' | 'balanceChangedX' | 'balanceCha
 export type WalletEventArgsType = iWalletAddressChanged | WalletBalanceX | AssetBalanceP | BN | iHDWalletIndex;
 
 export interface iWalletAddressChanged {
-    X: string;
-    P: string;
+    Swap: string;
+    Core: string;
     changeX: string;
 }
 

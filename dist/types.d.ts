@@ -1,1 +1,1 @@
-export declare type ChainIdType = 'X' | 'P' | 'C';
+export declare type ChainIdType = 'Swap' | 'Core' | 'AX';

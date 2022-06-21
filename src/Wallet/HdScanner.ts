@@ -44,7 +44,7 @@ export default class HdScanner {
         this.accountKey = accountKey;
         // We need an instance of an AVM key to generate adddresses from public keys
         let hrp = getPreferredHRP(axia.getNetworkID());
-        this.avmAddrFactory = new AVMKeyPair(hrp, 'X');
+        this.avmAddrFactory = new AVMKeyPair(hrp, 'Swap');
     }
 
     getIndex() {
@@ -62,27 +62,27 @@ export default class HdScanner {
     }
 
     public getAddressX() {
-        return this.getAddressForIndex(this.index, 'X');
+        return this.getAddressForIndex(this.index, 'Swap');
     }
 
     public getAddressP() {
-        return this.getAddressForIndex(this.index, 'P');
+        return this.getAddressForIndex(this.index, 'Core');
     }
 
     /**
      * Returns every address up to and including the current index.
-     * @param chainId Either X or P
+     * @param chainId Either Swap or Core
      */
-    public async getAllAddresses(chainId: HdChainType = 'X'): Promise<string[]> {
+    public async getAllAddresses(chainId: HdChainType = 'Swap'): Promise<string[]> {
         let upTo = this.index;
         return await this.getAddressesInRange(0, upTo + 1, chainId);
     }
 
     /**
      * Returns every address up to and including the current index synchronously.
-     * @param chainId Either X or P
+     * @param chainId Either Swap or Core
      */
-    public getAllAddressesSync(chainId: HdChainType = 'X'): string[] {
+    public getAllAddressesSync(chainId: HdChainType = 'Swap'): string[] {
         let upTo = this.index;
         return this.getAddressesInRangeSync(0, upTo + 1, chainId);
     }
@@ -91,9 +91,9 @@ export default class HdScanner {
      * Returns addresses in the given range
      * @param start Start index
      * @param end End index, exclusive
-     * @param chainId  `X` or `P` optional, returns X by default
+     * @param chainId  `Swap` or `Core` optional, returns Swap by default
      */
-    public async getAddressesInRange(start: number, end: number, chainId: HdChainType = 'X'): Promise<string[]> {
+    public async getAddressesInRange(start: number, end: number, chainId: HdChainType = 'Swap'): Promise<string[]> {
         let res = [];
         for (let i = start; i < end; i++) {
             res.push(this.getAddressForIndex(i, chainId));
@@ -110,9 +110,9 @@ export default class HdScanner {
      * Returns addresses in the given range
      * @param start Start index
      * @param end End index, exclusive
-     * @param chainId  `X` or `P` optional, returns X by default
+     * @param chainId  `Swap` or `Core` optional, returns Swap by default
      */
-    public getAddressesInRangeSync(start: number, end: number, chainId: HdChainType = 'X'): string[] {
+    public getAddressesInRangeSync(start: number, end: number, chainId: HdChainType = 'Swap'): string[] {
         let res = [];
         for (let i = start; i < end; i++) {
             res.push(this.getAddressForIndex(i, chainId));
@@ -182,7 +182,7 @@ export default class HdScanner {
         return key;
     }
 
-    public getAddressForIndex(index: number, chainId: HdChainType = 'X'): string {
+    public getAddressForIndex(index: number, chainId: HdChainType = 'Swap'): string {
         let key = this.getHdKeyForIndex(index);
 
         let publicKey = key.publicKey.toString('hex');
@@ -252,8 +252,8 @@ export default class HdScanner {
 
         // Get keys for indexes start to start+scan_size
         for (let i: number = start; i < start + SCAN_SIZE; i++) {
-            let addressX = this.getAddressForIndex(i, 'X');
-            let addressP = this.getAddressForIndex(i, 'P');
+            let addressX = this.getAddressForIndex(i, 'Swap');
+            let addressP = this.getAddressForIndex(i, 'Core');
             addrsX.push(addressX);
             addrsP.push(addressP);
         }
@@ -267,7 +267,7 @@ export default class HdScanner {
             for (let n: number = 0; n < HD_SCAN_GAP_SIZE; n++) {
                 let scanIndex: number = i + n;
                 let addr: string = addrsX[scanIndex];
-                let addrBuf = bintools.parseAddress(addr, 'X');
+                let addrBuf = bintools.parseAddress(addr, 'Swap');
                 let addrUTXOsX: string[] = utxoSetX.getUTXOIDs([addrBuf]);
                 let addrUTXOsP: string[] = utxoSetP.getUTXOIDs([addrBuf]);
                 if (addrUTXOsX.length === 0 && addrUTXOsP.length === 0) {

@@ -8,11 +8,11 @@ import { iAssetDescriptionClean } from "../Asset/types";
 export interface IIndexKeyCache {
     [index: number]: AVMKeyPair;
 }
-export declare type ChainAlias = 'X' | 'P';
-export declare type ExportChainsX = 'P' | 'C';
-export declare type ExportChainsP = 'X' | 'C';
-export declare type ExportChainsC = 'X' | 'P';
-export declare type HdChainType = 'X' | 'P';
+export declare type ChainAlias = 'Swap' | 'Core';
+export declare type ExportChainsX = 'Core' | 'AX';
+export declare type ExportChainsP = 'Swap' | 'AX';
+export declare type ExportChainsC = 'Swap' | 'Core';
+export declare type HdChainType = 'Swap' | 'Core';
 export declare type WalletNameType = 'mnemonic' | 'ledger' | 'singleton' | 'xpub';
 export declare type WalletType = MnemonicWallet | SingletonWallet | LedgerWallet;
 export interface WalletBalanceX {
@@ -32,9 +32,9 @@ export interface WalletCollectiblesXGroup {
     id: number;
 }
 export interface iAxcBalance {
-    X: AssetBalanceRawX;
-    P: AssetBalanceP;
-    C: BN;
+    Swap: AssetBalanceRawX;
+    Core: AssetBalanceP;
+    AX: BN;
 }
 export interface AssetBalanceRawX {
     locked: BN;
@@ -67,8 +67,8 @@ export interface ILedgerAppConfig {
 export declare type WalletEventType = 'addressChanged' | 'balanceChangedX' | 'balanceChangedP' | 'balanceChangedC' | 'hd_ready';
 export declare type WalletEventArgsType = iWalletAddressChanged | WalletBalanceX | AssetBalanceP | BN | iHDWalletIndex;
 export interface iWalletAddressChanged {
-    X: string;
-    P: string;
+    Swap: string;
+    Core: string;
     changeX: string;
 }
 export interface iHDWalletIndex {

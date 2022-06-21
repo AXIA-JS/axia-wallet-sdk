@@ -7,11 +7,11 @@ import { activeNetwork } from '@/Network/network';
  */
 export function idToChainAlias(id: string): ChainIdType {
     if (id === activeNetwork.swapChainID) {
-        return 'X';
+        return 'Swap';
     } else if (id === activeNetwork.coreChainID) {
-        return 'P';
+        return 'Core';
     } else if (id === activeNetwork.axChainID) {
-        return 'C';
+        return 'AX';
     }
     throw new Error('Unknown chain ID.');
 }
