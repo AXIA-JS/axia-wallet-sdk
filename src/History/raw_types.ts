@@ -100,10 +100,10 @@ export type TransactionType =
     | 'import'
     | 'export'
     | 'add_validator'
-    | 'add_subnet_validator'
+    | 'add_allychain_validator'
     | 'add_nominator'
     | 'create_chain'
-    | 'create_subnet'
+    | 'create_allychain'
     | 'pvm_import'
     | 'pvm_export'
     | 'atomic_import_tx' // for AXChain imports?

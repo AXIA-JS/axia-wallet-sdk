@@ -51,9 +51,9 @@ export declare enum PlatfromTxNameEnum {
     'Add Nominator',
     'Import',
     'Export',
-    'Add Subnet Validator',
+    'Add Allychain Validator',
     'Create Chain',
-    'Create Subnet',
+    'Create Allychain',
     'Advance Time',
     'Reward Validator'
 }
