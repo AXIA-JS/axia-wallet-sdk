@@ -2335,10 +2335,10 @@
     "@typescript-eslint/types" "4.33.0"
     eslint-visitor-keys "^2.0.0"
 
-"@zee-ava/avajs@^3.14.16":
-  version "3.14.17"
-  resolved "https://registry.yarnpkg.com/@zee-ava/avajs/-/avajs-3.14.17.tgz#4ff0f0d48d907d54a22e06c9b61075b5546a86ab"
-  integrity sha512-owUPbPKCbLmQUZyKRA7Wl8eIt/LGh69xnifJwfNjKrJ8hwBtncKmZ2fXL8y0NGUMhTJHC79qZmeR6b59m5LVDA==
+"@zee-ava/avajs@^3.14.18":
+  version "3.14.18"
+  resolved "https://registry.yarnpkg.com/@zee-ava/avajs/-/avajs-3.14.18.tgz#595b443f7fab6f45a88ac517614d8c502052b119"
+  integrity sha512-2Y5MnELkasLMRa0KMNEd7g5fBzeRbXjBl9SfP5oSUkqXjqpQMOjCewTAvf8Bc0FB3ZgWSwbfbm5X+2eVQBPt8w==
   dependencies:
     assert "2.0.0"
     axios "0.27.2"

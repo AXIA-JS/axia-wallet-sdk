@@ -352,9 +352,9 @@ export enum PlatfromTxNameEnum {
     'Add Nominator' = PlatformVMConstants.ADDNOMINATORTX,
     'Import' = PlatformVMConstants.IMPORTTX,
     'Export' = PlatformVMConstants.EXPORTTX,
-    'Add Allychain Validator' = PlatformVMConstants.ADDSUBNETVALIDATORTX,
+    'Add Allychain Validator' = PlatformVMConstants.ADDALLYCHAINVALIDATORTX,
     'Create Chain' = PlatformVMConstants.CREATECHAINTX,
-    'Create Allychain' = PlatformVMConstants.CREATESUBNETTX,
+    'Create Allychain' = PlatformVMConstants.CREATEALLYCHAINTX,
     'Advance Time' = PlatformVMConstants.ADVANCETIMETX,
     'Reward Validator' = PlatformVMConstants.REWARDVALIDATORTX,
 }
